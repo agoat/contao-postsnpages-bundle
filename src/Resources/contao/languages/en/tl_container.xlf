@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_container.php" source-language="en">
+    <body>
+      <trans-unit id="tl_container.title.0">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="tl_container.title.1">
+        <source>Please enter the container title.</source>
+      </trans-unit>
+      <trans-unit id="tl_container.inColumn.0">
+        <source>Display in</source>
+      </trans-unit>
+      <trans-unit id="tl_container.inColumn.1">
+        <source>Please choose the layout section you want the container to be displayed in.</source>
+      </trans-unit>
+      <trans-unit id="tl_container.keywords.0">
+        <source>Meta keywords</source>
+      </trans-unit>
+      <trans-unit id="tl_container.keywords.1">
+        <source>Here you can enter a list of comma separated keywords. Keywords, however, are no longer relevant to most search engines (including Google).</source>
+      </trans-unit>
+      <trans-unit id="tl_container.customTpl.0">
+        <source>Custom container template</source>
+      </trans-unit>
+      <trans-unit id="tl_container.customTpl.1">
+        <source>Here you can overwrite the default container template.</source>
+      </trans-unit>
+      <trans-unit id="tl_container.protected.0">
+        <source>Protect container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.protected.1">
+        <source>Show the container to certain member groups only.</source>
+      </trans-unit>
+      <trans-unit id="tl_container.groups.0">
+        <source>Allowed member groups</source>
+      </trans-unit>
+      <trans-unit id="tl_container.groups.1">
+        <source>These groups will be able to see the container.</source>
+      </trans-unit>
+      <trans-unit id="tl_container.guests.0">
+        <source>Show to guests only</source>
+      </trans-unit>
+      <trans-unit id="tl_container.guests.1">
+        <source>Hide the container if a member is logged in.</source>
+      </trans-unit>
+       <trans-unit id="tl_container.cssID.0">
+        <source>CSS ID/class</source>
+      </trans-unit>
+      <trans-unit id="tl_container.cssID.1">
+        <source>Here you can set an ID and one or more classes.</source>
+      </trans-unit>
+      <trans-unit id="tl_container.published.0">
+        <source>Publish container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.published.1">
+        <source>Make the container publicly visible on the website.</source>
+      </trans-unit>
+      <trans-unit id="tl_container.start.0">
+        <source>Show from</source>
+      </trans-unit>
+      <trans-unit id="tl_container.start.1">
+        <source>Do not show the container on the website before this day.</source>
+      </trans-unit>
+      <trans-unit id="tl_container.stop.0">
+        <source>Show until</source>
+      </trans-unit>
+      <trans-unit id="tl_container.stop.1">
+        <source>Do not show the container on the website on and after this day.</source>
+      </trans-unit>
+      <trans-unit id="tl_container.tstamp.0">
+        <source>Revision date</source>
+      </trans-unit>
+      <trans-unit id="tl_container.tstamp.1">
+        <source>Date and time of the latest revision</source>
+      </trans-unit>
+      <trans-unit id="tl_container.title_legend">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="tl_container.layout_legend">
+        <source>Section and keywords</source>
+      </trans-unit>
+      <trans-unit id="tl_container.syndication_legend">
+        <source>Syndication</source>
+      </trans-unit>
+      <trans-unit id="tl_container.template_legend">
+        <source>Template settings</source>
+      </trans-unit>
+      <trans-unit id="tl_container.protected_legend">
+        <source>Access protection</source>
+      </trans-unit>
+      <trans-unit id="tl_container.expert_legend">
+        <source>Expert settings</source>
+      </trans-unit>
+      <trans-unit id="tl_container.publish_legend">
+        <source>Publish settings</source>
+      </trans-unit>
+
+      <trans-unit id="tl_container.new.0">
+        <source>New container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.new.1">
+        <source>Create a new container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.show.0">
+        <source>Container details</source>
+      </trans-unit>
+      <trans-unit id="tl_container.show.1">
+        <source>Show the details of container ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_container.edit.0">
+        <source>Edit container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.edit.1">
+        <source>Edit container ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_container.editheader.0">
+        <source>Edit container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.editheader.1">
+        <source>Edit the container settings</source>
+      </trans-unit>
+      <trans-unit id="tl_container.copy.0">
+        <source>Duplicate container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.copy.1">
+        <source>Duplicate container ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_container.cut.0">
+        <source>Move container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.cut.1">
+        <source>Move container ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_container.delete.0">
+        <source>Delete container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.delete.1">
+        <source>Delete container ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_container.toggle.0">
+        <source>Publish/unpublish container</source>
+      </trans-unit>
+      <trans-unit id="tl_container.toggle.1">
+        <source>Publish/unpublish container ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_container.pasteafter.0">
+        <source>Paste after</source>
+      </trans-unit>
+      <trans-unit id="tl_container.pasteafter.1">
+        <source>Paste after container ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_container.pasteinto.0">
+        <source>Paste into</source>
+      </trans-unit>
+      <trans-unit id="tl_container.pasteinto.1">
+        <source>Paste into page ID %s</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

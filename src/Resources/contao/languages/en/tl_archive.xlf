@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_archive.php" source-language="en">
+    <body>
+      <trans-unit id="tl_archive.title.0">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.title.1">
+        <source>Please enter the archiv title.</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.protected.0">
+        <source>Protect archiv</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.protected.1">
+        <source>Show the archiv to certain member groups only.</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.groups.0">
+        <source>Allowed member groups</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.groups.1">
+        <source>These groups will be able to see the archiv.</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.title_legend">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.layout_legend">
+        <source>Layout settings</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.protected_legend">
+        <source>Access protection</source>
+      </trans-unit>
+
+      <trans-unit id="tl_archive.new.0">
+        <source>New archiv</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.new.1">
+        <source>Create a new archiv</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.show.0">
+        <source>Archiv details</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.show.1">
+        <source>Show the details of archiv ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.edit.0">
+        <source>Edit archiv</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.edit.1">
+        <source>Edit archiv ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.editheader.0">
+        <source>Edit archiv</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.editheader.1">
+        <source>Edit the archiv settings</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.copy.0">
+        <source>Duplicate archiv</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.copy.1">
+        <source>Duplicate archiv ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.cut.0">
+        <source>Move archiv</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.cut.1">
+        <source>Move archiv ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.delete.0">
+        <source>Delete archiv</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.delete.1">
+        <source>Delete archiv ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.toggle.0">
+        <source>Publish/unpublish archiv</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.toggle.1">
+        <source>Publish/unpublish archiv ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.pasteafter.0">
+        <source>Paste after</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.pasteafter.1">
+        <source>Paste after archiv ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.pasteinto.0">
+        <source>Paste into</source>
+      </trans-unit>
+      <trans-unit id="tl_archive.pasteinto.1">
+        <source>Paste into page ID %s</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

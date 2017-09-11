@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/modules.php" source-language="en">
+    <body>
+      <trans-unit id="MOD.container.0">
+        <source>Page content</source>
+      </trans-unit>
+      <trans-unit id="MOD.tl_archive">
+        <source>Archive</source>
+      </trans-unit>
+      <trans-unit id="MOD.tl_article">
+        <source>Article</source>
+      </trans-unit>
+      <trans-unit id="MOD.tl_container">
+        <source>Container</source>
+      </trans-unit>
+      <trans-unit id="MOD.tl_static">
+        <source>Static content</source>
+      </trans-unit>
+
+      <trans-unit id="MOD.posts.0">
+        <source>Posts</source>
+      </trans-unit>
+      <trans-unit id="MOD.posts.1">
+        <source>Manage post content</source>
+      </trans-unit>
+      <trans-unit id="MOD.pages.0">
+        <source>Pages</source>
+      </trans-unit>
+      <trans-unit id="MOD.pages.1">
+        <source>Manage page content</source>
+      </trans-unit>
+
+      <trans-unit id="FMD.container.0">
+        <source>Container</source>
+      </trans-unit>
+      <trans-unit id="FMD.article.0">
+        <source>Articles</source>
+      </trans-unit>
+      <trans-unit id="FMD.article.1">
+        <source>Renders the content of articles.</source>
+      </trans-unit>
+      <trans-unit id="FMD.teaser.0">
+        <source>Teasers</source>
+      </trans-unit>
+      <trans-unit id="FMD.teaser.1">
+        <source>Renders the teaser of articles.</source>
+      </trans-unit>
+      <trans-unit id="FMD.articlereader.0">
+        <source>Articlereader</source>
+      </trans-unit>
+      <trans-unit id="FMD.articlereader.1">
+        <source>Renders a certain article (To be used with 'Articles' or 'Teasers').</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

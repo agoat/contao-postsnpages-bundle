@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/default.php" source-language="en">
+    <body>
+      <trans-unit id="MSC.open">
+        <source>Read more on %s</source>
+      </trans-unit>
+      <trans-unit id="MSC.author">
+        <source>Author</source>
+      </trans-unit>
+      <trans-unit id="MSC.by">
+        <source>by</source>
+      </trans-unit>
+      <trans-unit id="MSC.comments">
+        <source>Comments</source>
+      </trans-unit>
+      <trans-unit id="MSC.commentCount">
+        <source>%s comments</source>
+      </trans-unit>
+      <trans-unit id="MSC.noComments">
+        <source>No comments</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

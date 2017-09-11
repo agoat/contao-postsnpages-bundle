@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_posts.php" source-language="en">
+    <body>
+      <trans-unit id="tl_posts.title.0">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.title.1">
+        <source>Please enter the post title.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.alias.0">
+        <source>Post alias</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.alias.1">
+        <source>The post alias is a unique reference to the post which can be called instead of its numeric ID.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.author.0">
+        <source>Author</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.author.1">
+        <source>Here you can change the author of the post.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.inColumn.0">
+        <source>Display in</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.inColumn.1">
+        <source>Please choose the layout section you want the post to be displayed in.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.keywords.0">
+        <source>Meta keywords</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.keywords.1">
+        <source>Here you can enter a list of comma separated keywords. Keywords, however, are no longer relevant to most search engines (including Google).</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.teaserCssID.0">
+        <source>Teaser CSS ID/class</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.teaserCssID.1">
+        <source>Here you can set an ID and one or more classes for the teaser element.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.showTeaser.0">
+        <source>Show teaser</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.showTeaser.1">
+        <source>Show the post teaser if there are multiple posts.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.teaser.0">
+        <source>Article teaser</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.teaser.1">
+        <source>The post teaser can also be displayed with the content element "post teaser".</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.printable.0">
+        <source>Syndication</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.printable.1">
+        <source>Here you can choose which options are available.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.guests.0">
+        <source>Show to guests only</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.guests.1">
+        <source>Hide the post if a member is logged in.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.customTpl.0">
+        <source>Custom post template</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.customTpl.1">
+        <source>Here you can overwrite the default post template.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.protected.0">
+        <source>Protect post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.protected.1">
+        <source>Show the post to certain member groups only.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.groups.0">
+        <source>Allowed member groups</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.groups.1">
+        <source>These groups will be able to see the post.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.cssID.0">
+        <source>CSS ID/class</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.cssID.1">
+        <source>Here you can set an ID and one or more classes.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.published.0">
+        <source>Publish post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.published.1">
+        <source>Make the post publicly visible on the website.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.start.0">
+        <source>Show from</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.start.1">
+        <source>Do not show the post on the website before this day.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.stop.0">
+        <source>Show until</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.stop.1">
+        <source>Do not show the post on the website on and after this day.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.tstamp.0">
+        <source>Revision date</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.tstamp.1">
+        <source>Date and time of the latest revision</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.title_legend">
+        <source>Title and author</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.layout_legend">
+        <source>Section and keywords</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.syndication_legend">
+        <source>Syndication</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.teaser_legend">
+        <source>Post teaser</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.template_legend">
+        <source>Template settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.protected_legend">
+        <source>Access protection</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.expert_legend">
+        <source>Expert settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.publish_legend">
+        <source>Publish settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.print">
+        <source>Print the page</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.pdf">
+        <source>Export as PDF</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.facebook">
+        <source>Share on Facebook</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.twitter">
+        <source>Share on Twitter</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.gplus">
+        <source>Share on Google+</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.new.0">
+        <source>New post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.new.1">
+        <source>Create a new post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.show.0">
+        <source>Article details</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.show.1">
+        <source>Show the details of post ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.edit.0">
+        <source>Edit post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.edit.1">
+        <source>Edit post ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.editheader.0">
+        <source>Edit post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.editheader.1">
+        <source>Edit the post settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.copy.0">
+        <source>Duplicate post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.copy.1">
+        <source>Duplicate post ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.cut.0">
+        <source>Move post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.cut.1">
+        <source>Move post ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.delete.0">
+        <source>Delete post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.delete.1">
+        <source>Delete post ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.toggle.0">
+        <source>Publish/unpublish post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.toggle.1">
+        <source>Publish/unpublish post ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.pasteafter.0">
+        <source>Paste after</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.pasteafter.1">
+        <source>Paste after post ID %s</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.pasteinto.0">
+        <source>Paste into</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.pasteinto.1">
+        <source>Paste into page ID %s</source>
+      </trans-unit>
+     <trans-unit id="tl_posts.date.0">
+        <source>Date</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.date.1">
+        <source>Please enter the date according to the global date format.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.time.0">
+        <source>Time</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.time.1">
+        <source>Please enter the time according to the global time format.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.location.0">
+        <source>Location</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.location.1">
+        <source>Here you can enter a location.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.latlong.0">
+        <source>Latitude/Longitude</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.latlong.1">
+        <source>Here you can enter coordinates in lat/long format.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.subTitle.0">
+        <source>Subtitle</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.subTitle.1">
+        <source>Here you can enter a subtitle.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.addImage.0">
+        <source>Add image</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.addImage.1">
+        <source>Add a image to the post teaser.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.category.0">
+        <source>Category</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.category.1">
+        <source>Here you can enter or select one or more categories.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.readmore.0">
+        <source>Alternative target</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.readmore.1">
+        <source>Redirect to another target than the post itself.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.format.0">
+        <source>Post format</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.format.1">
+        <source>Set format (type) of the post.</source>
+	  </trans-unit>
+      <trans-unit id="tl_posts.noComments.0">
+        <source>Disable comments</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.noComments.1">
+        <source>Do not allow comments for this particular post.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.featured.0">
+        <source>Featured post</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.featured.1">
+        <source>Show the post in a featured post list.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.date_legend">
+        <source>Date and time</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.location_legend">
+        <source>Location</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.image_legend">
+        <source>Image settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.category_legend">
+        <source>Category settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.readmore_legend">
+        <source>Read more link</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.addCategory">
+        <source>Add Category</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.standard">
+        <source>Standard</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.aside">
+        <source>Aside</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.link">
+        <source>Link</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.quote">
+        <source>Quote</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.status">
+        <source>Status</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.image">
+        <source>Image</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.gallery">
+        <source>Gallery</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.video">
+        <source>Video</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.chat">
+        <source>Chat</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

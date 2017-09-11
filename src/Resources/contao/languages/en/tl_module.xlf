@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_module.php" source-language="en">
+    <body>
+      <trans-unit id="tl_module.readerModule.0">
+        <source>Article reader module</source>
+      </trans-unit>
+      <trans-unit id="tl_module.readerModule.1">
+        <source>Select the article reader module to render selected articles.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.featured.0">
+        <source>Featured articles</source>
+      </trans-unit>
+      <trans-unit id="tl_module.featured.1">
+        <source>Here you can choose how featured articles are handled.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.fromColumn.0">
+        <source>Column</source>
+      </trans-unit>
+      <trans-unit id="tl_module.fromColumn.1">
+        <source>Here you can choose the column whose articles you want to show.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.showTeaser.0">
+        <source>Show teaser</source>
+      </trans-unit>
+      <trans-unit id="tl_module.showTeaser.1">
+        <source>Show the teasers within the articles.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.articleTpl.0">
+        <source>Article template</source>
+      </trans-unit>
+      <trans-unit id="tl_module.articleTpl.1">
+        <source>Here you can select an article template.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.teaserTpl.0">
+        <source>Teaser template</source>
+      </trans-unit>
+      <trans-unit id="tl_module.teaserTpl.1">
+        <source>Here you can select a teaser template.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.archive_legend">
+        <source>Archive settings</source>
+      </trans-unit>
+      <trans-unit id="tl_module.archive.0">
+        <source>Show articles from</source>
+      </trans-unit>
+      <trans-unit id="tl_module.archive.1">
+        <source>Here you can choose if all archives, only the first or a particular archive will be shown.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.sortOrder.0">
+        <source>Sort order</source>
+      </trans-unit>
+      <trans-unit id="tl_module.sort_legend">
+        <source>Sorting settings</source>
+      </trans-unit>
+      <trans-unit id="tl_module.sortBy.0">
+        <source>Sorting</source>
+      </trans-unit>
+      <trans-unit id="tl_module.sortBy.1">
+        <source>Here you can choose the sorting attribute.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.sortOrder.0">
+        <source>Sort order</source>
+      </trans-unit>
+      <trans-unit id="tl_module.sortOrder.1">
+        <source>Please choose the sort order.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.filter_legend">
+        <source>Filter settings</source>
+      </trans-unit>
+      <trans-unit id="tl_module.filterByCategory.0">
+        <source>Filter by category</source>
+      </trans-unit>
+      <trans-unit id="tl_module.filterByCategory.1">
+        <source>Here you can choose to filter the articles by category.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.category.0">
+        <source>Category</source>
+      </trans-unit>
+      <trans-unit id="tl_module.category.1">
+        <source>Please choose a category.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.allowComments.0">
+        <source>Add Comments</source>
+      </trans-unit>
+      <trans-unit id="tl_module.allowComments.1">
+        <source>Allow visitors to comment the article.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.notifyAdmin.0">
+        <source>Notify admin</source>
+      </trans-unit>
+      <trans-unit id="tl_module.notifyAdmin.1">
+        <source>Additionally to the author the system administrator can be notified when comments are added.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_module.edit_module">
+        <source>Edit the module</source>
+      </trans-unit>
+      <trans-unit id="tl_module.all_articles">
+        <source>Show all articles</source>
+      </trans-unit>
+      <trans-unit id="tl_module.featured_articles">
+        <source>Show featured articles only</source>
+      </trans-unit>
+      <trans-unit id="tl_module.unfeatured_articles">
+        <source>Skip featured articles</source>
+      </trans-unit>
+      <trans-unit id="tl_module.archive.page">
+        <source>From current/referenced page</source>
+      </trans-unit>
+      <trans-unit id="tl_module.archive.particular">
+        <source>Particular archive</source>
+      </trans-unit>
+      <trans-unit id="tl_module.archive.all">
+        <source>All archives</source>
+      </trans-unit>
+      <trans-unit id="tl_module.archive.first">
+        <source>The first archive</source>
+      </trans-unit>
+      <trans-unit id="tl_module.archive.all">
+        <source>All archives</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
