@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Agoat\ContentManager;
+namespace Agoat\PostsnPages;
 
 
 /**
@@ -38,7 +38,7 @@ class ModuleContainer extends \Module
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = 'mod_article';
+	protected $strTemplate = 'mod_container';
 
 	/**
 	 * No markup
@@ -61,7 +61,7 @@ class ModuleContainer extends \Module
 			return '';
 		}
 
-		$this->type = 'section';
+		$this->type = 'container';
 		$this->blnNoMarkup = $blnNoMarkup;
 
 		return parent::generate();
@@ -76,7 +76,7 @@ class ModuleContainer extends \Module
 		/** @var PageModel $objPage */
 		global $objPage;
 
-		$id = 'section-' . $this->id;
+		$id = 'container-' . $this->id;
 
 		// Generate the CSS ID if it is not set
 		if (empty($this->cssID[0]))

@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Agoat\ContentManager;
+namespace Agoat\PostsnPages;
 
 
 /**
@@ -113,7 +113,7 @@ class InputSelect extends \Contao\Widget
 		// Add an empty option if there are none
 		if (empty($this->arrOptions) || !is_array($this->arrOptions))
 		{
-		//	$this->arrOptions = array(array('value'=>'', 'label'=>'-'));
+			$this->arrOptions = array(array('value'=>'', 'label'=>'-'));
 		}
 
 		foreach ($this->arrOptions as $strKey=>$arrOption)

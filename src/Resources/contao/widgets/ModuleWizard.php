@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Agoat\ContentManager;
+namespace Agoat\PostsnPages;
 
 
 /**
@@ -42,7 +42,7 @@ class ModuleWizard extends \Contao\ModuleWizard
 			$modules = array_merge($modules, $objModules->fetchAllAssoc());
 		}
 
-		$GLOBALS['TL_LANG']['FMD']['article'] = $GLOBALS['TL_LANG']['MOD']['article'];
+		$GLOBALS['TL_LANG']['FMD']['container'] = $GLOBALS['TL_LANG']['MOD']['container'];
 
 		// Add the module type (see #3835)
 		foreach ($modules as $k=>$v)

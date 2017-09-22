@@ -1,0 +1,6 @@
+
+<ul class="tags">
+  <?php foreach ($this->tags as $tag): ?>
+       <li class="tag <?= $tag['label'] ?>"><a href="<?= $tag['href'] ?: './' ?>" title="<?= $tag['label'] ?>" itemprop="url"><?= $tag['label'] ?> <span itemprop="name">(<?= $tag['count'] ?>)</span></a></li>
+  <?php endforeach; ?>
+</ul>

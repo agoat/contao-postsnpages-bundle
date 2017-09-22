@@ -2,6 +2,12 @@
 <xliff version="1.1">
   <file datatype="php" original="src/Resources/contao/languages/en/default.php" source-language="en">
     <body>
+      <trans-unit id="MSC.postPicker">
+        <source>Posts</source>
+      </trans-unit>
+      <trans-unit id="MSC.containerPicker">
+        <source>Container</source>
+      </trans-unit>
       <trans-unit id="MSC.open">
         <source>Read more on %s</source>
       </trans-unit>
@@ -19,6 +25,31 @@
       </trans-unit>
       <trans-unit id="MSC.noComments">
         <source>No comments</source>
+      </trans-unit>
+
+      <trans-unit id="MSC.sortPosts.date">
+        <source>Date</source>
+      </trans-unit>
+      <trans-unit id="MSC.sortPosts.title">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="MSC.sortPosts.popular">
+        <source>Popularity</source>
+      </trans-unit>
+      <trans-unit id="MSC.sortPosts.location">
+        <source>Location</source>
+      </trans-unit>
+      <trans-unit id="MSC.sortPosts.random">
+        <source>Random order</source>
+      </trans-unit>
+      <trans-unit id="MSC.sortTags.label">
+        <source>Tag name</source>
+      </trans-unit>
+      <trans-unit id="MSC.sortTags.count">
+        <source>Posts count</source>
+      </trans-unit>
+      <trans-unit id="MSC.sortTags.random">
+        <source>Random order</source>
       </trans-unit>
     </body>
   </file>

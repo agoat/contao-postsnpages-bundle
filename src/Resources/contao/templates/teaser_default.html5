@@ -1,5 +1,5 @@
 
-<article class="teaser<?= $this->cssClass ?>" id="<?= $this->cssId ?>">
+<article class="post teaser<?= $this->cssClass ?>" id="<?= $this->cssId ?>">
   <header>
     <h2 itemprop="name"><?= $this->title ?></h2>
 

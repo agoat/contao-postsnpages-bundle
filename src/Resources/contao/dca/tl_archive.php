@@ -40,7 +40,7 @@ $GLOBALS['TL_DCA']['tl_archive'] = array
 			'keys' => array
 			(
 				'id' => 'primary',
-				'pid,sorting' => 'index'
+				'pid' => 'index'
 			)
 		)
 	),
@@ -54,14 +54,11 @@ $GLOBALS['TL_DCA']['tl_archive'] = array
 			'fields'                  => array('title'),
 			'paste_button_callback'   => array('tl_archive', 'pasteArchiv'),
 			'panelLayout'             => 'filter;search',
-		//	'pfilter'				  => array('type=?', 'root'),
-			'breadcrumb'			  => 'test'
+			'pfilter'				  => array('type=?', 'regular')
 		),
 		'label' => array
 		(
 			'fields'                  => array('title'),
-	//		'format'                  => '%s <span style="color:#999;padding-left:3px">[%s]</span>',
-	//		'label_callback'          => array('tl_archive', 'addIcon')
 		),
 		'global_operations' => array
 		(
@@ -156,10 +153,6 @@ $GLOBALS['TL_DCA']['tl_archive'] = array
 			'foreignKey'              => 'tl_page.title',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
-		),
-		'sorting' => array
-		(
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'tstamp' => array
 		(

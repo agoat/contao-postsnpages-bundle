@@ -24,9 +24,9 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 	// Config
 	'config' => array
 	(
-		'dataContainer'               => 'TableExtended',
+		'dataContainer'               => 'Table',
 		'ptable'                      => 'tl_archive',
-		'ctable'                      => array('tl_content'),
+		'ctable'                      => array('tl_content', 'tl_tags'),
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
 		'onload_callback' => array
@@ -57,9 +57,9 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		(
 			'mode'                    => 4,
 			'fields'                  => array('date DESC', 'title', 'author'),
-			'paste_button_callback'   => array('tl_posts', 'pastePost'),
 			'panelLayout'             => 'filter;filter;sort,search,limit',
 			'headerFields'            => array('title', 'protected'),
+			'paste_button_callback'   => array('tl_posts', 'pastePost'),
 			'child_record_callback'   => array('tl_posts', 'renderPost'),
 		),
 		'label' => array
@@ -120,7 +120,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['feature'],
 				'icon'                => 'featured.svg',
-				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFeaturedArticle(this,%s)"',
+				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFeatured(this,%s)"',
 				'button_callback'     => array('tl_posts', 'iconFeatured')		
 			),
 			'show' => array
@@ -137,7 +137,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 	(
 		'buttons_callback' => array
 		(
-			array('tl_posts', 'addAliasButton')
+			//array('tl_posts', 'addAliasButton')
 		)
 	),
 
@@ -145,7 +145,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('addImage', 'readmore'),
-		'default'                     => '{title_legend},title,alias,author;{layout_legend},keywords;;{date_legend},date,time;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category;{readmore_legend},readmore;{related_legend},relatedPosts;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
+		'default'                     => '{title_legend},title,alias,author;{layout_legend},keywords;{date_legend},date,time;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category,tags;{readmore_legend},readmore;{related_legend},related;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
 	),
 
 	// Subpalettes
@@ -166,7 +166,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'pid' => array
 		(
-			'foreignKey'              => 'tl_page.title',
+			'foreignKey'              => 'tl_archive.title',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
 		),
@@ -327,11 +327,12 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['category'],
 			'exclude'                 => true,
-			'filter'                  => 1,
+			'sorting'                 => true,
+			'filter'                  => true,
 			'inputType'               => 'inputselect',
-			'options_callback'        => array('tl_posts', 'getPostCategories'),
-			'eval'                    => array('includeBlankOption'=>true, 'rgxp'=>'alias', 'multiple'=>true, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['addCategory'], 'tl_class'=>'w50'),
-			'sql'                     => "varchar(1022) NOT NULL default ''"
+			'options_callback'        => array('tl_posts', 'getCategories'),
+			'eval'                    => array('includeBlankOption'=>true, 'rgxp'=>'alias', 'maxlength'=>128, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['addCategory'], 'tl_class'=>'w50'),
+			'sql'                     => "varchar(128) NOT NULL default ''"
 		),
 		'tags' => array
 		(
@@ -339,8 +340,12 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'inputselect',
-			'options_callback'        => array('tl_posts', 'getPostCategories'),
-			'eval'                    => array('includeBlankOption'=>true, 'rgxp'=>'alias', 'multiple'=>true, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['addCategory'], 'tl_class'=>'w50'),
+			'save_callback'           => array
+			(
+				array('tl_posts', 'saveTags')
+			),
+			'options_callback'        => array('tl_posts', 'getTags'),
+			'eval'                    => array('multiple'=>true, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['addTag'], 'tl_class'=>'clr long'),
 			'sql'                     => "varchar(1022) NOT NULL default ''"
 		),
 		'readmore' => array
@@ -358,7 +363,17 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'rgxp'=>'url', 'decodeEntities'=>true, 'maxlength'=>255, 'dcaPicker'=>true, 'fieldType'=>'radio', 'filesOnly'=>true, 'tl_class'=>'w50 wizard'),
+			'eval'                    => array
+			(
+				'mandatory'			=> true, 
+				'rgxp'				=> 'url', 
+				'decodeEntities'	=> true, 
+				'maxlength'			=> 255, 
+				'dcaPicker'			=> true,
+				'fieldType'			=> 'radio', 
+				'filesOnly'			=> true, 
+				'tl_class'			=> 'w50 wizard'
+			),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
 		'target' => array
@@ -369,15 +384,15 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'eval'                    => array('tl_class'=>'w50 m12'),
 			'sql'                     => "char(1) NOT NULL default ''"
 		),
-		'relatedPosts' => array
+		'related' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['relatedPosts'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['related'],
 			'exclude'                 => true,
-			'inputType'               => 'articleTree',
-			'eval'                    => array('multiple'=>	true, 'fieldType'=>'checkbox', 'orderField'=>'orderArticle', 'tl_class'=>'clr'),
+			'inputType'               => 'postTree',
+			'eval'                    => array('multiple'=>	true, 'fieldType'=>'checkbox', 'orderField'=>'orderRelated', 'tl_class'=>'clr'),
 			'sql'                     => "blob NULL"
 		),
-		'orderPosts' => array
+		'orderRelated' => array
 		(
 			'sql'                     => "blob NULL"
 		),
@@ -595,39 +610,6 @@ class tl_posts extends Backend
 					$ids[] = Input::get('sid');
 					break;
 
-				// Do not insert articles into a website root page
-				case 'create':
-				case 'copy':
-				case 'copyAll':
-				case 'cut':
-				case 'cutAll':
-					$permission = BackendUser::CAN_EDIT_ARTICLE_HIERARCHY;
-
-					// Insert into a page
-					if (Input::get('mode') == 2)
-					{
-						$objParent = $this->Database->prepare("SELECT id, type FROM tl_page WHERE id=?")
-													->limit(1)
-													->execute(Input::get('pid'));
-
-						$ids[] = Input::get('pid');
-					}
-
-					// Insert after an article
-					else
-					{
-						$objParent = $this->Database->prepare("SELECT id, type FROM tl_page WHERE id=(SELECT pid FROM tl_archive WHERE id=?)")
-													->limit(1)
-													->execute(Input::get('pid'));
-
-						$ids[] = $objParent->id;
-					}
-
-					if ($objParent->numRows && $objParent->type == 'root')
-					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Attempt to insert an article into website root page ID ' . Input::get('pid') . '.');
-					}
-					break;
 
 				case 'delete':
 					$permission = BackendUser::CAN_DELETE_ARTICLES;
@@ -663,7 +645,7 @@ class tl_posts extends Backend
 					// Check whether the current user has permission for the current page
 					if ($objPage->numRows && !$this->User->isAllowed($permission, $objPage->row()))
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'article ID ' . Input::get('id') : ' articles') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
+						throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'post ID ' . Input::get('id') : ' posts') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
 					}
 				}
 			}
@@ -682,25 +664,17 @@ class tl_posts extends Backend
 	 */
 	public function renderPost($arrRow)
 	{
-		dump($arrRow);
-		
 		$label = $arrRow['title'];
-		$image = 'articles';
+		$image = 'posts';
 
 		$time = \Date::floorToMinute();
-		$unpublished = $arrRow['start'] != '' && $arrRow['start'] > $time || $arrRow['stop'] != '' && $arrRow['stop'] < $time;
-	dump($unpublished);	
-		if (!$arrRow['published'] || $unpublished)
-		{
-			$image .= '_';
-		}
-	dump($image);	
-
-		$return = '<div class="tl_content_left"><div class="list_icon" style="background-image: url(\'system/themes/' . Backend::getTheme() . '/icons/' . $image. '.svg\')" data-icon="' . ($unpublished ? $image : rtrim($image, '_')) . '.svg" data-icon-disabled="' . rtrim($image, '_').'_.svg">';
+		$unpublished = !$arrRow['published'] || $arrRow['start'] != '' && $arrRow['start'] > $time || $arrRow['stop'] != '' && $arrRow['stop'] < $time;
+	
+		$return = '<div class="tl_content_left"><div class="list_icon" style="background-image: url(\'bundles/agoatpostsnpages/' . $image. ($unpublished ? '_' : '') .'.svg\')" data-icon="bundles/agoatpostsnpages/' . $image . '.svg" data-icon-disabled="bundles/agoatpostsnpages/' . $image .'_.svg">';
 		
 		$return .= $label;
 		
-		$return .= "</div></div>";
+		$return .= "</div></div><div><br><br><br></div>";
 		
 		return $return;
 		
@@ -773,194 +747,28 @@ class tl_posts extends Backend
 
 
 	/**
-	 * Return all active layout sections as array
+	 * Return the article categories
 	 *
 	 * @param DataContainer $dc
 	 *
 	 * @return array
 	 */
-	public function getActiveLayoutSections(DataContainer $dc)
+	public function getCategories(DataContainer $dc)
 	{
-		// Show only active sections
-		if ($dc->activeRecord->pid)
+		$intPid = (null === $dc->activeRecord) ? $dc->id : $dc->activeRecord->pid;
+		
+		$objPosts = \PostsModel::findByPid($intPid);
+
+		if ($objPosts === null)
 		{
-			$arrSections = array();
-			$objPage = PageModel::findWithDetails($dc->activeRecord->pid);
-
-			// Get the layout sections
-			foreach (array('layout', 'mobileLayout') as $key)
-			{
-				if (!$objPage->$key)
-				{
-					continue;
-				}
-
-				$objLayout = LayoutModel::findByPk($objPage->$key);
-
-				if ($objLayout === null)
-				{
-					continue;
-				}
-
-				$arrModules = \StringUtil::deserialize($objLayout->modules);
-
-				if (empty($arrModules) || !is_array($arrModules))
-				{
-					continue;
-				}
-
-				$articleModules = array('0');
-				
-				if (($objArticleModules = ModuleModel::findBy(array("tl_module.type IN('articles','teasers','articlereader')"), null)) !== null)
-				{
-					$articleModules = array_merge($articleModules, $objArticleModules->fetchEach('id'));
-				}	
-	
-				// Find all sections with an article module (see #6094)
-				foreach ($arrModules as $arrModule)
-				{
-					if (in_array($arrModule['mod'], $articleModules) && $arrModule['enable'])
-					{
-						$arrSections[] = $arrModule['col'];
-					}
-				}
-			}
+			return array();
 		}
 
-		// Show all sections (e.g. "override all" mode)
-		else
-		{
-			$arrSections = array('header', 'left', 'right', 'main', 'footer');
-			$objLayout = $this->Database->query("SELECT sections FROM tl_layout WHERE sections!=''");
+		$arrCategories = array_unique($objPosts->fetchEach('category'));
 
-			while ($objLayout->next())
-			{
-				$arrCustom = \StringUtil::deserialize($objLayout->sections);
-
-				// Add the custom layout sections
-				if (!empty($arrCustom) && is_array($arrCustom))
-				{
-					foreach ($arrCustom as $v)
-					{
-						if (!empty($v['id']))
-						{
-							$arrSections[] = $v['id'];
-						}
-					}
-				}
-			}
-		}
-
-		return Backend::convertLayoutSectionIdsToAssociativeArray($arrSections);
+		return array_combine($arrCategories, $arrCategories);
 	}
-
 	
-	/**
-	 * Return the "feature/unfeature element" button
-	 *
-	 * @param array  $row
-	 * @param string $href
-	 * @param string $label
-	 * @param string $title
-	 * @param string $icon
-	 * @param string $attributes
-	 *
-	 * @return string
-	 */
-	public function iconFeatured($row, $href, $label, $title, $icon, $attributes)
-	{
-		if (strlen(Input::get('fid')))
-		{
-			$this->toggleFeatured(Input::get('fid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
-			$this->redirect($this->getReferer());
-		}
-		
-		// Check permissions AFTER checking the fid, so hacking attempts are logged
-		if (!$this->User->hasAccess('tl_posts::featured', 'alexf'))
-		{
-			return '';
-		}
-		
-		$href .= '&amp;fid='.$row['id'].'&amp;state='.($row['featured'] ? '' : 1);
-		
-		if (!$row['featured'])
-		{
-			$icon = 'featured_.svg';
-		}
-		
-		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['featured'] ? 1 : 0) . '"').'</a> ';
-	}
-
-	
-	/**
-	 * Feature/unfeature an article
-	 *
-	 * @param integer       $intId
-	 * @param boolean       $blnVisible
-	 * @param DataContainer $dc
-	 *
-	 * @return string
-	 *
-	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
-	 */
-	public function toggleFeatured($intId, $blnVisible, DataContainer $dc=null)
-	{
-		// Check permissions to edit
-		Input::setGet('id', $intId);
-		Input::setGet('act', 'feature');
-
-		$this->checkPermission();
-		
-		// Check permissions to feature
-		if (!$this->User->hasAccess('tl_posts::featured', 'alexf'))
-		{
-			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to feature/unfeature article ID ' . $intId . '.');
-		}
-		
-		$objVersions = new Versions('tl_posts', $intId);
-		$objVersions->initialize();
-		
-		// Trigger the save_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_posts']['fields']['featured']['save_callback']))
-		{
-			foreach ($GLOBALS['TL_DCA']['tl_posts']['fields']['featured']['save_callback'] as $callback)
-			{
-				if (is_array($callback))
-				{
-					$this->import($callback[0]);
-					$blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, ($dc ?: $this));
-				}
-				elseif (is_callable($callback))
-				{
-					$blnVisible = $callback($blnVisible, $this);
-				}
-			}
-		}
-		
-		// Update the database
-		$this->Database->prepare("UPDATE tl_posts SET tstamp=". time() .", featured='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
-					   ->execute($intId);
-					   
-		$objVersions->create();
-	}
-
-	
-	/**
-	 * HOOK executePostActions
-	 *
-	 * @param string        $strAction
-	 * @param DataContainer $dc
-	 */
-	public function toggleFeaturedPost($strAction, DataContainer $dc)
-	{
-		if ($strAction == 'toggleFeaturedPost')
-		{
-			
-			$this->toggleFeatured(\Input::post('id'), ((\Input::post('state') == 1) ? true : false));
-		}
-		
-	}
-
 	
 	/**
 	 * Return the article categories
@@ -969,52 +777,111 @@ class tl_posts extends Backend
 	 *
 	 * @return array
 	 */
-	public function getPostCategories(DataContainer $dc)
+	public function getTags(DataContainer $dc)
 	{
-	//	$objParents = \PageModel::findParentsById($dc->activeRecord->pid);
-		
-		if ($objParents !== null)
-		{
-			$intRootId = \PageModel::findParentsById($dc->activeRecord->pid)->last()->id;
-		}
-		else
-		{
-			$intRootId = 0;
-		}
-		
+		$intPid = (null === $dc->activeRecord) ? $dc->id : $dc->activeRecord->pid;
 
-		$objArticles = \ArticleModel::findAll();
+		$objTags = \TagsModel::findByArchive($intPid);
 
-		$arrCat = array();
-		
-		foreach ($objArticles as $objArticle)
+		if (null === $objTags)
 		{
-			// Don't show categories from other archives
-			if (\ArchiveModel::findById($objArticle->pid)->id != $intRootId && $intRootId !== 0)
-			{
-				continue;
-			}
+			return array();
+		}
 			
-			if (is_array($category = \StringUtil::deserialize($objArticle->category)))
+		$arrTags = array_unique($objTags->fetchEach('label'));
+
+		if (null !== $dc->activeRecord)
+		{
+			$objTags = \TagsModel::findByPid($dc->activeRecord->id);
+
+			if (null !== $objTags)
 			{
-				foreach ($category as $val)
+				$arrTags = array_unique($objTags->fetchEach('label') + $arrTags);
+			}
+		}
+
+		return $arrTags;
+	}
+
+	
+	
+	/**
+	 * Return the article categories
+	 *
+	 * @param DataContainer $dc
+	 *
+	 * @return array
+	 */
+	public function saveTags($value, $dc)
+	{
+		if (empty($value))
+		{
+			return;
+		}
+		
+		$blnChanged = false;
+		$tags = \StringUtil::deserialize($value);
+	
+		$tagIds = array_filter($tags, 'is_numeric');
+		$newTags = (is_array($tagIds)) ? array_diff_key($tags, $tagIds) : array();
+
+		$objTags = \TagsModel::findByPid($dc->activeRecord->id);
+		
+		$removedTags = (null !== $objTags) ? array_diff($objTags->fetchEach('id'), $tagIds) : array();
+		$selectedTags = (null !== $objTags) ? array_diff($tagIds, $objTags->fetchEach('id')) : $tagIds;
+	
+		if (!empty($removedTags))
+		{
+			$this->Database->query("DELETE FROM tl_tags WHERE id IN ('" . implode("','", $removedTags) . "')");
+		}
+	
+		if (!empty($newTags))
+		{
+			foreach ($newTags as $k=>$v)
+			{
+				if (!empty($v))
 				{
-					if ($val !== '')
-					{
-						$arrCat[$val] = $val;
-					}
+					$tag = new \TagsModel();
+					$tag->label = $v;
+					$tag->pid = $dc->activeRecord->id;
+					$tag->archive = $dc->activeRecord->pid;
+					$tag->published = $dc->activeRecord->published;
+					
+					$tag->save();
+					
+					$tags[$k] = $tag->id;
+					$blnChanged = true;
+				}
+				else
+				{
+					unset($tags[$k]);
 				}
 			}
-			else
+		}
+		
+		if (!empty($selectedTags))
+		{
+			foreach ($selectedTags as $k=>$v)
 			{
-				if ($objArticle->category !== '')
+				$objValue = \TagsModel::findById($v);
+			
+				if (null !== $objValue)
 				{
-					$arrCat[$objArticle->category] = $objArticle->category;
+					$tag = new \TagsModel();
+					$tag->label = $objValue->label;
+					$tag->pid = $dc->activeRecord->id;
+					$tag->archive = $dc->activeRecord->pid;
+					$tag->published = $dc->activeRecord->published;
+					
+					$tag->save();
+					
+					$tags[$k] = $tag->id;
+					$blnChanged = true;
 				}
 			}
 		}
 
-		return $arrCat;
+		return ($blnChanged) ? serialize($tags) : $value;
 	}
 	
 	
@@ -1030,6 +897,7 @@ class tl_posts extends Backend
 		return \System::getContainer()->getParameter('contao.article.formats');
 	}
 
+	
 	/**
 	 * Return all post templates as array
 	 *
@@ -1037,7 +905,7 @@ class tl_posts extends Backend
 	 */
 	public function getPostTemplates()
 	{
-		return $this->getTemplateGroup('mod_post');
+		return $this->getTemplateGroup('post_');
 	}
 
 	
@@ -1241,6 +1109,208 @@ class tl_posts extends Backend
 		}
 
 		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"').'</a> ';
+	}
+
+	/**
+	 * Disable/enable a user group
+	 *
+	 * @param integer       $intId
+	 * @param boolean       $blnVisible
+	 * @param DataContainer $dc
+	 *
+	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+	 */
+	public function toggleVisibility($intId, $blnVisible, DataContainer $dc=null)
+	{
+		// Set the ID and action
+		Input::setGet('id', $intId);
+		Input::setGet('act', 'toggle');
+		
+		if ($dc)
+		{
+			$dc->id = $intId; // see #8043
+		}
+		
+		// Trigger the onload_callback
+		if (is_array($GLOBALS['TL_DCA']['tl_posts']['config']['onload_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA']['tl_posts']['config']['onload_callback'] as $callback)
+			{
+				if (is_array($callback))
+				{
+					$this->import($callback[0]);
+					$this->{$callback[0]}->{$callback[1]}($dc);
+				}
+				elseif (is_callable($callback))
+				{
+					$callback($dc);
+				}
+			}
+		}
+		
+		// Check the field access
+		if (!$this->User->hasAccess('tl_posts::published', 'alexf'))
+		{
+			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish article ID "' . $intId . '".');
+		}
+		
+		// Set the current record
+		if ($dc)
+		{
+			$objRow = $this->Database->prepare("SELECT * FROM tl_posts WHERE id=?")
+									 ->limit(1)
+									 ->execute($intId);
+			if ($objRow->numRows)
+			{
+				$dc->activeRecord = $objRow;
+			}
+		}
+		
+		$objVersions = new Versions('tl_posts', $intId);
+		$objVersions->initialize();
+		
+		// Trigger the save_callback
+		if (is_array($GLOBALS['TL_DCA']['tl_posts']['fields']['published']['save_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA']['tl_posts']['fields']['published']['save_callback'] as $callback)
+			{
+				if (is_array($callback))
+				{
+					$this->import($callback[0]);
+					$blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, $dc);
+				}
+				elseif (is_callable($callback))
+				{
+					$blnVisible = $callback($blnVisible, $dc);
+				}
+			}
+		}
+		
+		$time = time();
+		
+		// Update the database
+		$this->Database->prepare("UPDATE tl_posts SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
+					   ->execute($intId);
+					   
+		if ($dc)
+		{
+			$dc->activeRecord->tstamp = $time;
+			$dc->activeRecord->published = ($blnVisible ? '1' : '');
+		}
+		
+		// Change the publish state in the tl_tags table
+		$this->Database->prepare("UPDATE tl_tags SET published='" . ($blnVisible ? '1' : '') . "' WHERE pid=?")
+					   ->execute($intId);
+		
+		
+		// Trigger the onsubmit_callback
+		if (is_array($GLOBALS['TL_DCA']['tl_posts']['config']['onsubmit_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA']['tl_posts']['config']['onsubmit_callback'] as $callback)
+			{
+				if (is_array($callback))
+				{
+					$this->import($callback[0]);
+					$this->{$callback[0]}->{$callback[1]}($dc);
+				}
+				elseif (is_callable($callback))
+				{
+					$callback($dc);
+				}
+			}
+		}
+		
+		$objVersions->create();
+	}
+	
+	
+	/**
+	 * Return the "feature/unfeature element" button
+	 *
+	 * @param array  $row
+	 * @param string $href
+	 * @param string $label
+	 * @param string $title
+	 * @param string $icon
+	 * @param string $attributes
+	 *
+	 * @return string
+	 */
+	public function iconFeatured($row, $href, $label, $title, $icon, $attributes)
+	{
+		if (strlen(Input::get('fid')))
+		{
+			$this->toggleFeatured(Input::get('fid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
+			$this->redirect($this->getReferer());
+		}
+		
+		// Check permissions AFTER checking the fid, so hacking attempts are logged
+		if (!$this->User->hasAccess('tl_posts::featured', 'alexf'))
+		{
+			return '';
+		}
+		
+		$href .= '&amp;fid='.$row['id'].'&amp;state='.($row['featured'] ? '' : 1);
+		
+		if (!$row['featured'])
+		{
+			$icon = 'featured_.svg';
+		}
+		
+		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['featured'] ? 1 : 0) . '"').'</a> ';
+	}
+
+	
+	/**
+	 * Feature/unfeature an article
+	 *
+	 * @param integer       $intId
+	 * @param boolean       $blnVisible
+	 * @param DataContainer $dc
+	 *
+	 * @return string
+	 *
+	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+	 */
+	public function toggleFeatured($intId, $blnVisible, DataContainer $dc=null)
+	{
+		// Check permissions to edit
+		Input::setGet('id', $intId);
+		Input::setGet('act', 'feature');
+
+		$this->checkPermission();
+		
+		// Check permissions to feature
+		if (!$this->User->hasAccess('tl_posts::featured', 'alexf'))
+		{
+			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to feature/unfeature article ID ' . $intId . '.');
+		}
+		
+		$objVersions = new Versions('tl_posts', $intId);
+		$objVersions->initialize();
+		
+		// Trigger the save_callback
+		if (is_array($GLOBALS['TL_DCA']['tl_posts']['fields']['featured']['save_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA']['tl_posts']['fields']['featured']['save_callback'] as $callback)
+			{
+				if (is_array($callback))
+				{
+					$this->import($callback[0]);
+					$blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, ($dc ?: $this));
+				}
+				elseif (is_callable($callback))
+				{
+					$blnVisible = $callback($blnVisible, $this);
+				}
+			}
+		}
+		
+		// Update the database
+		$this->Database->prepare("UPDATE tl_posts SET tstamp=". time() .", featured='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
+					   ->execute($intId);
+					   
+		$objVersions->create();
 	}
 
 }

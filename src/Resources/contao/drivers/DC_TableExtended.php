@@ -31,7 +31,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class DC_TableExtended extends \DC_Table implements \listable, \editable
 {
-	
 	/**
 	 * List all records of the current table as tree and return them as HTML string
 	 *
@@ -74,7 +73,6 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 				{
 					$session[$node][$objNodes->id] = 1;
 				}
-				
 			}
 
 			// Collapse tree
@@ -82,8 +80,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			{
 				$session[$node] = array();
 			}
-			
-			
+
 			$objSessionBag->replace($session);
 			$this->redirect(preg_replace('/(&(amp;)?|\?)ptg=[^& ]*/i', '', \Environment::get('request')));
 		}
@@ -127,7 +124,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 
 		$tree = '';
 		$blnHasSorting = $this->Database->fieldExists('sorting', $table);
-		$arrFound = array();
+		$strFound = '';
 
 		if (!empty($this->procedure))
 		{
@@ -146,13 +143,13 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 				if (!empty($this->root))
 				{
 					$arrRoot = array();
-				
+
 					while ($objRoot->next())
 					{
 						$arrRoot = array_merge($arrRoot, $this->Database->getParentRecords($objRoot->$fld, $table));
 					}
 
-					$arrFound = array_unique($arrRoot);
+					$arrFound = $arrRoot;
 					$this->root = $this->eliminateNestedPages($arrFound, $table, $blnHasSorting);
 				}
 				else
@@ -160,6 +157,29 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 					$arrFound = $objRoot->fetchEach($fld);
 					$this->root = $this->eliminateNestedPages($arrFound, $table, $blnHasSorting);
 				}
+
+				$strFound = implode(',', array_map('intval', $arrRoot));
+			}
+		}
+
+		$strPFilter = '';
+		
+		if (!empty($filter = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['pfilter']) && is_array($filter) && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6)
+		{
+			$objPFilter = $this->Database->prepare("SELECT DISTINCT id FROM ". $table . " WHERE " . $filter[0])
+										 ->execute($filter[1]);
+
+			if ($objPFilter->numRows)
+			{
+				$arrPFilter = array();
+			
+				while ($objPFilter->next())
+				{
+					$arrPFilter = array_merge($arrPFilter, $this->Database->getParentRecords($objPFilter->id, $table));
+				}
+
+				$arrPFilter = array_unique($arrPFilter);
+				$strPFilter = implode(',', array_map('intval', $arrPFilter));
 			}
 		}
 
@@ -167,18 +187,15 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 		{
 			$objRoots = $this->Database->query("SELECT * FROM " . $table . " WHERE id IN (" . implode(',', $this->root) . ")" . ($this->Database->fieldExists('sorting', $table) ? ' ORDER BY sorting' : ''));
 
-			$intCount = 0;
-			
 			// Call a recursive function that builds the tree
 			while ($objRoots->next())
 			{
-				$tree .= $this->generateXTree($table, $objRoots->id, $objRoots->row(), array('p'=>$this->root[($count-1)], 'n'=>$arrIds[($count+1)]), $blnHasSorting, 0, ($blnClipboard ? $arrClipboard : false), ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && $objRoots->id == $arrClipboard['id']), false, false, $arrFound, $intCount);
+				$tree .= $this->generateXTree($table, $objRoots->id, $objRoots->row(), array('p'=>$this->root[($count-1)], 'n'=>$arrIds[($count+1)]), $blnHasSorting, 0, ($blnClipboard ? $arrClipboard : false), ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && $objRoots->id == $arrClipboard['id']), false, false, $strFound, $strPFilter);
 				$count++;
 			}
 
 		}
-											  
-		
+
 		// Return if there are no records
 		if ($tree == '' && \Input::get('act') != 'paste')
 		{
@@ -187,7 +204,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 		}
 
 		$return .= ((\Input::get('act') == 'select') ? '
-<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form tl_edit_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
+<form action="'.ampersand(\Environment::get('request'), true).'" id="tl_select" class="tl_form'.((\Input::get('act') == 'select') ? ' unselectable' : '').'" method="post" novalidate>
 <div class="tl_formbody_edit">
 <input type="hidden" name="FORM_SUBMIT" value="tl_select">
 <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">' : '').($blnClipboard ? '
@@ -310,12 +327,6 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 </form>';
 		}
 
-		// Add another panel at the end of the page
-		if (strpos($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout'], 'limit') !== false)
-		{
-			$return .= $this->paginationMenu();
-		}
-			
 		return $return;
 	}
 
@@ -371,66 +382,11 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			$blnClipboard = true;
 			$arrClipboard = $arrClipboard[$this->strTable];
 		}
-		
+
 		$hasSorting = $this->Database->fieldExists('sorting', $table);
 		$intCount = 0;
 
 		$return .= ' ' . trim($this->generateXTree($table, $id, false, array('p'=>$childs[($count-1)], 'n'=>$childs[($count+1)]), $hasSorting, $level, ($blnClipboard ? $arrClipboard : false), ($id == $arrClipboard ['id'] || (is_array($arrClipboard ['id']) && in_array($id, $arrClipboard ['id'])) || (!$blnPtable && !is_array($arrClipboard['id']) && in_array($id, $this->Database->getChildRecords($arrClipboard['id'], $table)))), $blnProtected, false, array(), $intCount));
-
-		return $return;
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		// Get records
-		$objChilds = $this->Database->prepare("SELECT * FROM " . $table . " WHERE pid=?" . ($hasSorting ? " ORDER BY sorting" : ""))
-								  ->execute($id);
-
-		// Handle child table children
-		if ($objChilds->numRows < 1 && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6)
-		{
-			$table = $this->strTable;
-			
-			$objChilds = $this->Database->prepare("SELECT * FROM " . $table . " WHERE pid=?" . ($hasSorting ? " ORDER BY sorting" : ""))
-									  ->execute($id);
-
-		}	
-	
-		if ($objChilds->numRows)
-		{
-			$childs = $objChilds->fetchEach('id');
-			$objChilds->reset();
-		}
-
-		/** @var SessionInterface $objSession */
-		$objSession = \System::getContainer()->get('session');
-
-		$blnClipboard = false;
-		$arrClipboard = $objSession->get('CLIPBOARD');
-
-		// Check clipboard
-		if (!empty($arrClipboard[$this->strTable]))
-		{
-			$blnClipboard = true;
-			$arrClipboard = $arrClipboard[$this->strTable];
-		}
-
-		if ($objChilds->numRows)
-		{
-			$count = 0;
-			
-			while($objChilds->next())
-			{
-				$return .= ' ' . trim($this->generateXTree($table, $objChilds->id, $objChilds->row(), array('p'=>$childs[($count-1)], 'n'=>$childs[($count+1)]), $hasSorting, $level, ($blnClipboard ? $arrClipboard : false), ($id == $arrClipboard ['id'] || (is_array($arrClipboard ['id']) && in_array($id, $arrClipboard ['id'])) || (!$blnPtable && !is_array($arrClipboard['id']) && in_array($id, $this->Database->getChildRecords($arrClipboard['id'], $table)))), $blnProtected));
-				$count++;
-			}
-		}
 
 		return $return;
 	}
@@ -441,18 +397,20 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 	 *
 	 * @param string  $table
 	 * @param integer $id
+	 * @param array   $arrRow
 	 * @param array   $arrPrevNext
 	 * @param boolean $blnHasSorting
-	 * @param integer $intMargin
+	 * @param integer $level
 	 * @param array   $arrClipboard
 	 * @param boolean $blnCircularReference
 	 * @param boolean $protectedPage
 	 * @param boolean $blnNoRecursion
-	 * @param array   $arrFound
+	 * @param string  $strFound
+	 * @param string  $strPFilter
 	 *
 	 * @return string
 	 */
-	protected function generateXTree($table, $id, $arrRow, $arrPrevNext, $blnHasSorting, $level=0, $arrClipboard=null, $blnCircularReference=false, $protectedPage=false, $blnNoRecursion=false, $arrFound=array(), &$intCount)
+	protected function generateXTree($table, $id, $arrRow, $arrPrevNext, $blnHasSorting, $level=0, $arrClipboard=null, $blnCircularReference=false, $protectedPage=false, $blnNoRecursion=false, $strFound='', $strPFilter='')
 	{
 		static $session;
 
@@ -492,41 +450,30 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 				$query = "SELECT * FROM " . $table . " WHERE pid=?";
 				$varValues = array($id);
 				
-				if (!empty($filter = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['pfilter']) && is_array($filter))
+				if (!empty($strFound))
 				{
-					if (is_array($filter[1]))
-					{
-						$varValues = array_merge($varValues ,$filter[1]);
-					}
-					else
-					{
-						$varValues[] = $filter[1];
-					}
-					
-					$query .= " AND " . $filter[0];
+					$query .= " AND id IN(" . $strFound . ")";
+				}
+			
+				if (!empty($strPFilter))
+				{
+					$query .= " AND id IN (" . $strPFilter . " )";
 				}
 
-				if (!empty($arrFound))
-				{
-					$query .= " AND id IN(" . implode(',', array_map('intval', $arrFound)) . ")";
-				}
-				
 				if ($blnHasSorting)
 				{
 					$query .= " ORDER BY sorting";
 				}
-	
+
 				$objChilds = $this->Database->prepare($query)
 											->execute($varValues);
 													
-												
 				if ($objChilds->numRows)
 				{
 					$childs = $objChilds->fetchEach('id');
 					$objChilds->reset();
 				}
 			}
-			
 
 			// Get the child records of the table itself
 			if ($this->strTable != $table)
@@ -552,9 +499,10 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 				if (strlen($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['group']))
 				{
 					$groupField = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['group'];
-					array_unshift($arrOrder, $groupField);
+					$flag = !empty($GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag']) ? $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'] : 11;
+					array_unshift($arrOrder, $groupField . (($flag % 2) == 0 ? ' DESC' : ''));
 				}
-				
+	
 				// Also apply the filter settings to the child table (see #716)
 				if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6 && !empty($this->procedure))
 				{
@@ -562,12 +510,12 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 					array_unshift($arrValues, $id);
 
 					$objSubChilds = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE pid=? AND " . (implode(' AND ', $this->procedure)) . (is_array($arrOrder) ? " ORDER BY " . implode(',', $arrOrder) : ''))
-												->execute($arrValues);
+												   ->execute($arrValues);
 				}
 				else
 				{
 					$objSubChilds = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE pid=?" . (is_array($arrOrder) ? " ORDER BY " . implode(',', $arrOrder) : ''))
-												->execute($id);
+												   ->execute($id);
 				}
 			
 				if ($objSubChilds->numRows)
@@ -605,7 +553,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 				$blnIsOpen = true;
 			}
 
-			if ($table != $this->strTable)
+			if ($objChilds->numRows || $objSubChilds->numRows)
 			{
 				$folderAttribute = '';
 				$img = $blnIsOpen ? 'folMinus.svg' : 'folPlus.svg';
@@ -745,7 +693,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 				// Call a recursive function that builds the tree
 				while ($objChilds->next())
 				{
-					$subReturn .= $this->generateXTree($table, $objChilds->id, $objChilds->row(), array('p'=>$childs[($count-1)], 'n'=>$childs[($count+1)]), $blnHasSorting, ($level+1), $arrClipboard, ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $objChilds->id == $arrClipboard['id']), false, false, $arrFound, $intCount);
+					$subReturn .= $this->generateXTree($table, $objChilds->id, $objChilds->row(), array('p'=>$childs[($count-1)], 'n'=>$childs[($count+1)]), $blnHasSorting, ($level+1), $arrClipboard, ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $objChilds->id == $arrClipboard['id']), false, false, $strFound, $strPFilter);
 					$count++;
 				}
 			}
@@ -769,75 +717,17 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 						}
 						
 						$group = $objSubChilds->$groupField;
-						$grpNode =  $this->strTable.'_group';
-						$session[$grpNode][$id] = (is_int($session[$grpNode][$group.$id])) ? $session[$grpNode][$group.$id] : 0;
-						
-						$subReturn .= "\n  " . '<li class="tl_folder click2edit cf" style="background: #fafafc;"><div class="tl_left" style="padding-left:'.(($level+2) * $intSpacing).'px">';
 
-						// Calculate label and add a toggle button
-						$blnGroupIsOpen = (!empty($arrFound) || $session[$grpNode][$group.$id] == 1);
+						$sortingMode  = $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'] ? $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'] : 11;
+						$groupValue = $this->formatCurrentValue($groupField, $group, $sortingMode);
+						$groupLabel = $this->formatGroupHeader($groupField, $groupValue, $sortingMode, $objSubChilds->row());
 
-						// Always show selected nodes
-						if (!$blnGroupIsOpen && !empty($this->arrPickerValue) && !empty(array_intersect($this->Database->getChildRecords([$id], $this->strTable), $this->arrPickerValue)))
-						{
-							$blnGroupIsOpen = true;
-						}
-
-						$img = $blnGroupIsOpen ? 'folMinus.svg' : 'folPlus.svg';
-						$alt = $blnGroupIsOpen ? $GLOBALS['TL_LANG']['MSC']['collapseNode'] : $GLOBALS['TL_LANG']['MSC']['expandNode'];
-					//	$subReturn .= '<a href="'.$this->addToUrl('ptg='.$id).'" title="'.\StringUtil::specialchars($alt).'" onclick="Backend.getScrollOffset();return AjaxRequest.toggleStructure(this,\''.$grpNode.'_'.$group.$id.'\','.($level+1).','.$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'].')">'.\Image::getHtml($img, '', 'style="margin-right:2px"').'</a>';
-
-						if (strpos($groupField, ':') !== false)
-						{
-							list($strKey, $strTable) = explode(':', $groupField);
-							list($strTable, $strField) = explode('.', $strTable);
-
-							$objRef = $this->Database->prepare("SELECT " . $strField . " FROM " . $strTable . " WHERE id=?")
-													 ->limit(1)
-													 ->execute($objSubChilds->$strKey);
-
-							$label = $objRef->numRows ? $objRef->$strField : '';
-						}
-						elseif (in_array($GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'], array(5, 6, 7, 8, 9, 10)))
-						{
-							$label = \Date::parse(\Config::get('datimFormat'),$objSubChilds->$groupField);
-						}
-						else
-						{
-							$label = $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['reference'][$objSubChilds->$groupField] ?: $objSubChilds->$groupField;
-						}
-
-						// Shorten the label if it is too long
-						if ($GLOBALS['TL_DCA'][$this->strTable]['list']['label']['maxCharacters'] > 0 && $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['maxCharacters'] < Utf8::strlen(strip_tags($label)))
-						{
-							$label = trim(\StringUtil::substrHtml($label, $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['maxCharacters'])) . ' …';
-						}
-
-						$label = preg_replace('/\(\) ?|\[\] ?|\{\} ?|<> ?/', '', $label);
-
-						// Call the group_label_callback ($row, $label, $this)
-						if (is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback']))
-						{
-							$strClass = $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback'][0];
-							$strMethod = $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback'][1];
-
-							$this->import($strClass);
-							$subReturn .= $this->$strClass->$strMethod($objSubChilds, $label, $this);
-						}
-						elseif (is_callable($GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback']))
-						{
-							$subReturn .= $GLOBALS['TL_DCA'][$this->strTable]['list']['label']['group_label_callback']($objSubChilds, $label, $this);
-						}
-						else
-						{
-							$subReturn .= \Image::getHtml('iconPLAIN.svg', '') . ' ' . $label;
-						}
-
-						//$subReturn .= '</div><li class="parent" id="'.$grpNode.'_'.$group.$id.'"'.($blnGroupIsOpen ? '' : ' style="display:none;"').'><ul class="level_'.($level+1).'">';
+						$subReturn .= "\n  " . '<li class="tl_group click2edit cf"><div class="tl_left" style="padding-left:'.(($level+2) * $intSpacing).'px">';
+						$subReturn .= \Image::getHtml('iconPLAIN.svg', '') . ' ' . $groupLabel;
 						$subReturn .= '</div><li class="parent"><ul class="level_'.($level+1).'">';
 					}
 
-					$subReturn .= $this->generateXTree($this->strTable, $objSubChilds->id,  $objSubChilds->row(), array('pp'=>$subChilds[($count-1)], 'nn'=>$subChilds[($count+1)]), $blnHasSorting, ($level+(($groupField) ? 3 : 2)), $arrClipboard, false, ($count<(count($subChilds)-1) || !empty($subChilds)), $blnNoRecursion, $arrFound, $intCount);
+					$subReturn .= $this->generateXTree($this->strTable, $objSubChilds->id,  $objSubChilds->row(), array('pp'=>$subChilds[($count-1)], 'nn'=>$subChilds[($count+1)]), $blnHasSorting, ($level+(($groupField) ? 3 : 2)), $arrClipboard, false, ($count<(count($subChilds)-1) || !empty($subChilds)), $blnNoRecursion, $strFound, $strPFilter);
 			
 					$count++;
 				}
@@ -858,245 +748,11 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 
 		$objSessionBag->replace($session);
 		
+		if ($subReturn == '')
+		{
+			//return;
+		}
+			
 		return $return;
 	}
-
-
-	/**
-	 * Build the sort panel and return it as string
-	 *
-	 * @return string
-	 */
-	protected function panel()
-	{
-		if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout'] == '')
-		{
-			return '';
-		}
-
-		// Reset all filters
-		if (isset($_POST['filter_reset']) && \Input::post('FORM_SUBMIT') == 'tl_filters')
-		{
-			/** @var AttributeBagInterface $objSessionBag */
-			$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
-
-			$data = $objSessionBag->all();
-
-			unset($data['filter'][$this->strTable]);
-			unset($data['filter'][$this->strTable.'_'.CURRENT_ID]);
-			unset($data['sorting'][$this->strTable]);
-			unset($data['search'][$this->strTable]);
-
-			$objSessionBag->replace($data);
-
-			$this->reload();
-		}
-
-		$intFilterPanel = 0;
-		$arrPanels = array();
-		$arrPanes = \StringUtil::trimsplit(';', $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panelLayout']);
-
-		foreach ($arrPanes as $strPanel)
-		{
-			$panels = '';
-			$arrSubPanels = \StringUtil::trimsplit(',', $strPanel);
-
-			foreach ($arrSubPanels as $strSubPanel)
-			{
-				$panel = '';
-
-				// Regular panels
-				if ($strSubPanel == 'search' || $strSubPanel == 'limit' || $strSubPanel == 'sort')
-				{
-					$panel = $this->{$strSubPanel . 'Menu'}();
-				}
-
-				// Multiple filter subpanels can be defined to split the fields across panels
-				elseif ($strSubPanel == 'filter')
-				{
-					$panel = $this->{$strSubPanel . 'Menu'}(++$intFilterPanel);
-				}
-
-				// Call the panel_callback
-				else
-				{
-					$arrCallback = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['panel_callback'][$strSubPanel];
-
-					if (is_array($arrCallback))
-					{
-						$this->import($arrCallback[0]);
-						$panel = $this->{$arrCallback[0]}->{$arrCallback[1]}($this);
-					}
-					elseif (is_callable($arrCallback))
-					{
-						$panel = $arrCallback($this);
-					}
-				}
-
-				// Add the panel if it is not empty
-				if ($panel != '')
-				{
-					$panels = $panel . $panels;
-				}
-			}
-
-			// Add the group if it is not empty
-			if ($panels != '')
-			{
-				$arrPanels[] = $panels;
-			}
-		}
-
-		if (empty($arrPanels))
-		{
-			return '';
-		}
-
-		if (\Input::post('FORM_SUBMIT') == 'tl_filters')
-		{
-			$this->reload();
-		}
-
-		$return = '';
-		$intTotal = count($arrPanels);
-		$intLast = $intTotal - 1;
-
-		for ($i=0; $i<$intTotal; $i++)
-		{
-			$submit = '';
-
-			if ($i == $intLast)
-			{
-				$submit = '
-<div class="tl_submit_panel tl_subpanel">
-  <button name="filter" id="filter" class="tl_img_submit filter_apply" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['applyTitle']) . '">' . $GLOBALS['TL_LANG']['MSC']['apply'] . '</button>
-  <button name="filter_reset" id="filter_reset" value="1" class="tl_img_submit filter_reset" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['resetTitle']) . '">' . $GLOBALS['TL_LANG']['MSC']['reset'] . '</button>
-</div>';
-			}
-
-			$return .= '
-<div class="tl_panel cf">
-  ' . $submit . $arrPanels[$i] . '
-</div>';
-		}
-
-		$return = '
-<form action="'.ampersand(\Environment::get('request'), true).'" class="tl_form" method="post">
-<div class="tl_formbody">
-  <input type="hidden" name="FORM_SUBMIT" value="tl_filters">
-  <input type="hidden" name="REQUEST_TOKEN" value="'.REQUEST_TOKEN.'">
-  ' . $return . '
-</div>
-</form>';
-
-		return $return;
-	}
-
-
-	/**
-	 * Return a search form that allows to search results using regular expressions
-	 *
-	 * @return string
-	 */
-	protected function searchMenu()
-	{
-		$searchFields = array();
-
-		/** @var AttributeBagInterface $objSessionBag */
-		$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
-
-		$session = $objSessionBag->all();
-
-		// Get search fields
-		foreach ($GLOBALS['TL_DCA'][$this->strTable]['fields'] as $k=>$v)
-		{
-			if ($v['search'])
-			{
-				$searchFields[] = $k;
-			}
-		}
-
-		// Return if there are no search fields
-		if (empty($searchFields))
-		{
-			return '';
-		}
-
-		// Store search value in the current session
-		if (\Input::post('FORM_SUBMIT') == 'tl_filters')
-		{
-			$strField = \Input::post('tl_field', true);
-			$strKeyword = ltrim(\Input::postRaw('tl_value'), '*');
-
-			// Make sure the regular expression is valid
-			if ($strKeyword != '')
-			{
-				try
-				{
-					$this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE " . $strField . " REGEXP ?")
-								   ->limit(1)
-								   ->execute($strKeyword);
-				}
-				catch (\Exception $e)
-				{
-					$strKeyword = '';
-				}
-			}
-
-			$session['search'][$this->strTable]['field'] = $strField;
-			$session['search'][$this->strTable]['value'] = $strKeyword;
-
-			$objSessionBag->replace($session);
-		}
-
-		// Set the search value from the session
-		elseif ($session['search'][$this->strTable]['value'] != '')
-		{
-			$strPattern = "CAST(%s AS CHAR) REGEXP ?";
-
-			if (substr(\Config::get('dbCollation'), -3) == '_ci')
-			{
-				$strPattern = "LOWER(CAST(%s AS CHAR)) REGEXP LOWER(?)";
-			}
-
-			$fld = $session['search'][$this->strTable]['field'];
-
-			if (isset($GLOBALS['TL_DCA'][$this->strTable]['fields'][$fld]['foreignKey']))
-			{
-				list($t, $f) = explode('.', $GLOBALS['TL_DCA'][$this->strTable]['fields'][$fld]['foreignKey']);
-				$this->procedure[] = "(" . sprintf($strPattern, $fld) . " OR " . sprintf($strPattern, "(SELECT $f FROM $t WHERE $t.id={$this->strTable}.$fld)") . ")";
-				$this->values[] = $session['search'][$this->strTable]['value'];
-			}
-			else
-			{
-				$this->procedure[] = sprintf($strPattern, $fld);
-			}
-
-			$this->values[] = $session['search'][$this->strTable]['value'];
-		}
-
-		$options_sorter = array();
-
-		foreach ($searchFields as $field)
-		{
-			$option_label = $GLOBALS['TL_DCA'][$this->strTable]['fields'][$field]['label'][0] ?: (is_array($GLOBALS['TL_LANG']['MSC'][$field]) ? $GLOBALS['TL_LANG']['MSC'][$field][0] : $GLOBALS['TL_LANG']['MSC'][$field]);
-			$options_sorter[Utf8::toAscii($option_label).'_'.$field] = '  <option value="'.\StringUtil::specialchars($field).'"'.(($field == $session['search'][$this->strTable]['field']) ? ' selected="selected"' : '').'>'.$option_label.'</option>';
-		}
-
-		// Sort by option values
-		$options_sorter = natcaseksort($options_sorter);
-		$active = ($session['search'][$this->strTable]['value'] != '') ? true : false;
-
-		return '
-<div class="tl_search tl_subpanel">
-<strong>' . $GLOBALS['TL_LANG']['MSC']['search'] . ':</strong>
-<select name="tl_field" class="tl_select' . ($active ? ' active' : '') . '">
-'.implode("\n", $options_sorter).'
-</select>
-<span>=</span>
-<input type="search" name="tl_value" class="tl_text' . ($active ? ' active' : '') . '" value="'.\StringUtil::specialchars($session['search'][$this->strTable]['value']).'">
-</div>';
-	}
-
-
 }

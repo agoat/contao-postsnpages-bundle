@@ -11,7 +11,8 @@
 namespace Agoat\PostsnPagesBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Agoat\PostsnPagesBundle\DependencyInjection\Compiler\RemoveArticlePickerPass;
 
 /**
  * Configures the Agoat contentblocks bundle.

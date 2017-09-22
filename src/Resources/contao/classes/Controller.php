@@ -11,18 +11,23 @@
  * @license	  LGPL-3.0+
  */
 
-namespace Agoat\ContentManager;
+namespace Agoat\PostsnPages;
 
 
-class Controller extends \Contao\Controller
+class Controller extends \Controller
 {
 	
-	public function getSections ($intId, $strColumn)
+	/**
+	 * Render page content
+	 *
+	 * @param mixed  $intId     The page id
+	 * @param string $strColumn The name of the column
+	 *
+	 * @return string The module HTML markup
+	 */	
+	public function renderContainer ($intId, $strColumn)
 	{
-		/** @var PageModel $objPage */
-		global $objPage;
-	
-		$objContainer = \ContainerModel::findPublishedByPidAndColumn($objPage->id, $strColumn);
+		$objContainer = \ContainerModel::findPublishedByPidAndColumn($intId, $strColumn);
 
 		if ($objContainer === null)
 		{
@@ -56,15 +61,16 @@ class Controller extends \Contao\Controller
 				$objRow->classes = $arrCss;
 			}
 			
-			$return .= static::compileSection($objRow, false, $strColumn);
+			$return .= static::compileContainer($objRow, false, $strColumn);
 			++$intCount;
 		}
 		
 		return $return;		
 	}
 	
+	
 	/**
-	 * Generate an article and return it as string
+	 * Generate the content of a container and return it as html
 	 *
 	 * @param mixed   $varId          The article ID or a Model object
 	 * @param boolean $blnMultiMode   If true, only teasers will be shown
@@ -73,11 +79,8 @@ class Controller extends \Contao\Controller
 	 *
 	 * @return string|boolean The article HTML markup or false
 	 */
-	public static function compileSection($objRow, $blnIsInsertTag=false, $strColumn='main')
+	public static function compileContainer($objRow, $blnIsInsertTag=false, $strColumn='main')
 	{
-		/** @var PageModel $objPage */
-		global $objPage;
-
 		// Check the visibility (see #6311)
 		if (!static::isVisibleElement($objRow))
 		{
@@ -109,11 +112,7 @@ class Controller extends \Contao\Controller
 
 	
 	/**
-	 * Avoid article output from the core-bundle (by not using the 'articles' fragment)
-	 *
-	 * @param mixed   $arrFragments
-	 *
-	 * @return $arrFragments 
+	 * Hide the whole article content stuff
 	 */
 	public static function hideArticles()
 	{

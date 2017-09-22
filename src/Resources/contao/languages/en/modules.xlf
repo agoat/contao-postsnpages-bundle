@@ -31,26 +31,47 @@
         <source>Manage page content</source>
       </trans-unit>
 
+      <trans-unit id="FMD.post">
+        <source>Posts</source>
+      </trans-unit>
       <trans-unit id="FMD.container.0">
         <source>Container</source>
       </trans-unit>
-      <trans-unit id="FMD.article.0">
-        <source>Articles</source>
+      <trans-unit id="FMD.posts.0">
+        <source>Posts</source>
       </trans-unit>
-      <trans-unit id="FMD.article.1">
-        <source>Renders the content of articles.</source>
+      <trans-unit id="FMD.posts.1">
+        <source>Renders the content of posts.</source>
       </trans-unit>
       <trans-unit id="FMD.teaser.0">
         <source>Teasers</source>
       </trans-unit>
       <trans-unit id="FMD.teaser.1">
-        <source>Renders the teaser of articles.</source>
+        <source>Renders the teaser of posts.</source>
       </trans-unit>
-      <trans-unit id="FMD.articlereader.0">
-        <source>Articlereader</source>
+      <trans-unit id="FMD.postreader.0">
+        <source>Post reader</source>
       </trans-unit>
-      <trans-unit id="FMD.articlereader.1">
-        <source>Renders a certain article (To be used with 'Articles' or 'Teasers').</source>
+      <trans-unit id="FMD.postreader.1">
+        <source>Renders a certain post (To be used with 'Posts' or 'Teasers').</source>
+      </trans-unit>
+      <trans-unit id="FMD.taggedposts.0">
+        <source>Tagged posts</source>
+      </trans-unit>
+      <trans-unit id="FMD.taggedposts.1">
+        <source>Renders the content of tagged posts.</source>
+      </trans-unit>
+      <trans-unit id="FMD.taggedteaser.0">
+        <source>Tagged teaser</source>
+      </trans-unit>
+      <trans-unit id="FMD.taggedteaser.1">
+        <source>Renders the teaser of tagged posts.</source>
+      </trans-unit>
+      <trans-unit id="FMD.tags.0">
+        <source>Tags menu</source>
+      </trans-unit>
+      <trans-unit id="FMD.tags.1">
+        <source>Generates a tags menu from tagged posts.</source>
       </trans-unit>
     </body>
   </file>

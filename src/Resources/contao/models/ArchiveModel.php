@@ -22,7 +22,7 @@ class ArchiveModel extends \Model
 
 	
 	/**
-	 * Find all published articles by their parent ID, column and featured status
+	 * Find all published articles by their parent ID, column, featured status and category
 	 *
 	 * @param integer $intPid     The page ID
 	 * @param string  $strColumn  The column name
@@ -30,16 +30,23 @@ class ArchiveModel extends \Model
 	 *
 	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
 	 */
-	public static function findFirstByPid($intPid, array $arrOptions=array())
+	public static function findByIds($varIds, array $arrOptions=array())
 	{
 		$t = static::$strTable;
 		
-		$arrColumns = array("$t.pid=?");
-		$arrValues = array($intPid);
-		
-		$arrOptions['order'] = 'sorting';
-		
-		return static::findOneBy($arrColumns, $arrValues, $arrOptions);
+		if (is_array($varIds))
+		{
+			$arrColumns = array("$t.id in ('" . implode("','", $varIds) . "')");
+			$arrValues = array();
+		}
+		else
+		{
+			$arrColumns = array("$t.id=?");
+			$arrValues = array($varIds);
+		}
+
+		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
+
 	
 }

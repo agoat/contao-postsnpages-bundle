@@ -24,13 +24,13 @@
         <source>Show teaser</source>
       </trans-unit>
       <trans-unit id="tl_module.showTeaser.1">
-        <source>Show the teasers within the articles.</source>
+        <source>Show the teaser within the post.</source>
       </trans-unit>
-      <trans-unit id="tl_module.articleTpl.0">
-        <source>Article template</source>
+      <trans-unit id="tl_module.postTpl.0">
+        <source>Post template</source>
       </trans-unit>
-      <trans-unit id="tl_module.articleTpl.1">
-        <source>Here you can select an article template.</source>
+      <trans-unit id="tl_module.postTpl.1">
+        <source>Here you can select a post template.</source>
       </trans-unit>
       <trans-unit id="tl_module.teaserTpl.0">
         <source>Teaser template</source>
@@ -38,26 +38,35 @@
       <trans-unit id="tl_module.teaserTpl.1">
         <source>Here you can select a teaser template.</source>
       </trans-unit>
+      <trans-unit id="tl_module.tagsTpl.0">
+        <source>Tags template</source>
+      </trans-unit>
+      <trans-unit id="tl_module.tagsTpl.1">
+        <source>Here you can select a tags template.</source>
+      </trans-unit>
       <trans-unit id="tl_module.archive_legend">
         <source>Archive settings</source>
       </trans-unit>
       <trans-unit id="tl_module.archive.0">
-        <source>Show articles from</source>
+        <source>Show from</source>
       </trans-unit>
       <trans-unit id="tl_module.archive.1">
-        <source>Here you can choose if all archives, only the first or a particular archive will be shown.</source>
-      </trans-unit>
-      <trans-unit id="tl_module.sortOrder.0">
-        <source>Sort order</source>
+        <source>Here you can choose from which particular archives post should be shown.</source>
       </trans-unit>
       <trans-unit id="tl_module.sort_legend">
         <source>Sorting settings</source>
       </trans-unit>
-      <trans-unit id="tl_module.sortBy.0">
-        <source>Sorting</source>
+      <trans-unit id="tl_module.sortPosts.0">
+        <source>Sort by</source>
       </trans-unit>
-      <trans-unit id="tl_module.sortBy.1">
-        <source>Here you can choose the sorting attribute.</source>
+      <trans-unit id="tl_module.sortPosts.1">
+        <source>Here you can choose the posts sorting attribute.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.sortTags.0">
+        <source>Sort by</source>
+      </trans-unit>
+      <trans-unit id="tl_module.sortTags.1">
+        <source>Here you can choose the tags sorting attribute.</source>
       </trans-unit>
       <trans-unit id="tl_module.sortOrder.0">
         <source>Sort order</source>

@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
  
-namespace Agoat\ContentManager;
+namespace Agoat\PostsnPages;
 
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Patchwork\Utf8;
@@ -24,14 +24,14 @@ use Patchwork\Utf8;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModulePostReader extends ModulePost
+class ModulePostReader extends ModulePosts
 {
 
 	/**
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = 'mod_articlereader';
+	protected $strTemplate = 'mod_postreader';
 
 
 	/**
@@ -69,7 +69,6 @@ class ModulePostReader extends ModulePost
 			\Input::setGet('posts', \Input::get('auto_item'));
 		}
 		
-		
 		return parent::generate();
 	}
 
@@ -89,14 +88,14 @@ class ModulePostReader extends ModulePost
 			return;
 		}
 		
-		// Get published article
+		// Get published post
 		$objPost = \PostsModel::findPublishedByIdOrAlias($strPost);
-dump($objPost);
+
 		if (null === $objPost)
 		{
 			throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
 		}
-		
+	
 		// Check protection (TODO)
 		
 		// Overwrite the page title (see @contao/core #2853 and #4955)
@@ -110,105 +109,15 @@ dump($objPost);
 			}
 		}		
 
-		list($strId, $strClass) = \StringUtil::deserialize($objPost->cssID, true);
-
-		if ($strClass != '')
-		{
-			$strClass = ' ' . $objPost->cssClass;
-		}
-		if ($objPost->featured)
-		{
-			$strClass .= ' featured';
-		}
-		if ($objPost->format != 'standard')
-		{
-			$strClass .= ' ' . $objPost->format;
-		}
-
-		$objPostTemplate = new \FrontendTemplate($this->articleTpl);
-
-		$objPostTemplate->id = $objPost->id;
-		$objPostTemplate->inColumn = $objPost->inColumn;
-		$objPostTemplate->cssId = ($strId) ?: 'article-' . $objPost->id;
-		$objPostTemplate->cssClass = $strClass;
+		// Increase the popularity counter (TODO: check the session)
+		$objPost->popular = ++$objPost->popular;
+		$objPost->save();
 		
-		// Add content elements
-		$arrElements = array();
-		$objCte = \ContentModel::findPublishedByPidAndTable($objPost->id, 'tl_posts');
+		// Set custom post template
+		$this->postTemplate = $objPost->customTpl ? $objPost->customTpl : $this->postTpl;
 
-		if ($objCte !== null)
-		{
-			$intCount = 0;
-			$intLast = $objCte->count() - 1;
-
-			while ($objCte->next())
-			{
-				$arrCss = array();
-
-				/** @var ContentModel $objRow */
-				$objRow = $objCte->current();
-
-				// Add the "first" and "last" classes (see #2583)
-				if ($intCount == 0 || $intCount == $intLast)
-				{
-					if ($intCount == 0)
-					{
-						$arrCss[] = 'first';
-					}
-
-					if ($intCount == $intLast)
-					{
-						$arrCss[] = 'last';
-					}
-				}
-
-				$objRow->classes = $arrCss;
-				$arrElements[] = $this->getContentElement($objRow, $this->strColumn);
-				++$intCount;
-			}
-		}
-
-		$objPostTemplate->elements = $arrElements;
-		
-
-		// Add article teaser
-		if ($objPostTemplate->showTeaser = $this->showTeaser)
-		{
-			// Add meta data
-			$objPostTemplate->title = \StringUtil::specialchars($objPost->title);
-			$objPostTemplate->subtitle = $objPost->subTitle;
-			$objPostTemplate->teaser = \StringUtil::toHtml5($objPost->teaser);
-			$objPostTemplate->date = \Date::parse($objPage->datimFormat, $objPost->date);
-			$objPostTemplate->timestamp = $objPost->date;
-			$objPostTemplate->datetime = date('Y-m-d\TH:i:sP', $objPost->date);
-			$objPostTemplate->location = $objPost->location;
-			$objPostTemplate->latlong = ($latlong[0] !='' && $latlong[1] != '') ? implode(',', $latlong) : false;
-
-			if (($objAuthor = $objPost->getRelated('author')) instanceof UserModel)
-			{
-				$objPostTemplate->author = $objAuthor->name;
-			}
-			
-			$objPostTemplate->addImage = false;
-			
-			if ($objPost->addImage && $objPost->singleSRC != '')
-			{
-				$objModel = \FilesModel::findByUuid($objPost->singleSRC);
-								
-				if ($objModel !== null && is_file(TL_ROOT . '/' . $objModel->path))
-				{
-					$this->addImageToTemplate($objPostTemplate, array(
-						'singleSRC' => $objModel->path,
-						'size' => $this->imgSize,
-						'alt' => $objPost->alt,
-						'title' => $objPost->title,
-						'caption' => $objPost->caption
-					));
-				}
-			}
-		}
-
-		$this->Template->article = $objPostTemplate->parse();
+		// Render the post
+		$this->Template->post = $this->renderPost($objPost, $objPage, $this->showTeaser, true);
 
 		// Back link
 		$this->Template->backlink = 'javascript:history.go(-1)'; // see #6955
@@ -252,7 +161,7 @@ dump($objPost);
 			$objConfig->bbcode = $this->com_bbcode;
 			$objConfig->moderate = $this->com_moderate;
 
-			$this->Comments->addCommentsToTemplate($this->Template, $objConfig, 'tl_article', $objPost->id, $arrNotifies);
+			$this->Comments->addCommentsToTemplate($this->Template, $objConfig, 'tl_posts', $objPost->id, $arrNotifies);
 		}
 	}
 }

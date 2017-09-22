@@ -293,6 +293,9 @@
       <trans-unit id="tl_posts.addCategory">
         <source>Add Category</source>
       </trans-unit>
+      <trans-unit id="tl_posts.addTag">
+        <source>Add Tag</source>
+      </trans-unit>
       <trans-unit id="tl_posts.standard">
         <source>Standard</source>
       </trans-unit>

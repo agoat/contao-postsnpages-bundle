@@ -1,10 +1,5 @@
 services:
-    _instanceof:
-        Contao\CoreBundle\Framework\FrameworkAwareInterface:
-            calls:
-                - ["setFramework", ["@contao.framework"]]
-
-    contao_posts.picker.posts_provider:
+    contao.picker.post_provider:
         class: Agoat\PostsnPagesBundle\Picker\PostPickerProvider
         public: false
         arguments:
@@ -14,3 +9,17 @@ services:
             - [setTokenStorage, ["@security.token_storage"]]
         tags:
             - { name: contao.picker_provider, priority: 128 }
+            
+    contao.picker.archive_provider:
+        class: Agoat\PostsnPagesBundle\Picker\ArchivePickerProvider
+        public: false
+        arguments:
+            - "@knp_menu.factory"
+            - "@router"
+        calls:
+            - [setTokenStorage, ["@security.token_storage"]]
+        tags:
+            - { name: contao.picker_provider, priority: 64 }
+            
+    contao.picker.article_provider:
+        abstract: true

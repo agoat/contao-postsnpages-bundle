@@ -8,7 +8,12 @@
  * @license LGPL-3.0+
  */
 
-//$GLOBALS['TL_DCA']['tl_page']['config']['dataContainer'] = 'TableExtended';
+ 
+$GLOBALS['TL_DCA']['tl_page']['config']['dataContainer'] = 'TableExtended';
+
+
+$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['icon'] = 'NA';
+
 
 // Set new child tables
 $GLOBALS['TL_DCA']['tl_page']['config']['ctable'] = array('tl_container', 'tl_archive');

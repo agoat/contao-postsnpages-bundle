@@ -54,6 +54,7 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 			'fields'                  => array('published DESC', 'title'),
 			'paste_button_callback'   => array('tl_container', 'pasteSection'),
 			'panelLayout'             => 'filter;search',
+			'pfilter'				  => array("type IN ('regular','error_403','error_404')"),
 			'group'					  => 'inColumn'
 		),
 		'label' => array
@@ -215,7 +216,7 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_container']['customTpl'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_container', 'getArticleTemplates'),
+			'options_callback'        => array('tl_container', 'getContainerTemplates'),
 			'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
@@ -639,9 +640,9 @@ class tl_container extends Backend
 	 *
 	 * @return array
 	 */
-	public function getArticleTemplates()
+	public function getContainerTemplates()
 	{
-		return $this->getTemplateGroup('mod_article');
+		return $this->getTemplateGroup('mod_container');
 	}
 
 
