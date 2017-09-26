@@ -421,7 +421,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_posts', 'getPostFormats'),
+			'options_callback'        => array('tl_posts', 'getPostsFormats'),
 			'reference'               => &$GLOBALS['TL_LANG']['tl_posts'],
 			'eval'                    => array('tl_class'=>'w50 clr'),
 			'sql'                     => "varchar(32) NOT NULL default ''"
@@ -892,9 +892,9 @@ class tl_posts extends Backend
 	 *
 	 * @return array
 	 */
-	public function getPostFormats(DataContainer $dc)
+	public function getPostsFormats(DataContainer $dc)
 	{
-		return \System::getContainer()->getParameter('contao.article.formats');
+		return \System::getContainer()->getParameter('contao.posts.formats');
 	}
 
 	

@@ -29,9 +29,9 @@ class AgoatPostsnPagesExtension extends Extension
     public function load(array $config, ContainerBuilder $container)
     {
 		// Set valid extensions paramater if not set anyway
-		if (!$container->hasParameter('contao.article.formats'))
+		if (!$container->hasParameter('contao.posts.formats'))
 		{
-			$container->setParameter('contao.article.formats', ['standard', 'aside', 'link', 'quote', 'status', 'image', 'gallery', 'video', 'chat']);
+			$container->setParameter('contao.posts.formats', ['standard', 'aside', 'link', 'quote', 'status', 'image', 'gallery', 'video', 'chat']);
 		}
 
 		$loader = new YamlFileLoader(
