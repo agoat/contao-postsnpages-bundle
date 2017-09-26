@@ -22,6 +22,84 @@ class TagsModel extends \Model
 
 	
 	/**
+	 * Find all published articles by their parent ID, column and featured status
+	 *
+	 * @param integer $intPid     The page ID
+	 * @param string  $strColumn  The column name
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 */
+	public static function findByLabels($arrTags, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		
+		foreach ($arrTags as $strTag)
+		{
+			$arrColumns = array("$t.label=?");
+			$arrValues = array($strTag);
+		}
+		
+		return static::findOneBy($arrColumns, $arrValues, $arrOptions);
+	}
+
+
+	/**
+	 * Find all published articles by their parent ID, column and featured status
+	 *
+	 * @param integer $intPid     The page ID
+	 * @param string  $strColumn  The column name
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 */
+	public static function findByArchive($intArchive, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		
+		$arrColumns = array("$t.archive=?");
+		$arrValues = array($intArchive);
+		
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order'] = "$t.label";
+		}
+		
+		return static::findBy($arrColumns, $arrValues, $arrOptions);
+	}
+
+
+	/**
+	 * Find all published articles by their parent ID, column and featured status
+	 *
+	 * @param integer $intPid     The page ID
+	 * @param string  $strColumn  The column name
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 */
+	public static function findPublishedByLabelAndArchives($strTag, $varArchives, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		
+		if (is_array($varArchives))
+		{
+			$arrColumns = array("$t.archive in ('" . implode("','", $varArchives) . "')");
+		}
+		else
+		{
+			$arrColumns = array("$t.archive=?");
+			$arrValues = array($varArchives);
+		}
+
+		$arrColumns[] = "$t.published='1' AND $t.label=?";
+		$arrValues[] = $strTag;
+		
+		return static::findBy($arrColumns, $arrValues, $arrOptions);
+	}
+
+
+	/**
 	 * Find all published tags by their posts archive
 	 *
 	 * @param integer $intArchive The archive ID
@@ -91,83 +169,4 @@ class TagsModel extends \Model
 		
 		return new \Model\Collection($arrModels, static::$strTable);
 	}
-
-	
-	/**
-	 * Find all published articles by their parent ID, column and featured status
-	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
-	 * @param array   $arrOptions An optional options array
-	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
-	 */
-	public static function findByLabels($arrTags, array $arrOptions=array())
-	{
-		$t = static::$strTable;
-		
-		foreach ($arrTags as $strTag)
-		{
-			$arrColumns = array("$t.tag=?");
-			$arrValues = array($strTag);
-		}
-		
-		return static::findOneBy($arrColumns, $arrValues, $arrOptions);
-	}
-
-
-	/**
-	 * Find all published articles by their parent ID, column and featured status
-	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
-	 * @param array   $arrOptions An optional options array
-	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
-	 */
-	public static function findPublishedByLabelAndArchives($strTag, $varArchives, array $arrOptions=array())
-	{
-		$t = static::$strTable;
-		
-		$arrColumns = array("$t.label=? AND $t.published='1'");
-		$arrValues = array($strTag);
-		
-		if (is_array($varArchives))
-		{
-			$arrColumns[] = "$t.archive in ('" . implode("','", $varArchives) . "')";
-		}
-		else
-		{
-			$arrColumns[] = "$t.archive=?";
-			$arrValues[] = $varArchives;
-		}
-
-		return static::findBy($arrColumns, $arrValues, $arrOptions);
-	}
-
-	
-	/**
-	 * Find all published articles by their parent ID, column and featured status
-	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
-	 * @param array   $arrOptions An optional options array
-	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
-	 */
-	public static function findByArchive($intArchive, array $arrOptions=array())
-	{
-		$t = static::$strTable;
-		
-		$arrColumns = array("$t.archive=?");
-		$arrValues = array($intArchive);
-		
-		if (!isset($arrOptions['order']))
-		{
-			$arrOptions['order'] = "$t.label";
-		}
-		
-		return static::findBy($arrColumns, $arrValues, $arrOptions);
-	}
-	
 }

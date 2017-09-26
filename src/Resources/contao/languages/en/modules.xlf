@@ -15,7 +15,7 @@
         <source>Container</source>
       </trans-unit>
       <trans-unit id="MOD.tl_static">
-        <source>Static content</source>
+        <source>Container</source>
       </trans-unit>
 
       <trans-unit id="MOD.posts.0">
@@ -30,47 +30,53 @@
       <trans-unit id="MOD.pages.1">
         <source>Manage page content</source>
       </trans-unit>
+      <trans-unit id="MOD.static.0">
+        <source>Static</source>
+      </trans-unit>
+      <trans-unit id="MOD.static.1">
+        <source>Manage static content</source>
+      </trans-unit>
 
-      <trans-unit id="FMD.post">
+      <trans-unit id="FMD.posts">
         <source>Posts</source>
       </trans-unit>
       <trans-unit id="FMD.container.0">
         <source>Container</source>
       </trans-unit>
-      <trans-unit id="FMD.posts.0">
-        <source>Posts</source>
+      <trans-unit id="FMD.postscontent.0">
+        <source>Posts content</source>
       </trans-unit>
-      <trans-unit id="FMD.posts.1">
+      <trans-unit id="FMD.postscontent.1">
         <source>Renders the content of posts.</source>
       </trans-unit>
-      <trans-unit id="FMD.teaser.0">
-        <source>Teasers</source>
+      <trans-unit id="FMD.poststeaser.0">
+        <source>Posts teasers</source>
       </trans-unit>
-      <trans-unit id="FMD.teaser.1">
+      <trans-unit id="FMD.poststeaser.1">
         <source>Renders the teaser of posts.</source>
       </trans-unit>
       <trans-unit id="FMD.postreader.0">
         <source>Post reader</source>
       </trans-unit>
       <trans-unit id="FMD.postreader.1">
-        <source>Renders a certain post (To be used with 'Posts' or 'Teasers').</source>
+        <source>Renders a certain post (To be used with 'Posts content' or ' Posts teasers').</source>
       </trans-unit>
-      <trans-unit id="FMD.taggedposts.0">
-        <source>Tagged posts</source>
+      <trans-unit id="FMD.taggedpostscontent.0">
+        <source>Tagged posts content</source>
       </trans-unit>
-      <trans-unit id="FMD.taggedposts.1">
+      <trans-unit id="FMD.taggedpostscontent.1">
         <source>Renders the content of tagged posts.</source>
       </trans-unit>
-      <trans-unit id="FMD.taggedteaser.0">
-        <source>Tagged teaser</source>
+      <trans-unit id="FMD.taggedpoststeaser.0">
+        <source>Tagged posts teaser</source>
       </trans-unit>
-      <trans-unit id="FMD.taggedteaser.1">
+      <trans-unit id="FMD.taggedpoststeaser.1">
         <source>Renders the teaser of tagged posts.</source>
       </trans-unit>
-      <trans-unit id="FMD.tags.0">
-        <source>Tags menu</source>
+      <trans-unit id="FMD.poststags.0">
+        <source>Posts tags menu</source>
       </trans-unit>
-      <trans-unit id="FMD.tags.1">
+      <trans-unit id="FMD.poststags.1">
         <source>Generates a tags menu from tagged posts.</source>
       </trans-unit>
     </body>

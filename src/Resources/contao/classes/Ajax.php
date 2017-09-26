@@ -29,6 +29,7 @@ class Ajax extends \Backend
 		{
 			case 'reloadArchivetree':
 			case 'reloadPosttree':
+			case 'reloadStatictree':
 				$intId = \Input::get('id');
 				$strField = $dc->inputName = \Input::post('name');
 
@@ -40,7 +41,7 @@ class Ajax extends \Backend
 				}
 
 				$dc->field = $strField;
-dump($dc);
+
 				// The field does not exist
 				if (!isset($GLOBALS['TL_DCA'][$dc->table]['fields'][$strField]))
 				{
@@ -94,7 +95,21 @@ dump($dc);
 
 				// Set the new value
 				$varValue = \Input::post('value', true);
-				$strKey = ($strAction == 'reloadPosttree') ? 'postTree' : 'archiveTree';
+
+				switch ($strAction)
+				{
+					case 'reloadPosttree';
+						$strKey = 'postTree';
+						break;
+
+					case 'reloadArchivetree';
+						$strKey = 'archiveTree';
+						break;
+
+					case 'reloadStatictree';
+						$strKey = 'staticTree';
+						break;
+				}
 				
 				// Convert the selected values
 				if ($varValue != '')

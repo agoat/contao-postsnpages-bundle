@@ -540,7 +540,8 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			$session[$node][$id] = (is_int($session[$node][$id])) ? $session[$node][$id] : 0;
 			$mouseover = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 || ($table == $this->strTable && is_numeric($id))) ? ' toggle_select hover-div' : '';
 
-			$return .= "\n  " . '<li class="'.((($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && ($arrRow['type'] == 'root')) || $table != $this->strTable) ? 'tl_folder' : 'tl_file').' click2edit'.$mouseover.' cf"><div class="tl_left" style="padding-left:'.($level * $intSpacing).'px">';
+			
+			$return .= "\n  " . '<li class="'.(($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && (!empty($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['folders']) && in_array($arrRow['type'], (array)$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['folders'])) || $table != $this->strTable) ? 'tl_folder' : 'tl_file').' click2edit'.$mouseover.' cf"><div class="tl_left" style="padding-left:'.($level * $intSpacing).'px">';
 
 			// Calculate label and add a toggle button
 			$args = array();
@@ -634,7 +635,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 
 				if ($this->strPickerFieldType)
 				{
-					$_buttons .= $this->getPickerInputField($id);
+					$_buttons .= $this->getPickerInputField($id, (isset($this->blnFilesOnly) && $this->blnFilesOnly && $objChilds->numRows) ? ' disabled' : '');
 				}
 			}
 
@@ -748,11 +749,22 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 
 		$objSessionBag->replace($session);
 		
-		if ($subReturn == '')
-		{
-			//return;
-		}
-			
 		return $return;
+	}
+	
+	
+	/**
+	 * {@inheritdoc}
+	 */
+	public function initPicker(PickerInterface $picker)
+	{
+		$attributes = parent::initPicker($picker);
+	
+		if (isset($attributes['filesOnly']))
+		{
+			$this->blnFilesOnly = $attributes['filesOnly'];
+		}
+		
+		return $attributes;
 	}
 }

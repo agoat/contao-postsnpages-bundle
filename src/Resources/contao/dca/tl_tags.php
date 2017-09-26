@@ -29,9 +29,8 @@ $GLOBALS['TL_DCA']['tl_tags'] = array
 			'keys' => array
 			(
 				'id' => 'primary',
-				'label' => 'index',
 				'archive' => 'index',
-				'root' => 'index',
+				'archive,published,label' => 'index'
 			)
 		)
 	),

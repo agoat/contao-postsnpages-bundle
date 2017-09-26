@@ -13,6 +13,7 @@ $GLOBALS['TL_DCA']['tl_page']['config']['dataContainer'] = 'TableExtended';
 
 
 $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['icon'] = 'NA';
+$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['folders'] = 'root';
 
 
 // Set new child tables

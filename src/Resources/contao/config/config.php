@@ -47,16 +47,18 @@ $GLOBALS['BE_MOD']['content'] = $content + $GLOBALS['BE_MOD']['content'];
 /**
  * Register front end modules
  */
-$arrModules['post']['posts'] 		= 'Agoat\PostsnPages\ModulePostsContent';
-$arrModules['post']['teaser'] 		= 'Agoat\PostsnPages\ModulePostsTeaser';
-$arrModules['post']['postreader'] 	= 'Agoat\PostsnPages\ModulePostReader';
+$arrModules['posts']['postscontent'] 		= 'Agoat\PostsnPages\ModulePostsContent';
+$arrModules['posts']['poststeaser'] 		= 'Agoat\PostsnPages\ModulePostsTeaser';
+$arrModules['posts']['postreader'] 			= 'Agoat\PostsnPages\ModulePostReader';
 
-$arrModules['post']['taggedposts'] 	= 'Agoat\PostsnPages\ModuleTaggedPosts';
-$arrModules['post']['taggedteaser'] = 'Agoat\PostsnPages\ModuleTaggedTeaser';
+$arrModules['posts']['taggedpostscontent'] 	= 'Agoat\PostsnPages\ModuleTaggedPostsContent';
+$arrModules['posts']['taggedpoststeaser'] 	= 'Agoat\PostsnPages\ModuleTaggedPostsTeaser';
+
+$arrModules['static']['static'] 			= 'Agoat\PostsnPages\ModuleStatic';
 
 $GLOBALS['FE_MOD'] = $arrModules + $GLOBALS['FE_MOD'];
 
-$GLOBALS['FE_MOD']['navigationMenu']['tags'] 	= 'Agoat\PostsnPages\ModuleTags';
+$GLOBALS['FE_MOD']['navigationMenu']['poststags'] 	= 'Agoat\PostsnPages\ModulePostsTagsMenu';
 
 
 
@@ -67,6 +69,7 @@ $GLOBALS['BE_FFL']['inputselect'] 	= '\Agoat\PostsnPages\InputSelect';
 $GLOBALS['BE_FFL']['moduleWizard'] 	= '\Agoat\PostsnPages\ModuleWizard';
 $GLOBALS['BE_FFL']['archiveTree'] 	= '\Agoat\PostsnPages\ArchiveTree';
 $GLOBALS['BE_FFL']['postTree'] 		= '\Agoat\PostsnPages\PostTree';
+$GLOBALS['BE_FFL']['staticTree'] 	= '\Agoat\PostsnPages\StaticTree';
 
 
 /**

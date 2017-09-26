@@ -12,8 +12,8 @@
 /**
  * Palettes
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['posts']  = '{title_legend},name,headline,type;{config_legend},featured,showTeaser,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['teaser']  = '{title_legend},name,headline,type;{config_legend},featured,readerModule,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['postscontent']  = '{title_legend},name,headline,type;{config_legend},featured,showTeaser,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['poststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,readerModule,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 $bundles = \System::getContainer()->getParameter('kernel.bundles');
 
@@ -27,9 +27,11 @@ else
 }
 
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['tags']  = '{title_legend},name,headline,type;{config_legend},numberOfItems;{archive_legend:hide},archive;{sort_legend:hide},sortTags, sortOrder;{redirect_legend},jumpTo;{template_legend:hide},tagsTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedposts']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedteaser']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['poststags']  = '{title_legend},name,headline,type;{config_legend},numberOfItems;{archive_legend:hide},archive;{sort_legend:hide},sortTags, sortOrder;{redirect_legend},jumpTo;{template_legend:hide},tagsTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpostscontent']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+
+$GLOBALS['TL_DCA']['tl_module']['palettes']['static']  = '{title_legend},name,headline,type;{static_legend:hide},staticContent;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'] = array_merge
@@ -127,7 +129,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['archive'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['archive'],
 	'exclude'                 => true,
 	'inputType'               => 'archiveTree',
-	'eval'                    => array('multiple'=>	true, 'fieldType'=>'checkbox','tl_class'=>'clr'),
+	'eval'                    => array('multiple'=>	true, 'fieldType'=>'checkbox', 'tl_class'=>'clr'),
 	'sql'                     => "blob NULL"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['tags'] = array
@@ -187,9 +189,18 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['notifyAdmin'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['notifyAdmin'],
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
-	'eval'                    => array('submitOnChange'=>true,'tl_class'=>'w50 m12'),
+	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50 m12'),
 	'sql'                     => "char(1) NOT NULL default ''"
 );
+$GLOBALS['TL_DCA']['tl_module']['fields']['staticContent'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['staticContent'],
+	'exclude'                 => true,
+	'inputType'               => 'staticTree',
+	'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio', 'filesOnly'=>true, 'tl_class'=>'clr'),
+	'sql'                     => "blob NULL"
+);
+
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['type']['load_callback'][] = array('tl_module_posts', 'adjustDCA');
 
@@ -315,7 +326,7 @@ class tl_module_posts extends Backend
 	 */
 	public function setOrder($value, DataContainer $dc)
 	{
-		if ('' == $value && in_array($dc->activeRecord->type, array_keys($GLOBALS['FE_MOD']['post'])))
+		if ('' == $value && in_array($dc->activeRecord->type, array_keys($GLOBALS['FE_MOD']['posts'])))
 		{
 			$value = 'descending';
 		}

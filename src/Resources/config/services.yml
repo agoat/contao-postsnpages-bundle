@@ -21,5 +21,16 @@ services:
         tags:
             - { name: contao.picker_provider, priority: 64 }
             
+    contao.picker.static_provider:
+        class: Agoat\PostsnPagesBundle\Picker\StaticPickerProvider
+        public: false
+        arguments:
+            - "@knp_menu.factory"
+            - "@router"
+        calls:
+            - [setTokenStorage, ["@security.token_storage"]]
+        tags:
+            - { name: contao.picker_provider, priority: 32 }
+            
     contao.picker.article_provider:
         abstract: true

@@ -24,6 +24,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 	// Config
 	'config' => array
 	(
+		'label'                       => Config::get('websiteTitle'),
 		'dataContainer'               => 'TableExtended',
 		'ctable'                      => array('tl_content'),
 		'switchToEdit'                => true,
@@ -34,12 +35,16 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 			array('tl_static', 'addCustomLayoutSectionReferences'),
 			array('tl_page', 'addBreadcrumb')
 		),
+		'oncreate_callback' => array
+		(
+			array('tl_static', 'addGroup')
+		),
 		'sql' => array
 		(
 			'keys' => array
 			(
 				'id' => 'primary',
-				'pid,start,stop,published,sorting' => 'index'
+				'pid' => 'index'
 			)
 		)
 	),
@@ -49,11 +54,13 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 	(
 		'sorting' => array
 		(
-			'mode'                    => 6,
+			'icon'                    => 'NA',
+			'mode'                    => 5,
+			'mode'                    => 5,
 			'fields'                  => array('published DESC', 'title'),
-			'paste_button_callback'   => array('tl_static', 'pasteSection'),
+			'paste_button_callback'   => array('tl_static', 'pasteStatic'),
 			'panelLayout'             => 'filter;search',
-			'group'					  => 'inColumn'
+			'folders'         	      => 'group'
 		),
 		'label' => array
 		(
@@ -63,6 +70,13 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 		),
 		'global_operations' => array
 		(
+			'newGroup' => array
+			(
+				'label'               => &$GLOBALS['TL_LANG']['tl_static']['newGroup'],
+				'href'                => '&amp;act=paste&amp;mode=create&amp;type=group',
+				'class'               => 'header_new',
+				'showOnSelect'        => true
+			),
 			'toggleNodes' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['MSC']['toggleAll'],
@@ -85,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 				'label'               => &$GLOBALS['TL_LANG']['tl_static']['edit'],
 				'href'                => 'table=tl_content',
 				'icon'                => 'edit.svg',
-				'button_callback'     => array('tl_static', 'editSection')
+				'button_callback'     => array('tl_static', 'editStatic')
 			),
 			'editheader' => array
 			(
@@ -100,7 +114,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_static', 'copySection')
+				'button_callback'     => array('tl_static', 'copyStatic')
 			),
 			'cut' => array
 			(
@@ -108,7 +122,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_static', 'cutSection')
+				'button_callback'     => array('tl_static', 'cutStatic')
 			),
 			'delete' => array
 			(
@@ -116,14 +130,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 				'href'                => 'act=delete',
 				'icon'                => 'delete.svg',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_static', 'deleteSection')
-			),
-			'toggle' => array
-			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_static']['toggle'],
-				'icon'                => 'visible.svg',
-				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-				'button_callback'     => array('tl_static', 'toggleIcon')
+				'button_callback'     => array('tl_static', 'deleteStatic')
 			),
 			'show' => array
 			(
@@ -134,20 +141,12 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 		)
 	),
 
-	// Select
-	'select' => array
-	(
-		'buttons_callback' => array
-		(
-			array('tl_static', 'addAliasButton')
-		)
-	),
-
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('protected'),
-		'default'                     => '{title_legend},title;{layout_legend},inColumn,keywords;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published,start,stop'
+		'__selector__'                => array('type', 'protected'),
+		'container'                   => '{title_legend},title;{layout_legend},keywords;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published,start,stop',
+		'group'                       => '{title_legend},title;'
 	),
 
 	// Subpalettes
@@ -179,6 +178,10 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 		(
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
+		'type' => array
+		(
+			'sql'                     => "varchar(32) NOT NULL default 'container'"
+		),
 		'title' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['title'],
@@ -187,27 +190,6 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 			'search'                  => true,
 			'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
-		'inColumn' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['inColumn'],
-			'exclude'                 => true,
-			'filter'                  => true,
-			'default'                 => 'main',
-			'inputType'               => 'select',
-			'options_callback'        => array('tl_static', 'getActiveLayoutSections'),
-			'eval'                    => array('tl_class'=>'w50'),
-			'reference'               => &$GLOBALS['TL_LANG']['COLS'],
-			'sql'                     => "varchar(32) NOT NULL default ''"
-		),
-		'keywords' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['keywords'],
-			'exclude'                 => true,
-			'inputType'               => 'textarea',
-			'search'                  => true,
-			'eval'                    => array('style'=>'height:60px', 'decodeEntities'=>true, 'tl_class'=>'clr'),
-			'sql'                     => "text NULL"
 		),
 		'customTpl' => array
 		(
@@ -255,31 +237,6 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 			'eval'                    => array('multiple'=>true, 'size'=>2, 'tl_class'=>'w50 clr'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
-		'published' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['published'],
-			'exclude'                 => true,
-			'filter'                  => true,
-			'inputType'               => 'checkbox',
-			'eval'                    => array('doNotCopy'=>true),
-			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'start' => array
-		(
-			'exclude'                 => true,
-			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['start'],
-			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
-			'sql'                     => "varchar(10) NOT NULL default ''"
-		),
-		'stop' => array
-		(
-			'exclude'                 => true,
-			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['stop'],
-			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
-			'sql'                     => "varchar(10) NOT NULL default ''"
-		)
 	)
 );
 
@@ -496,19 +453,14 @@ class tl_static extends Backend
 	 *
 	 * @return string
 	 */
-	public function addIcon($row, $label)
+	public function addIcon($row, $label, DataContainer $dc=null, $imageAttribute='')
 	{
-		$image = 'articles';
-		$time = \Date::floorToMinute();
-
-		$unpublished = $row['start'] != '' && $row['start'] > $time || $row['stop'] != '' && $row['stop'] < $time;
-
-		if (!$row['published'] || $unpublished)
+		if ($row['type'] == 'group')
 		{
-			$image .= '_';
+			return '<a>'.Image::getHtml('iconPLAIN.svg', '', $imageAttribute).'</a> '.$label;
 		}
-
-		return '<a>'.Image::getHtml($image.'.svg', '', 'data-icon="'.($unpublished ? $image : rtrim($image, '_')).'.svg" data-icon-disabled="'.rtrim($image, '_').'_.svg"').'</a> '.$label;
+		
+		return '<a>'.Image::getHtml('articles.svg', '', $imageAttribute).'</a> '.$label;
 	}
 
 
@@ -522,114 +474,20 @@ class tl_static extends Backend
 	 *
 	 * @throws Exception
 	 */
-	public function generateAlias($varValue, DataContainer $dc)
+	public function addGroup($strTable, $insertID, $set, DataContainer $dc)
 	{
-		$autoAlias = false;
-
-		// Generate an alias if there is none
-		if ($varValue == '')
+		
+		dump($insertID);
+		dump($dc);
+		
+		$objStatic = \StaticModel::findById($insertID);
+		
+		if (\Input::get('type') == 'group')
 		{
-			$autoAlias = true;
-			$varValue = StringUtil::generateAlias($dc->activeRecord->title);
+			$objStatic->type = 'group';
+			$objStatic->save();
 		}
-
-		// Add a prefix to reserved names (see #6066)
-		if (in_array($varValue, array('top', 'wrapper', 'header', 'container', 'main', 'left', 'right', 'footer')))
-		{
-			$varValue = 'article-' . $varValue;
-		}
-
-		$objAlias = $this->Database->prepare("SELECT id FROM tl_static WHERE id=? OR alias=?")
-								   ->execute($dc->id, $varValue);
-
-		// Check whether the page alias exists
-		if ($objAlias->numRows > 1)
-		{
-			if (!$autoAlias)
-			{
-				throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
-			}
-
-			$varValue .= '-' . $dc->id;
-		}
-
-		return $varValue;
-	}
-
-
-	/**
-	 * Return all active layout sections as array
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return array
-	 */
-	public function getActiveLayoutSections(DataContainer $dc)
-	{
-		// Show only active sections
-		if ($dc->activeRecord->pid)
-		{
-			$arrSections = array();
-			$objPage = PageModel::findWithDetails($dc->activeRecord->pid);
-
-			// Get the layout sections
-			foreach (array('layout', 'mobileLayout') as $key)
-			{
-				if (!$objPage->$key)
-				{
-					continue;
-				}
-
-				$objLayout = LayoutModel::findByPk($objPage->$key);
-
-				if ($objLayout === null)
-				{
-					continue;
-				}
-
-				$arrModules = StringUtil::deserialize($objLayout->modules);
-
-				if (empty($arrModules) || !is_array($arrModules))
-				{
-					continue;
-				}
-
-				// Find all sections with an article module (see #6094)
-				foreach ($arrModules as $arrModule)
-				{
-					if ($arrModule['mod'] == 0 && $arrModule['enable'])
-					{
-						$arrSections[] = $arrModule['col'];
-					}
-				}
-			}
-		}
-
-		// Show all sections (e.g. "override all" mode)
-		else
-		{
-			$arrSections = array('header', 'left', 'right', 'main', 'footer');
-			$objLayout = $this->Database->query("SELECT sections FROM tl_layout WHERE sections!=''");
-
-			while ($objLayout->next())
-			{
-				$arrCustom = StringUtil::deserialize($objLayout->sections);
-
-				// Add the custom layout sections
-				if (!empty($arrCustom) && is_array($arrCustom))
-				{
-					foreach ($arrCustom as $v)
-					{
-						if (!empty($v['id']))
-						{
-							$arrSections[] = $v['id'];
-						}
-					}
-				}
-			}
-		}
-
-		return Backend::convertLayoutSectionIdsToAssociativeArray($arrSections);
+		dump($objStatic);
 	}
 
 
@@ -656,11 +514,9 @@ class tl_static extends Backend
 	 *
 	 * @return string
 	 */
-	public function editSection($row, $href, $label, $title, $icon, $attributes)
+	public function editStatic($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objPage = \PageModel::findById($row['pid']);
-
-		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+		return ($row['type'] != 'group' && $this->User->hasAccess($row['type'], 'alpty') && $this->User->isAllowed(BackendUser::CAN_EDIT_PAGE, $row)) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
 
@@ -678,14 +534,7 @@ class tl_static extends Backend
 	 */
 	public function editHeader($row, $href, $label, $title, $icon, $attributes)
 	{
-		if (!$this->User->canEditFieldsOf('tl_static'))
-		{
-			return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
-		}
-
-		$objPage = \PageModel::findById($row['pid']);
-
-		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $row) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
 
@@ -702,16 +551,13 @@ class tl_static extends Backend
 	 *
 	 * @return string
 	 */
-	public function copySection($row, $href, $label, $title, $icon, $attributes, $table)
+	public function copyStatic($row, $href, $label, $title, $icon, $attributes, $table)
 	{
 		if ($GLOBALS['TL_DCA'][$table]['config']['closed'])
 		{
 			return '';
 		}
-
-		$objPage = \PageModel::findById($row['pid']);
-
-		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+		return ($this->User->hasAccess($row['type'], 'alpty') && $this->User->isAllowed(BackendUser::CAN_EDIT_PAGE_HIERARCHY, $row)) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
 
@@ -727,11 +573,9 @@ class tl_static extends Backend
 	 *
 	 * @return string
 	 */
-	public function cutSection($row, $href, $label, $title, $icon, $attributes)
+	public function cutStatic($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objPage = \PageModel::findById($row['pid']);
-
-		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+		return ($this->User->hasAccess($row['type'], 'alpty') && $this->User->isAllowed(BackendUser::CAN_EDIT_PAGE_HIERARCHY, $row)) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
 
@@ -746,19 +590,69 @@ class tl_static extends Backend
 	 *
 	 * @return string
 	 */
-	public function pasteSection(DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
+	public function pasteStatic(DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
 	{
-		$imagePasteAfter = Image::getHtml('pasteafter.svg', sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteafter'][1], $row['id']));
-		$imagePasteInto = Image::getHtml('pasteinto.svg', sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteinto'][1], $row['id']));
+		$disablePA = false;
+		$disablePI = false;
 
-		if ($table == $GLOBALS['TL_DCA'][$dc->table]['config']['ptable'])
+		// Disable all buttons if there is a circular reference
+		if ($arrClipboard !== false && ($arrClipboard['mode'] == 'cut' && ($cr == 1 || $arrClipboard['id'] == $row['id']) || $arrClipboard['mode'] == 'cutAll' && ($cr == 1 || in_array($row['id'], $arrClipboard['id']))))
 		{
-			return ($row['type'] == 'root' || !$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $row) || $cr) ? Image::getHtml('pasteinto_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ';
+			$disablePA = true;
+			$disablePI = true;
+		}
+		dump($row);
+
+		// Allow "paste into" button only for groups
+		if ($row['type'] != 'group' && $row['id'] != 0)
+		{
+			$disablePI = true;
 		}
 
-		$objPage = \PageModel::findById($row['pid']);
+		// Check permissions if the user is not an administrator
+		if (!$this->User->isAdmin)
+		{
+			// Disable "paste into" button if there is no permission 2 (move) or 1 (create) for the current page
+			if (!$disablePI)
+			{
+				if (!$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE_HIERARCHY, $row) || (Input::get('mode') == 'create' && !$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE, $row)))
+				{
+					$disablePI = true;
+				}
+			}
 
-		return (($arrClipboard['mode'] == 'cut' && $arrClipboard['id'] == $row['id']) || ($arrClipboard['mode'] == 'cutAll' && in_array($row['id'], $arrClipboard['id'])) || !$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) || $cr) ? Image::getHtml('pasteafter_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
+			$objPage = $this->Database->prepare("SELECT * FROM " . $table . " WHERE id=?")
+									  ->limit(1)
+									  ->execute($row['pid']);
+
+			// Disable "paste after" button if there is no permission 2 (move) or 1 (create) for the parent page
+			if (!$disablePA && $objPage->numRows)
+			{
+				if (!$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE_HIERARCHY, $objPage->row()) || (Input::get('mode') == 'create' && !$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE, $objPage->row())))
+				{
+					$disablePA = true;
+				}
+			}
+
+			// Disable "paste after" button if the parent page is a root page and the user is not an administrator
+			if (!$disablePA && ($row['pid'] < 1 || in_array($row['id'], $dc->rootIds)))
+			{
+				$disablePA = true;
+			}
+		}
+
+		$return = '';
+
+		// Return the buttons
+		$imagePasteAfter = Image::getHtml('pasteafter.svg', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
+		$imagePasteInto = Image::getHtml('pasteinto.svg', sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id']));
+
+		if ($row['id'] > 0)
+		{
+			$return = $disablePA ? Image::getHtml('pasteafter_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
+		}
+
+		return $return.($disablePI ? Image::getHtml('pasteinto_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ');
 	}
 
 
@@ -774,69 +668,11 @@ class tl_static extends Backend
 	 *
 	 * @return string
 	 */
-	public function deleteSection($row, $href, $label, $title, $icon, $attributes)
+	public function deleteStatic($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objPage = \PageModel::findById($row['pid']);
-
-		return $this->User->isAllowed(BackendUser::CAN_DELETE_ARTICLES, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
-	}
-
-
-	/**
-	 * Automatically generate the folder URL aliases
-	 *
-	 * @param array $arrButtons
-	 *
-	 * @return array
-	 */
-	public function addAliasButton($arrButtons)
-	{
-		// Generate the aliases
-		if (Input::post('FORM_SUBMIT') == 'tl_select' && isset($_POST['alias']))
-		{
-			/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
-			$objSession = System::getContainer()->get('session');
-
-			$session = $objSession->all();
-			$ids = $session['CURRENT']['IDS'];
-
-			foreach ($ids as $id)
-			{
-				$objArticle = ArticleModel::findByPk($id);
-
-				if ($objArticle === null)
-				{
-					continue;
-				}
-
-				// Set the new alias
-				$strAlias = StringUtil::generateAlias($objArticle->title);
-
-				// The alias has not changed
-				if ($strAlias == $objArticle->alias)
-				{
-					continue;
-				}
-
-				// Initialize the version manager
-				$objVersions = new Versions('tl_static', $id);
-				$objVersions->initialize();
-
-				// Store the new alias
-				$this->Database->prepare("UPDATE tl_static SET alias=? WHERE id=?")
-							   ->execute($strAlias, $id);
-
-				// Create a new version
-				$objVersions->create();
-			}
-
-			$this->redirect($this->getReferer());
-		}
-
-		// Add the button
-		$arrButtons['alias'] = '<button type="submit" name="alias" id="alias" class="tl_submit" accesskey="a">'.$GLOBALS['TL_LANG']['MSC']['aliasSelected'].'</button> ';
-
-		return $arrButtons;
+		$root = func_get_arg(7);
+		
+		return ($this->User->hasAccess($row['type'], 'alpty') && $this->User->isAllowed(BackendUser::CAN_DELETE_PAGE, $row) && ($this->User->isAdmin || !in_array($row['id'], $root))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
 
@@ -854,6 +690,11 @@ class tl_static extends Backend
 	 */
 	public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
 	{
+		if ($row['type'] == 'folder')
+		{
+			return;
+		}
+
 		if (strlen(Input::get('tid')))
 		{
 			$this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
@@ -861,30 +702,27 @@ class tl_static extends Backend
 		}
 
 		// Check permissions AFTER checking the tid, so hacking attempts are logged
-		if (!$this->User->hasAccess('tl_static::published', 'alexf'))
+		if (!$this->User->hasAccess('tl_page::published', 'alexf'))
 		{
 			return '';
 		}
-
+		
 		$href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
-
+		
 		if (!$row['published'])
 		{
 			$icon = 'invisible.svg';
 		}
-
-		$objPage = \PageModel::findById($row['pid']);
-
-		if (!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()))
+		
+		$objPage = $this->Database->prepare("SELECT * FROM tl_static WHERE id=?")
+								  ->limit(1)
+								  ->execute($row['id']);
+								  
+		if (!$this->User->hasAccess($row['type'], 'alpty') || !$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE, $objPage->row()))
 		{
-			if ($row['published'])
-			{
-				$icon = preg_replace('/\.svg$/i', '_.svg', $icon); // see #8126
-			}
-
 			return Image::getHtml($icon) . ' ';
 		}
-
+		
 		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"').'</a> ';
 	}
 
