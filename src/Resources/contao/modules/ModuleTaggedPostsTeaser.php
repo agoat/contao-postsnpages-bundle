@@ -60,6 +60,14 @@ class ModuleTaggedPostsTeaser extends ModulePosts
 			\Input::setGet('tags', \Input::get('auto_item'));
 		}
 		
+		// Set the tags input from the permalink bundle fragment handling
+		$bundles = \System::getContainer()->getParameter('kernel.bundles');
+		
+		if (isset($bundles['AgoatPermalinkBundle']) && isset($_GET[0]))
+		{
+			\Input::setGet('tags', \Input::get(0));
+		}
+		
 		return parent::generate();
 	}
 

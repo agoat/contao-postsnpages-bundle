@@ -58,7 +58,7 @@ $arrModules['static']['static'] 			= 'Agoat\PostsnPages\ModuleStatic';
 
 $GLOBALS['FE_MOD'] = $arrModules + $GLOBALS['FE_MOD'];
 
-$GLOBALS['FE_MOD']['navigationMenu']['poststags'] 	= 'Agoat\PostsnPages\ModulePostsTagsMenu';
+$GLOBALS['FE_MOD']['navigationMenu']['poststags'] 	= 'Agoat\PostsnPages\ModuleTagsMenu';
 
 
 
@@ -76,6 +76,7 @@ $GLOBALS['BE_FFL']['staticTree'] 	= '\Agoat\PostsnPages\StaticTree';
  * Register the auto_item keywords
  */
 $GLOBALS['TL_AUTO_ITEM'][] = 'posts';
+$GLOBALS['TL_AUTO_ITEM'][] = 'tags';
 
 
 /**

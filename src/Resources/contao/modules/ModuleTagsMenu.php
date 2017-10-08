@@ -23,7 +23,7 @@ use Patchwork\Utf8;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModulePostsTagsMenu extends \Module
+class ModuleTagsMenu extends \Module
 {
 
 	/**
@@ -106,6 +106,7 @@ class ModulePostsTagsMenu extends \Module
 			$objTarget = $objPage;
 		}
 		
+		$bundles = \System::getContainer()->getParameter('kernel.bundles');
 		$arrTags = array();
 		
 		while ($objTags->next())
@@ -115,7 +116,7 @@ class ModulePostsTagsMenu extends \Module
 			(
 				'label'		=> $objTags->label,
 				'count'		=> $objTags->count,
-				'href'		=> $objTarget->getFrontendUrl((\Config::get('useAutoItem') ? '/' : '/tags/') . strtolower($objTags->label))
+				'href'		=> $objTarget->getFrontendUrl((\Config::get('useAutoItem') || isset($bundles['AgoatPermalinkBundle']) ? '/' : '/tags/') . strtolower($objTags->label))
 			);
 		}
 

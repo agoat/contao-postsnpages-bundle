@@ -1,4 +1,10 @@
 services:
+    contao.frontend.controller.posts:
+        class: Agoat\PostsnPagesBundle\Frontend\PostController
+        public: false
+        tags:
+            - { name: permalink.controller, context: post }
+
     contao.picker.post_provider:
         class: Agoat\PostsnPagesBundle\Picker\PostPickerProvider
         public: false

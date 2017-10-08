@@ -134,9 +134,7 @@ class PostsModel extends \Model
 			$arrColumns[] = "$t.category LIKE ?";
 			$arrValues[] = '%' . $strCategory . '%';
 		}
-dump($arrColumns);
-dump($arrValues);
-dump($arrOptions);			
+		
 		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
 
