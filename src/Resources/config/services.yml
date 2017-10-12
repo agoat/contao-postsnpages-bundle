@@ -1,10 +1,4 @@
 services:
-    contao.frontend.controller.posts:
-        class: Agoat\PostsnPagesBundle\Frontend\PostController
-        public: false
-        tags:
-            - { name: permalink.controller, context: post }
-
     contao.picker.post_provider:
         class: Agoat\PostsnPagesBundle\Picker\PostPickerProvider
         public: false
@@ -40,3 +34,20 @@ services:
             
     contao.picker.article_provider:
         abstract: true
+
+    permalink.controller.post:
+        class: Agoat\PostsnPagesBundle\Controller\PostController
+        public: false
+        arguments:
+            - "@router"
+        tags:
+            - { name: permalink.controller, context: posts }
+
+    permalink.provider.post:
+        class: Agoat\PostsnPagesBundle\Permalink\PostPermalinkProvider
+        public: false
+        arguments:
+            - "%contao.url_suffix%"
+        tags:
+            - { name: permalink.provider, context: posts }
+            

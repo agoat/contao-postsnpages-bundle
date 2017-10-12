@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Contao Open Source CMS
+ * Contao Open Source CMS- Posts'n'pages extension
  *
  * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Agoat\PostsnPagesBundle\Frontend;
+namespace Agoat\PostsnPagesBundle\Controller;
 
-use Agoat\PermalinkBundle\Frontend\ControllerInterface;
+use Agoat\PermalinkBundle\Controller\ControllerInterface;
 use Contao\FrontendIndex;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Main front end controller.
  *
- * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Arne Stappen <https://github.com/agoat>
  */
 class PostController implements ControllerInterface
 {
@@ -27,7 +27,7 @@ class PostController implements ControllerInterface
 	/**
      * {@inheritdoc}
      */	
-	public function getTable()
+	public function getDcaTable()
 	{
 		return 'tl_posts';
 	}
