@@ -150,7 +150,7 @@ abstract class ModulePosts extends \Module
 		global $objPage;
 
 		list($strId, $strClass) = \StringUtil::deserialize($objPost->cssID, true);
-		$latlong = \StringUtil::deserialize($objPost->latlong);
+		list($lat, $long) = \StringUtil::deserialize($objPost->latlong);
 		
 		if ($strClass != '')
 		{
@@ -191,7 +191,7 @@ abstract class ModulePosts extends \Module
 			$objPostTemplate->timestamp = $objPost->date;
 			$objPostTemplate->datetime = date('Y-m-d\TH:i:sP', $objPost->date);
 			$objPostTemplate->location = $objPost->location;
-			$objPostTemplate->latlong = ($latlong[0] !='' && $latlong[1] != '') ? implode(',', $latlong) : false;
+			$objPostTemplate->latlong = ($lat !='' && $long != '') ? $lat . ',' . $long : false;
 
 			// Add teaser data
 			$objPostTemplate->title = \StringUtil::specialchars($objPost->title);

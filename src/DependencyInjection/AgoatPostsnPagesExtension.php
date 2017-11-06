@@ -28,18 +28,22 @@ class AgoatPostsnPagesExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $container)
     {
-		// Set valid extensions paramater if not set anyway
-		if (!$container->hasParameter('contao.posts.formats'))
-		{
-			$container->setParameter('contao.posts.formats', ['standard', 'aside', 'link', 'quote', 'status', 'image', 'gallery', 'video', 'chat']);
-		}
-
 		$loader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__.'/../Resources/config')
         );
 		
-        //$loader->load('listener.yml');
+		if (!$container->hasParameter('contao.posts.formats'))
+		{
+			$container->setParameter('contao.posts.formats', ['standard', 'aside', 'link', 'quote', 'status', 'image', 'gallery', 'video', 'chat']);
+		}
+
+		if (!$container->hasParameter('contao.permalink.posts'))
+		{
+			$container->setParameter('contao.permalink.posts', '{{year}}/{{alias}}');
+		}
+
+       //$loader->load('listener.yml');
         $loader->load('services.yml');		
     }
 }

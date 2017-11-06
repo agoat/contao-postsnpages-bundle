@@ -12,6 +12,7 @@ namespace Agoat\PostsnPagesBundle\Permalink;
 
 use Agoat\PermalinkBundle\Permalink\PermalinkProviderFactory;
 use Agoat\PermalinkBundle\Permalink\PermalinkProviderInterface;
+use Agoat\PermalinkBundle\Permalink\PermalinkUrl;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 
 
@@ -31,86 +32,81 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 		return 'tl_posts';
 	}
 
-
+	
 	/**
      * {@inheritdoc}
      */	
-	public function getHost($activeRecord)
+	public function generate($context, $source)
 	{
-		$objArchive = \ArchiveModel::findByPk($activeRecord->pid);
+		$objPost = \PostsModel::findByPk($source);
 
-		return \PageModel::findWithDetails($objArchive->pid)->domain;
+		if (null === $objPost)
+		{
+			// throw fatal error;
+		}
+
+		$objPost->refresh(); // Fetch current from database (maybe modified from other onsubmit_callbacks)
+
+		$objArchive = \ArchiveModel::findByPk($objPost->pid);
+		$objPage = \PageModel::findByPk($objArchive->pid);
+
+		if (null === $objPage)
+		{
+			// throw fatal error;
+		}
+
+		$objPage->refresh(); // Fetch current from database
+		$objPage->loadDetails();
+
+		$permalink = new PermalinkUrl();
+
+		$permalink->setScheme($objPage->rootUseSSL ? 'https' : 'http')
+				  ->setHost($objPage->domain)
+				  ->setPath($this->validatePath($this->generatePathFromPermalink($objPost)))
+				  ->setSuffix($this->suffix);
+
+		$this->registerPermalink($permalink, $context, $source);
 	}
 
 
 	/**
      * {@inheritdoc}
      */	
-	public function getSchema($id)
+	public function remove($context, $source)
 	{
-		$objPosts = \PostsModel::findByPk($id);
-		$objArchive = \ArchiveModel::findByPk($activeRecord->pid);
-
-		return \PageModel::findWithDetails($objArchive->pid)->rootUseSSL ? 'https://' : 'http://';
-	}
-
-
-	/**
-     * {@inheritdoc}
-     */	
-	public function getLanguage($id)
-	{
-		return \PageModel::findWithDetails($id)->rootLanguage;
-	}
-
-
-	/**
-     * {@inheritdoc}
-     */	
-	public function getParentAlias($id)
-	{
-		return \PageModel::findWithDetails($id)->parentAlias;
-	}
-
-	/**
-     * {@inheritdoc}
-     */	
-	protected function getInheritDetails($activeRecord)
-	{
-		$objCalendar = \CalendarModel::findByPk($activeRecord->pid);
-
-		return \PageModel::findWithDetails($objCalendar->jumpTo);
+		return $this->unregisterPermalink($context, $source);
 	}
 
 	
 	/**
      * {@inheritdoc}
      */	
-	public function createAlias($activeRecord)
+	public function getUrl($context, $source)
 	{
-		$alias = $this->replaceInsertTags($activeRecord);
+		$objPost = \PostsModel::findByPk($source);
 
-		return $alias;
-	}
+		if (null === $objPost)
+		{
+			// throw fatal error;
+		}
 
-
-	/**
-     * {@inheritdoc}
-     */	
-	public function getAbsoluteUrl($source)
-	{
-		$objPosts = \PostsModel::findByPk($source);
-		$objArchive = \ArchiveModel::findByPk($activeRecord->pid);
-
+		$objArchive = \ArchiveModel::findByPk($objPost->pid);
 		$objPage = \PageModel::findWithDetails($objArchive->pid);
 
-		$objPermalink = \PermalinkModel::findByContextAndSource('page', $source);
+		if (null === $objPage)
+		{
+			// throw fatal error;
+		}
 
-		$schema = $objPage->rootUseSSL ? 'https://' : 'http://';
-		$guid = $objPermalink->guid;
-		$suffix = $this->suffix;
+		$objPermalink = \PermalinkModel::findByContextAndSource($context, $source);
+	
+		$permalink = new PermalinkUrl();
 		
-		return $schema . $guid . $suffix;
+		$permalink->setScheme($objPage->rootUseSSL ? 'https' : 'http')
+				  ->setGuid((null !== $objPermalink) ? $objPermalink->guid : $objPage->domain)
+				  ->setSuffix((strpos($permalink->getGuid(), '/')) ? $this->suffix : '');
+
+		return $permalink;
 	}
 
 
@@ -121,13 +117,13 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 	 *
 	 * @throws PageNotFoundException
 	 */
-	protected function replaceInsertTags($activeRecord)
+	protected function generatePathFromPermalink($objPost)
 	{
-		$tags = preg_split('~{{([\pL\pN][^{}]*)}}~u', $activeRecord->permalink, -1, PREG_SPLIT_DELIM_CAPTURE);
+		$tags = preg_split('~{{([\pL\pN][^{}]*)}}~u', $objPost->permalink, -1, PREG_SPLIT_DELIM_CAPTURE);
 		
 		if (count($tags) < 2)
 		{
-			return $activeRecord->permalink;
+			return $objPost->permalink;
 		}
 		
 		$buffer = '';
@@ -148,12 +144,12 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 			{
 				// Alias
 				case 'alias':
-					$buffer .= \StringUtil::generateAlias($activeRecord->title) . $addition;
+					$buffer .= \StringUtil::generateAlias($objPost->title) . $addition;
 					break;
 			
 				// Alias
 				case 'author':
-					$objUser = \UserModel::findByPk($activeRecord->author);
+					$objUser = \UserModel::findByPk($objPost->author);
 					
 					if ($objUser)
 					{
@@ -163,7 +159,7 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 			
 				// Parent (alias)
 				case 'parent':
-					$objArchive = \ArchiveModel::findByPk($activeRecord->pid);
+					$objArchive = \ArchiveModel::findByPk($objPost->pid);
 					$objParent = \PageModel::findByPk($objArchive->pid);
 				
 					if ($objParent && 'root' != $objParent->type)
@@ -174,37 +170,77 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 					
 				// Date
 				case 'date':
-					$objArchive = \ArchiveModel::findByPk($activeRecord->pid);
-					$objPage = \PageModel::findByPk($objArchive->pid);
+					$objArchive = \ArchiveModel::findByPk($objPost->pid);
+					$objPage = \PageModel::findWithDetails($objArchive->pid);
 	
 					if (!($format = $objPage->dateFormat))
 					{
 						$format = \Config::get('dateFormat');
 					}
-				
-					$buffer .= date($format, $activeRecord->date) . $addition;
+			
+					$buffer .= \StringUtil::generateAlias(date($format, $objPost->date)) . $addition;
 					break;
 					
+				// Time
+				case 'time':
+					$objArchive = \ArchiveModel::findByPk($objPost->pid);
+					$objPage = \PageModel::findWithDetails($objArchive->pid);
+	
+					if (!($format = $objPage->timeFormat))
+					{
+						$format = \Config::get('timeFormat');
+					}
+				
+					$buffer .= \StringUtil::generateAlias(str_replace(':', '-', date($format, $objPost->date))) . $addition;
+					break;
+
 				// Year
 				case 'year':
-					$buffer .= date('Y', $activeRecord->date) . $addition;
+					$buffer .= date('Y', $objPost->date) . $addition;
 					break;
 			
 				// Month
 				case 'month':
-					$buffer .= date('m', $activeRecord->date) . $addition;
+					$buffer .= date('m', $objPost->date) . $addition;
+					break;
+			
+				// Month
+				case 'day':
+					$buffer .= date('d', $objPost->date) . $addition;
+					break;
+			
+				// Location
+				case 'location':
+					$buffer .= ('' != $objPost->location) ? \StringUtil::generateAlias($objPost->location) . $addition : '';
+					break;
+			
+				// Latitude/Longitude
+				case 'latlong':
+					list($lat, $long) = \StringUtil::deserialize($objPost->latlong);
+
+					$buffer .= ('' != $lat && '' != $long) ? \StringUtil::generateAlias($lat . '-' . $long) . $addition : '';
+					break;
+			
+				// Category
+				case 'category':
+					$buffer .= ('' != $objPost->category) ? \StringUtil::generateAlias($objPost->category) . $addition : '';
 					break;
 			
 				// Language
 				case 'language':
-				
+					$objArchive = \ArchiveModel::findByPk($objPost->pid);
+					$objPage = \PageModel::findWithDetails($objArchive->pid);
+					
+					if ($objPage)
+					{
+						$buffer .= $objPage->rootLanguage . $addition;
+					}
+					break;
 				
 				default:
 					throw new AccessDeniedException(sprintf($GLOBALS['TL_LANG']['ERR']['unknownInsertTag'], $tag)); 
 			}
-			
 		}
-		
 		
 		return $buffer;
 	}
