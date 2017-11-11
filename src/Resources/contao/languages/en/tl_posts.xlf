@@ -251,11 +251,23 @@
       <trans-unit id="tl_posts.category.1">
         <source>Here you can enter or select one or more categories.</source>
       </trans-unit>
-      <trans-unit id="tl_posts.readmore.0">
-        <source>Alternative target</source>
+      <trans-unit id="tl_posts.tags.0">
+        <source>Tags</source>
       </trans-unit>
-      <trans-unit id="tl_posts.readmore.1">
+      <trans-unit id="tl_posts.tags.1">
+        <source>Here you can enter or select one or more tags.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.alternativeLink.0">
+        <source>Alternative link target</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.alternativeLink.1">
         <source>Redirect to another target than the post itself.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.related.0">
+        <source>Related posts</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.related.1">
+        <source>Here you can select related Posts.</source>
       </trans-unit>
       <trans-unit id="tl_posts.format.0">
         <source>Post format</source>
@@ -290,10 +302,13 @@
       <trans-unit id="tl_posts.readmore_legend">
         <source>Read more link</source>
       </trans-unit>
-      <trans-unit id="tl_posts.addCategory">
+      <trans-unit id="tl_posts.related_legend">
+        <source>Related settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.choosen_addCategory">
         <source>Add Category</source>
       </trans-unit>
-      <trans-unit id="tl_posts.addTag">
+      <trans-unit id="tl_posts.choosen_addTag">
         <source>Add Tag</source>
       </trans-unit>
       <trans-unit id="tl_posts.standard">

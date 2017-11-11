@@ -3,10 +3,10 @@
   <file datatype="php" original="src/Resources/contao/languages/en/tl_module.php" source-language="en">
     <body>
       <trans-unit id="tl_module.readerModule.0">
-        <source>Article reader module</source>
+        <source>Post reader module</source>
       </trans-unit>
       <trans-unit id="tl_module.readerModule.1">
-        <source>Select the article reader module to render selected articles.</source>
+        <source>Select the post reader module to render a selected post.</source>
       </trans-unit>
       <trans-unit id="tl_module.featured.0">
         <source>Featured articles</source>
@@ -44,14 +44,23 @@
       <trans-unit id="tl_module.tagsTpl.1">
         <source>Here you can select a tags template.</source>
       </trans-unit>
+      <trans-unit id="tl_module.static_legend">
+        <source>Static settings</source>
+      </trans-unit>
+      <trans-unit id="tl_module.staticContent.0">
+        <source>Container</source>
+      </trans-unit>
+      <trans-unit id="tl_module.staticContent.1">
+        <source>Here you can choose the container from which static content should be rendered.</source>
+      </trans-unit>
       <trans-unit id="tl_module.archive_legend">
         <source>Archive settings</source>
       </trans-unit>
       <trans-unit id="tl_module.archive.0">
-        <source>Show from</source>
+        <source>Archive</source>
       </trans-unit>
       <trans-unit id="tl_module.archive.1">
-        <source>Here you can choose from which particular archives post should be shown.</source>
+        <source>Here you can choose the archive from which posts should be rendered.</source>
       </trans-unit>
       <trans-unit id="tl_module.sort_legend">
         <source>Sorting settings</source>

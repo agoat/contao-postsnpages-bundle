@@ -1,8 +1,10 @@
 
 <article class="post teaser<?= $this->cssClass ?>" id="<?= $this->cssId ?>">
   <header>
-    <h2 itemprop="name"><?= $this->title ?></h2>
-
+    <a href="<?= $this->href ?>"<?php if ($this->linkTitle): ?> title="<?= $this->linkTitle ?>"<?php endif; ?><?= $this->attributes ?> itemprop="contentUrl">
+	  <h2 itemprop="name"><?= $this->title ?></h2>
+    </a>
+	
     <p class="info">
       <time datetime="<?= $this->datetime ?>" itemprop="datePublished"><?= $this->date ?></time>
   	  <span class="location" itemprop="contentLocation" itemscope itemtype="http://schema.org/AdministrativeArea"><span itemprop="name"><?= $this->location ?></span> <?php if ($this->latlong): ?>(<?= $this->latlong ?>)<?php endif; ?></span>

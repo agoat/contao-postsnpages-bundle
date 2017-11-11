@@ -22,7 +22,6 @@ $content = array
 		'list'			=> array('contao.controller.backend_csv_import', 'importListWizard'),
 		'javascript'	=> array
 		(
-	//		'bundles/agoatpostsnpages/core.js',
 			'bundles/agoatpostsnpages/chosenAddOption.js',
 		)	
 	),
@@ -54,12 +53,14 @@ $arrModules['posts']['postreader'] 			= 'Agoat\PostsnPages\ModulePostReader';
 $arrModules['posts']['taggedpostscontent'] 	= 'Agoat\PostsnPages\ModuleTaggedPostsContent';
 $arrModules['posts']['taggedpoststeaser'] 	= 'Agoat\PostsnPages\ModuleTaggedPostsTeaser';
 
-$arrModules['static']['static'] 			= 'Agoat\PostsnPages\ModuleStatic';
-
 $GLOBALS['FE_MOD'] = $arrModules + $GLOBALS['FE_MOD'];
 
-$GLOBALS['FE_MOD']['navigationMenu']['poststags'] 	= 'Agoat\PostsnPages\ModuleTagsMenu';
 
+$GLOBALS['FE_MOD']['navigationMenu']['poststagmenu']		= 'Agoat\PostsnPages\ModulePostsTagMenu';
+$GLOBALS['FE_MOD']['navigationMenu']['postsarchivemenu'] 	= 'Agoat\PostsnPages\ModulePostsArchiveMenu';
+$GLOBALS['FE_MOD']['navigationMenu']['poststimetablemenu'] 	= 'Agoat\PostsnPages\ModulePostsTimetableMenu';
+
+$GLOBALS['FE_MOD']['miscellaneous']['static'] 			= 'Agoat\PostsnPages\ModuleStatic';
 
 
 /**
@@ -90,7 +91,7 @@ if (TL_MODE == 'BE')
 
 
 /**
- * Register HOOK
+ * Register HOOKS
  */
 
 $GLOBALS['TL_HOOKS']['getArticles'][] = array('Agoat\\PostsnPages\\Controller', 'renderContainer'); 
@@ -102,7 +103,12 @@ $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('Agoat\\PostsnPages\\InsertT
 
 $bundles = \System::getContainer()->getParameter('kernel.bundles');
 
-if (isset($bundles['ContaoCommentsBundle']))
+if (array_key_exists('ContaoCommentsBundle', $bundles))
 {
 	$GLOBALS['TL_HOOKS']['listComments'][] = array('tl_comments_extendedarticle', 'listPatternComments'); 
+}
+
+if (array_key_exists('AgoatContentElementsBundle', $bundles))
+{
+	$GLOBALS['TL_HOOKS']['getLayoutId'][] = array('Agoat\\PostsnPages\\Controller', 'getLayoutId'); 
 }

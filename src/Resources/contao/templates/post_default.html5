@@ -14,7 +14,7 @@
       <h3 itemprop="title"><?= $this->subtitle ?></h3>
 
       <?php if ($this->addImage): ?>
-        <?php $this->insert('image', $this->arrData); ?>
+        <?php $this->href = false; $this->insert('image', $this->arrData); ?>
       <?php endif; ?>
 
       <div class="text" itemprop="description">

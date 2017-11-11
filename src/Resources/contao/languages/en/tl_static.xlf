@@ -26,6 +26,12 @@
       <trans-unit id="tl_static.customTpl.1">
         <source>Here you can overwrite the default container template.</source>
       </trans-unit>
+      <trans-unit id="tl_static.layout.0">
+        <source>Reference layout</source>
+      </trans-unit>
+      <trans-unit id="tl_static.layout.1">
+        <source>Select the layout from which the content elements will be useable.</source>
+      </trans-unit>
       <trans-unit id="tl_static.protected.0">
         <source>Protect container</source>
       </trans-unit>
@@ -79,6 +85,9 @@
       </trans-unit>
       <trans-unit id="tl_static.layout_legend">
         <source>Section and keywords</source>
+      </trans-unit>
+      <trans-unit id="tl_static.elements_legend">
+        <source>Content element settings</source>
       </trans-unit>
       <trans-unit id="tl_static.syndication_legend">
         <source>Syndication</source>

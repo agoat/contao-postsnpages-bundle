@@ -165,20 +165,15 @@ abstract class ModulePosts extends \Module
 			$strClass .= ' ' . $objPost->format;
 		}
 		
-		$article = $objPost->alias ?: $objPost->id;
-
-		$href = Posts::generatePostUrl($objPost, $this->objModel->getRelated('jumpTo'));
-		$readMore = \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $objPost->url));
-
 		$objPostTemplate = new \FrontendTemplate($this->postTemplate);
 		$objPostTemplate->setData($objPost->row());
 
 		// Add html data
 		$objPostTemplate->cssId = ($strId) ?: 'teaser-' . $objPost->id;
 		$objPostTemplate->cssClass = $strClass;
-		$objPostTemplate->href = $href;
-		$objPostTemplate->attributes = ($objPost->target && $objPost->readmore !== 'default') ? ' target="_blank"' : '';
-		$objPostTemplate->readMore = $readMore;
+		$objPostTemplate->href = Posts::generatePostUrl($objPost, $this->objModel->getRelated('jumpTo'));
+		$objPostTemplate->attributes = ( $objPost->alternativeLink && $objPost->target) ? ' target="_blank"' : '';
+		$objPostTemplate->readMore = \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $objPost->url));
 		$objPostTemplate->more = $GLOBALS['TL_LANG']['MSC']['more'];
 		
 		// Add teaser

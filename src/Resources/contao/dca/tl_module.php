@@ -27,7 +27,7 @@ else
 }
 
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['poststags']  = '{title_legend},name,headline,type;{config_legend},numberOfItems;{archive_legend:hide},archive;{sort_legend:hide},sortTags, sortOrder;{redirect_legend},jumpTo;{template_legend:hide},tagsTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['poststagmenu']  = '{title_legend},name,headline,type;{config_legend},numberOfItems;{archive_legend:hide},archive;{sort_legend:hide},sortTags, sortOrder;{redirect_legend},jumpTo;{template_legend:hide},tagsTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpostscontent']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
@@ -198,7 +198,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['staticContent'] = array
 	'exclude'                 => true,
 	'inputType'               => 'staticTree',
 	'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio', 'filesOnly'=>true, 'tl_class'=>'clr'),
-	'sql'                     => "blob NULL"
+	'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );
 
 

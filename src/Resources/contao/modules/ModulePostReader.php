@@ -98,6 +98,12 @@ class ModulePostReader extends ModulePosts
 	
 		// Check protection (TODO)
 		
+		// Redirect to link target if setGet
+		if ($objPost->alternativeLink)
+		{
+			// resolve url (use inserttags subrequest)
+		}
+		
 		// Overwrite the page title (see @contao/core #2853 and #4955)
 		if ($strPost != '' && ($strPost == $objPost->id || $strPost == $objPost->alias) && $objPost->title != '')
 		{

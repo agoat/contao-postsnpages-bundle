@@ -10,12 +10,6 @@
 
 
 /**
- * Load class tl_page
- */
-$this->loadDataContainer('tl_page');
-
-
-/**
  * Table tl_static
  */
 $GLOBALS['TL_DCA']['tl_static'] = array
@@ -31,9 +25,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 		'enableVersioning'            => true,
 		'onload_callback' => array
 		(
-			array('tl_static', 'checkPermission'),
-			array('tl_static', 'addCustomLayoutSectionReferences'),
-			array('tl_page', 'addBreadcrumb')
+			//array('tl_static', 'checkPermission'),
 		),
 		'oncreate_callback' => array
 		(
@@ -56,8 +48,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 		(
 			'icon'                    => 'NA',
 			'mode'                    => 5,
-			'mode'                    => 5,
-			'fields'                  => array('published DESC', 'title'),
+			'fields'                  => array('published DESC', 'title', 'pid'),
 			'paste_button_callback'   => array('tl_static', 'pasteStatic'),
 			'panelLayout'             => 'filter;search',
 			'folders'         	      => 'group'
@@ -65,7 +56,6 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 		'label' => array
 		(
 			'fields'                  => array('title'),
-	//		'format'                  => '%s <span style="color:#999;padding-left:3px">[%s]</span>',
 			'label_callback'          => array('tl_static', 'addIcon')
 		),
 		'global_operations' => array
@@ -145,7 +135,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('type', 'protected'),
-		'container'                   => '{title_legend},title;{layout_legend},keywords;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published,start,stop',
+		'container'                   => '{title_legend},title;{layout_legend},keywords;{template_legend:hide},customTpl;' . (array_key_exists('AgoatContentElementsBundle', \System::getContainer()->getParameter('kernel.bundles')) ? '{elements_legend:hide},layout;' : '') .  '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published,start,stop',
 		'group'                       => '{title_legend},title;'
 	),
 
@@ -166,9 +156,8 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 		),
 		'pid' => array
 		(
-			'foreignKey'              => 'tl_page.title',
+			'foreignKey'              => 'tl_static.title',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
-			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
 		),
 		'sorting' => array
 		(
@@ -190,6 +179,18 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 			'search'                  => true,
 			'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
+		),
+		'layout' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['layout'],
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'select',
+			'foreignKey'              => 'tl_layout.name',
+			'options_callback'        => array('tl_static', 'getPageLayouts'),
+			'eval'                    => array('chosen'=>true, 'tl_class'=>'w50'),
+			'sql'                     => "int(10) unsigned NOT NULL default '0'",
+			'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
 		),
 		'customTpl' => array
 		(
@@ -492,6 +493,31 @@ class tl_static extends Backend
 
 
 	/**
+	 * Return all page layouts grouped by theme
+	 *
+	 * @return array
+	 */
+	public function getPageLayouts()
+	{
+		$objLayout = $this->Database->execute("SELECT l.id, l.name, t.name AS theme FROM tl_layout l LEFT JOIN tl_theme t ON l.pid=t.id ORDER BY t.name, l.name");
+		
+		if ($objLayout->numRows < 1)
+		{
+			return array();
+		}
+		
+		$return = array();
+		
+		while ($objLayout->next())
+		{
+			$return[$objLayout->theme][$objLayout->id] = $objLayout->name;
+		}
+		
+		return $return;
+	}
+
+
+	/**
 	 * Return all module templates as array
 	 *
 	 * @return array
@@ -601,7 +627,6 @@ class tl_static extends Backend
 			$disablePA = true;
 			$disablePI = true;
 		}
-		dump($row);
 
 		// Allow "paste into" button only for groups
 		if ($row['type'] != 'group' && $row['id'] != 0)

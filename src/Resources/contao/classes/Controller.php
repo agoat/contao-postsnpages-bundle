@@ -110,6 +110,74 @@ class Controller extends \Controller
 		return $strBuffer;
 	}	
 
+	/**
+	 * Get the layout ID for an article
+	 *
+	 * @param string  $strTable The name of the table (article or news) 
+	 * @param integer $intId    An article or a news article ID
+	 *
+	 * @return integer The theme ID
+	 */
+	public function getLayoutId ($strTable, $intId)
+	{
+		if ('tl_posts' == $strTable)
+		{
+			$objPost = \PostsModel::findByPk($intId);
+		
+			if ($objPost === null)
+			{
+				return false;
+			}
+			
+			$objArchive = \ArchiveModel::findByPk($objPost->pid);
+		
+			if ($objArchive === null)
+			{
+				return false;
+			}
+
+			$objPage = \PageModel::findWithDetails($objArchive->pid);
+			
+			if ($objPage === null)
+			{
+				return false;
+			}
+			
+			return $objPage->layout;
+		}
+		
+		elseif ('tl_container' == $strTable)
+		{
+			$objContainer = \ContainerModel::findByPk($intId);
+		
+			if ($objContainer === null)
+			{
+				return false;
+			}
+
+			$objPage = \PageModel::findWithDetails($objContainer->pid);
+			
+			if ($objPage === null)
+			{
+				return false;
+			}
+			
+			return $objPage->layout;
+		}
+		
+		elseif ('tl_static' == $strTable)
+		{
+			$objStatic = \StaticModel::findByPk($intId);
+
+			if ($objStatic === null)
+			{
+				return false;
+			}
+
+			return $objStatic->layout;
+		}
+	}
+	
 	
 	/**
 	 * Hide the whole article content stuff

@@ -23,7 +23,7 @@ use Patchwork\Utf8;
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class ModuleTagsMenu extends \Module
+class ModulePostsTagMenu extends \Module
 {
 
 	/**

@@ -43,6 +43,12 @@
       <trans-unit id="FMD.container.0">
         <source>Container</source>
       </trans-unit>
+      <trans-unit id="FMD.static.0">
+        <source>Static content</source>
+      </trans-unit>
+      <trans-unit id="FMD.static.1">
+        <source>Add static content to the page.</source>
+      </trans-unit>
       <trans-unit id="FMD.postscontent.0">
         <source>Posts content</source>
       </trans-unit>
@@ -50,7 +56,7 @@
         <source>Renders the content of posts.</source>
       </trans-unit>
       <trans-unit id="FMD.poststeaser.0">
-        <source>Posts teasers</source>
+        <source>Posts teaser</source>
       </trans-unit>
       <trans-unit id="FMD.poststeaser.1">
         <source>Renders the teaser of posts.</source>
@@ -59,24 +65,24 @@
         <source>Post reader</source>
       </trans-unit>
       <trans-unit id="FMD.postreader.1">
-        <source>Renders a certain post (To be used with 'Posts content' or ' Posts teasers').</source>
+        <source>Renders a certain post (To be used with 'Posts content' or 'Posts teasers').</source>
       </trans-unit>
       <trans-unit id="FMD.taggedpostscontent.0">
         <source>Tagged posts content</source>
       </trans-unit>
       <trans-unit id="FMD.taggedpostscontent.1">
-        <source>Renders the content of tagged posts.</source>
+        <source>Renders the content of tagged posts (To be used in conjunction with the 'Post tag menu' module).</source>
       </trans-unit>
       <trans-unit id="FMD.taggedpoststeaser.0">
         <source>Tagged posts teaser</source>
       </trans-unit>
       <trans-unit id="FMD.taggedpoststeaser.1">
-        <source>Renders the teaser of tagged posts.</source>
+        <source>Renders the teaser of tagged posts  (To be used in conjunction with the 'Post tag menu' module).</source>
       </trans-unit>
-      <trans-unit id="FMD.poststags.0">
+      <trans-unit id="FMD.poststagmenu.0">
         <source>Posts tags menu</source>
       </trans-unit>
-      <trans-unit id="FMD.poststags.1">
+      <trans-unit id="FMD.poststagmenu.1">
         <source>Generates a tags menu from tagged posts.</source>
       </trans-unit>
     </body>

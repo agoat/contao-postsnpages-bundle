@@ -27,12 +27,12 @@ class Posts extends \Frontend
 	/**
 	 * Generate a URL and return it as string
 	 *
-	 * @param NewsModel $objItem
-	 * @param boolean   $blnAddArchive
+	 * @param PostModel $objPost
+	 * @param boolean   $blnNoAlternativeLink
 	 *
 	 * @return string
 	 */
-	public static function generatePostUrl($objPost, $objTarget=null)
+	public static function generatePostUrl($objPost, $blnNoAlternativeLink=false)
 	{
 
 		if (!$objPost instanceof \PostsModel)
@@ -51,47 +51,29 @@ class Posts extends \Frontend
 		// Initialize the cache
 		self::$arrUrlCache[$strCacheKey] = null;
 		
-		if ($objPost->readmore)
+		if ($objPost->alternativeLink && !$blnNoAlternativeLink)
 		{
 			self::$arrUrlCache[$strCacheKey] = $objPost->url;
 		}
 		else
 		{
-			// PostsModel->getDetails();
-			
-			
-			// get url from permalink (don't use PageModel)
+			$objArchive = \ArchiveModel::findByPk($objPost->pid);
+			$objPage = \PageModel::findByPk($objArchive->pid);
 			
 			$urlGenerator = \System::getContainer()->get('contao.routing.url_generator');
 
 			self::$arrUrlCache[$strCacheKey] = $urlGenerator->generate
 			(
-				$objPost->alias ?: $objPost->id,
+				($objPage->alias ?: $objPage->id) . '/posts/' . ($objPost->alias ?: $objPost->id),
 				array
 				(
-					'_locale' => ($strForceLang ?: $objPost->rootLanguage),
-					'_domain' => $objPost->domain,
-					'_ssl' => (bool) $objPost->rootUseSSL,
+					'_locale' => ($strForceLang ?: $objPage->rootLanguage),
+					'_domain' => $objPage->domain,
+					'_ssl' => (bool) $objPage->rootUseSSL,
 				)
 			);
-			return self::$arrUrlCache[$strCacheKey];
-			
-			
-			
-			if (null === $objTarget && (($objArchive = $objPost->getRelated('pid')) instanceof \ArchiveModel))
-			{
-				$objTarget = $objArchive->getRelated('pid');
-			}
-
-			if (null !== $objTarget)
-			{
-				//self::$arrUrlCache[$strCacheKey] = ampersand($objTarget->getFrontendUrl((\Config::get('useAutoItem') ? '/' : '/posts/') . ($objPost->alias ?: $objPost->id)));
-
-				$page = new \PageModel(1);
-				self::$arrUrlCache[$strCacheKey] = ampersand($page->getFrontendUrl((\Config::get('useAutoItem') ? '/' : '/posts/') . ($objPost->alias ?: $objPost->id)));
-			}
 		}
-		
+
 		return self::$arrUrlCache[$strCacheKey];
 	}
 

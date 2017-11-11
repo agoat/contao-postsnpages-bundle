@@ -22,7 +22,7 @@ $GLOBALS['TL_DCA']['tl_tags'] = array
 	'config' => array
 	(
 		'dataContainer'               => 'Table',
-		'ptable'                      => 'tl_page',
+		'ptable'                      => 'tl_posts',
 
 		'sql' => array
 		(
@@ -43,6 +43,10 @@ $GLOBALS['TL_DCA']['tl_tags'] = array
 			'sql'	=> "int(10) unsigned NOT NULL auto_increment"
 		),
 		'pid' => array
+		(
+			'sql'	=> "int(10) unsigned NOT NULL default '0'"
+		),
+		'tstamp' => array
 		(
 			'sql'	=> "int(10) unsigned NOT NULL default '0'"
 		),

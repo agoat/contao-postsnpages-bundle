@@ -32,11 +32,18 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		'onload_callback' => array
 		(
 			array('tl_posts', 'checkPermission'),
-			//array('tl_page', 'addBreadcrumb')
 		),
 		'onsubmit_callback' => array
 		(
 			array('tl_posts', 'adjustTime'),
+		),
+		'oncut_callback' => array
+		(
+			array('tl_posts', 'adjustTags'),
+		),
+		'oncopy_callback' => array
+		(
+			array('tl_posts', 'adjustTags'),
 		),
 		'sql' => array
 		(
@@ -59,7 +66,6 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'fields'                  => array('date DESC', 'title', 'author'),
 			'panelLayout'             => 'filter;filter;sort,search,limit',
 			'headerFields'            => array('title', 'protected'),
-			'paste_button_callback'   => array('tl_posts', 'pastePost'),
 			'child_record_callback'   => array('tl_posts', 'renderPost'),
 		),
 		'label' => array
@@ -92,6 +98,14 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 				'href'                => 'act=edit',
 				'icon'                => 'header.svg',
 				'button_callback'     => array('tl_posts', 'editHeader')
+			),
+			'cut' => array
+			(
+				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['cut'],
+				'href'                => 'act=paste&amp;mode=cut',
+				'icon'                => 'cut.svg',
+				'attributes'          => 'onclick="Backend.getScrollOffset()"',
+				'button_callback'     => array('tl_posts', 'cutPost')
 			),
 			'copy' => array
 			(
@@ -132,27 +146,18 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		)
 	),
 
-	// Select
-	'select' => array
-	(
-		'buttons_callback' => array
-		(
-			//array('tl_posts', 'addAliasButton')
-		)
-	),
-
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('addImage', 'readmore'),
-		'default'                     => '{title_legend},title,alias,author;{layout_legend},keywords;{date_legend},date,time;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category,tags;{readmore_legend},readmore;{related_legend},related;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
+		'__selector__'                => array('addImage', 'alternativeLink'),
+		'default'                     => '{title_legend},title,alias,author;{layout_legend},keywords;{date_legend},date;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category,tags;{readmore_legend},alternativeLink;{related_legend},related;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
 	),
 
 	// Subpalettes
 	'subpalettes' => array
 	(
 		'addImage'                   => 'singleSRC,alt,caption',
-		'readmore'                   => 'url,target'
+		'alternativeLink'                   => 'url,target'
 	),
 
 	// Fields
@@ -188,6 +193,8 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'sorting'                 => true,
+			'flag'                    => 3,
+			'length'                  => 3,
 			'search'                  => true,
 			'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
@@ -236,7 +243,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'sorting'                 => true,
 			'flag'                    => 8,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'date', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'time' => array
@@ -301,10 +308,6 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
 			'eval'                    => array('filesOnly'=>true, 'extensions'=>Config::get('validImageTypes'), 'fieldType'=>'radio', 'mandatory'=>true),
-			'save_callback' => array
-			(
-		//		array('tl_news', 'storeFileMetaInformation')
-			),
 			'sql'                     => "binary(16) NULL"
 		),
 		'alt' => array
@@ -331,7 +334,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'filter'                  => true,
 			'inputType'               => 'inputselect',
 			'options_callback'        => array('tl_posts', 'getCategories'),
-			'eval'                    => array('includeBlankOption'=>true, 'rgxp'=>'alias', 'maxlength'=>128, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['addCategory'], 'tl_class'=>'w50'),
+			'eval'                    => array('includeBlankOption'=>true, 'rgxp'=>'alias', 'maxlength'=>128, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['choosen_addCategory'], 'tl_class'=>'w50'),
 			'sql'                     => "varchar(128) NOT NULL default ''"
 		),
 		'tags' => array
@@ -345,12 +348,12 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 				array('tl_posts', 'saveTags')
 			),
 			'options_callback'        => array('tl_posts', 'getTags'),
-			'eval'                    => array('multiple'=>true, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['addTag'], 'tl_class'=>'clr long'),
+			'eval'                    => array('multiple'=>true, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['choosen_addTag'], 'tl_class'=>'clr long'),
 			'sql'                     => "varchar(1022) NOT NULL default ''"
 		),
-		'readmore' => array
+		'alternativeLink' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['readmore'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['alternativeLink'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
@@ -653,7 +656,6 @@ class tl_posts extends Backend
 	}
 
 
-
 	/**
 	 * Add an image to each page in the tree
 	 *
@@ -664,21 +666,98 @@ class tl_posts extends Backend
 	 */
 	public function renderPost($arrRow)
 	{
-		$label = $arrRow['title'];
-		$image = 'posts';
-
 		$time = \Date::floorToMinute();
 		$unpublished = !$arrRow['published'] || $arrRow['start'] != '' && $arrRow['start'] > $time || $arrRow['stop'] != '' && $arrRow['stop'] < $time;
 	
-		$return = '<div class="tl_content_left"><div class="list_icon" style="background-image: url(\'bundles/agoatpostsnpages/' . $image. ($unpublished ? '_' : '') .'.svg\')" data-icon="bundles/agoatpostsnpages/' . $image . '.svg" data-icon-disabled="bundles/agoatpostsnpages/' . $image .'_.svg">';
+		$return = '<div class="tl_content_left tl_post">';
 		
-		$return .= $label;
+		// Title
+		$return .= '<h2>' . $arrRow['title'] . '</h2>';
 		
-		$return .= "</div></div><div><br><br><br></div>";
+		// Date | Location | LatLong | Author
+		$return .= '<div class="tl_gray">';
 		
+		$return .= date(\Config::get('dateFormat'), $arrRow['date']);
+		
+		if ($arrRow['location'])
+		{
+			$return .= ' | ' . $arrRow['location'];
+		}
+
+		if (($arrLatLong = \StringUtil::deserialize($arrRow['latlong']))[0])
+		{
+			$return .= ' | ' . implode(', ', $arrLatLong );
+		}
+		
+		if (($objUser = \UserModel::findById($arrRow['author'])))
+		{
+			$return .= ' | ' . $objUser->name;
+		}
+		
+		$return .= '</div>';
+
+		// Image | Subtitle + Teaser
+		$return .= '<div class="post_teaser">';
+
+		if ($arrRow['addImage'])
+		{
+
+			$objFile = \FilesModel::findByUuid($arrRow['singleSRC']);
+						
+			if (null !== $objFile)
+			{
+				$image = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFile->path, array(180, 120, 'crop'))->getUrl(TL_ROOT);
+			}
+		
+			$return .= '<figure><img src="' . $image . '"></figure>';
+		}
+
+		if ($arrRow['subTitle'])
+		{
+			$return .= '<h3>' . $arrRow['subTitle'] . '</h3>';
+		}
+		
+		if ($arrRow['teaser'])
+		{
+			$return .= $arrRow['teaser'];
+		}
+
+		// Readmore
+		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPages\Posts::generatePostUrl(\PostsModel::findById($arrRow['id']), true) . '" target="_blank">Read more</a></p>';
+
+		$return .= '</div>';
+		
+		// Category | Tags
+		if ($arrRow['category'] || $arrRow['tags'])
+		{
+			$return .= '<div class="tl_gray">';
+
+			if ($arrRow['category'])
+			{
+				$return .= $GLOBALS['TL_LANG']['tl_posts']['category'][0] . ': ' . $arrRow['category'];
+			}
+
+			if ($arrRow['category'] && $arrRow['tags'])
+			{
+				$return .= ' | ';
+			}
+			
+			if ($arrRow['tags'])
+			{
+				$objTags = \TagsModel::findMultipleByIds(\StringUtil::deserialize($arrRow['tags']));
+				
+				if (null !== $objTags)
+				{
+					$return .= $GLOBALS['TL_LANG']['tl_posts']['tags'][0] . ': ' . implode(', ', $objTags->fetchEach('label'));
+				}
+			}
+			
+			$return .= '</div>';
+		}
+		
+		$return .= '</div>';
+
 		return $return;
-		
-		return '<a href="contao/main.php?do=feRedirect&amp;article='.($arrRow['alias'] ?: $arrRow['id']).'" title="'.StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['view']).'" target="_blank">'.Image::getHtml($image.'.svg', '', 'class="data-icon="'.($unpublished ? $image : rtrim($image, '_')).'.svg" data-icon-disabled="'.rtrim($image, '_').'_.svg"').'</a> '.$label;
 	}
 
 	
@@ -743,6 +822,29 @@ class tl_posts extends Backend
 		$arrSet['time'] = $arrSet['date'];
 		
 		$this->Database->prepare("UPDATE tl_posts %s WHERE id=?")->set($arrSet)->execute($dc->id);
+	}
+
+
+	/**
+	 * Set the tags archive and tag ids correctly
+	 *
+	 * @param int           $insertID
+	 * @param DataContainer $dc
+	 */
+	public function adjustTags($insertID, DataContainer $dc=null)
+	{
+		if (null === $dc)
+		{
+			$dc = $insertID;
+			$insertID = $dc->id;
+		}
+		
+		$arrSet['published'] = 0;
+		$arrSet['archive'] = $this->Database->prepare("SELECT pid FROM tl_posts WHERE id=?")->execute($insertID)->pid;
+		
+		$this->Database->prepare("UPDATE tl_tags %s WHERE pid=?")->set($arrSet)->execute($insertID);
+		
+		$this->Database->prepare("UPDATE tl_posts SET tags=? WHERE id=?")->execute(serialize($this->Database->prepare("SELECT id FROM tl_tags WHERE pid=?")->execute($insertID)->fetchEach('id')), $insertID);
 	}
 
 
@@ -842,6 +944,7 @@ class tl_posts extends Backend
 				if (!empty($v))
 				{
 					$tag = new \TagsModel();
+					$tag->tstamp = time();
 					$tag->label = $v;
 					$tag->pid = $dc->activeRecord->id;
 					$tag->archive = $dc->activeRecord->pid;
@@ -868,6 +971,7 @@ class tl_posts extends Backend
 				if (null !== $objValue)
 				{
 					$tag = new \TagsModel();
+					$tag->tstamp = time();
 					$tag->label = $objValue->label;
 					$tag->pid = $dc->activeRecord->id;
 					$tag->archive = $dc->activeRecord->pid;
@@ -908,49 +1012,6 @@ class tl_posts extends Backend
 		return $this->getTemplateGroup('post_');
 	}
 
-	
-	/**
-	 * Return the paste article button
-	 *
-	 * @param DataContainer $dc
-	 * @param array         $row
-	 * @param string        $table
-	 * @param boolean       $cr
-	 * @param array         $arrClipboard
-	 *
-	 * @return string
-	 */
-	public function pastePost(DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
-	{
-		/** @var AttributeBagInterface $objSessionBag */
-		$objSessionBag = \System::getContainer()->get('session')->getBag('contao_backend');
-		$session = $objSessionBag->all();
-
-		$imagePasteAfter = Image::getHtml('pasteafter.svg', sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteafter'][1], $row['id']));
-		$imagePasteInto = Image::getHtml('pasteinto.svg', sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteinto'][1], $row['id']));
-		
-		if ($table == $GLOBALS['TL_DCA'][$dc->table]['config']['ptable'])
-		{
-			return ($row['type'] == 'root' || !$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $row) || $cr) ? Image::getHtml('pasteinto_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ';
-		}
-
-/*		$objPage = \PageModel::findById($row['pid']);
-		$objArticle = \ArticleModel::findById($arrClipboard['id']);
-		
-		if ($objPage->extArticles || ($objArticle->inColumn != $row['inColumn'] && \Input::get('mode') == 'cut'))
-		{
-*/			if ((isset($session['sorting'][$table]) && $session['sorting'][$table] != 'sorting') || (!isset($session['sorting'][$table]) && $GLOBALS['TL_DCA']['tl_posts']['list']['sorting']['fields'][0] != 'sorting'))
-			{
-				return Image::getHtml('pasteafter_.svg').' ';
-			}
-//		}
-		
-		$objArchiv = \ArchiveModel::findById($row['pid']);
-								  
-		return (($arrClipboard['mode'] == 'cut' && $arrClipboard['id'] == $row['id']) || ($arrClipboard['mode'] == 'cutAll' && in_array($row['id'], $arrClipboard['id'])) || !$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objArchiv->row()) || $cr) ? Image::getHtml('pasteafter_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
-	}
-
-	
 	
 	/**
 	 * Return the edit article button

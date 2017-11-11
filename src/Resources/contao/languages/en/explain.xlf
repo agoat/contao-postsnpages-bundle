@@ -6,7 +6,7 @@
 				<source>colspan</source>
 			</trans-unit>
 			<trans-unit id="XPL.posts.0.1">
-				<source>&lt;p&gt;The &lt;strong&gt;permalink&lt;/strong&gt; is a unique url for this post (Sometimes called guid or uuid). The permalink is generated automatically from insert tag pattern by default (See default post pattern in the settings). But it's also possible to enter any path manually.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;There are some restrictions for valid urls (see &lt;a href="http://www.ietf.org/rfc/rfc3986.txt"&gt;RFC 3986&lt;/a&gt;)!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Allowed characters for a valid url are &lt;strong&gt;Alphanumeric characters as well as the special characters $-_.+!*()/&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;These &lt;strong&gt;insert tags&lt;/strong&gt; can be used to insert post attributes into the permalink automatically:&lt;/p&gt;</source>
+				<source>&lt;p&gt;The &lt;strong&gt;permalink&lt;/strong&gt; is an unique url for this post (Sometimes called guid or uuid). The permalink is generated automatically from insert tag pattern by default (See default post pattern in the settings). But it's also possible to enter any path manually.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;There are some restrictions for valid urls (see &lt;a href="http://www.ietf.org/rfc/rfc3986.txt"&gt;RFC 3986&lt;/a&gt;)!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Allowed characters for a valid url are &lt;strong&gt;Alphanumeric characters as well as the special characters $-_.+!*()/&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;These &lt;strong&gt;insert tags&lt;/strong&gt; can be used to insert post attributes into the permalink automatically:&lt;/p&gt;</source>
 			</trans-unit>
 			<trans-unit id="XPL.posts.1.0">
 				<source>{{alias}}</source>
@@ -30,7 +30,7 @@
 				<source>{{date}}</source>
 			</trans-unit>
 			<trans-unit id="XPL.posts.4.1">
-				<source>Will be replaced with the date(uses the date format from the root page or the settings)</source>
+				<source>Will be replaced with the date (The date format from the root page or the settings will be used)</source>
 			</trans-unit>
 			<trans-unit id="XPL.posts.5.0">
 				<source>{{year}}</source>
@@ -54,7 +54,7 @@
 				<source>{{time}}</source>
 			</trans-unit>
 			<trans-unit id="XPL.posts.8.1">
-				<source>Will be replaced with the time (uses the time format from the root page or the settings)</source>
+				<source>Will be replaced with the time (The time format from the root page or the settings will be used)</source>
 			</trans-unit>
 			<trans-unit id="XPL.posts.9.0">
 				<source>{{location}}</source>
