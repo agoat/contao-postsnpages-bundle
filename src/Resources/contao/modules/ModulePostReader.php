@@ -101,7 +101,10 @@ class ModulePostReader extends ModulePosts
 		// Redirect to link target if setGet
 		if ($objPost->alternativeLink)
 		{
-			// resolve url (use inserttags subrequest)
+			if ($objPost->url)
+			{
+				$this->redirect($this->replaceInsertTags($objPost->url));
+			}
 		}
 		
 		// Overwrite the page title (see @contao/core #2853 and #4955)
