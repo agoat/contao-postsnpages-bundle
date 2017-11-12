@@ -477,10 +477,6 @@ class tl_static extends Backend
 	 */
 	public function addGroup($strTable, $insertID, $set, DataContainer $dc)
 	{
-		
-		dump($insertID);
-		dump($dc);
-		
 		$objStatic = \StaticModel::findById($insertID);
 		
 		if (\Input::get('type') == 'group')
@@ -488,7 +484,6 @@ class tl_static extends Backend
 			$objStatic->type = 'group';
 			$objStatic->save();
 		}
-		dump($objStatic);
 	}
 
 
