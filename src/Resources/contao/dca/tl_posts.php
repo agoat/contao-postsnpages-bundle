@@ -150,7 +150,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('addImage', 'alternativeLink'),
-		'default'                     => '{title_legend},title,alias,author;{layout_legend},keywords;{date_legend},date;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category,tags;{readmore_legend},alternativeLink;{related_legend},related;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
+		'default'                     => '{title_legend},title,alias,author;{layout_legend},keywords;{date_legend},date,time;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category,tags;{readmore_legend},alternativeLink;{related_legend},related;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
 	),
 
 	// Subpalettes
@@ -243,7 +243,15 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'sorting'                 => true,
 			'flag'                    => 8,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'datim', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
+			'load_callback' => array
+			(
+				array('tl_posts', 'loadDate')
+			),
+			'save_callback' => array
+			(
+				array('tl_posts', 'resetTime')
+			),
+			'eval'                    => array('rgxp'=>'date', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'time' => array
@@ -252,7 +260,15 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'default'                 => time(),
 			'exclude'                 => true,
 			'inputType'               => 'text',
-			'eval'                    => array('rgxp'=>'time', 'doNotCopy'=>true, 'tl_class'=>'w50'),
+			'load_callback' => array
+			(
+				array('tl_posts', 'loadTime')
+			),
+			'save_callback' => array
+			(
+				array('tl_posts', 'resetTime')
+			),
+			'eval'                    => array('rgxp'=>'time', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'location' => array
@@ -806,11 +822,50 @@ class tl_posts extends Backend
 
 
 	/**
-	 * Adjust start end end time of the event based on date, span, startTime and endTime
+	 * Reduce the tstamp to contain only the date tstamp to be equal to what will returned
+	 *
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function loadDate($value)
+	{
+		$objDate = new \Date(date('Y-m-d', $value), 'Y-m-d');
+		return $objDate->tstamp;
+	}
+	
+	
+	/**
+	 * Reduce the tstamp to contain only the time tstamp to be equal to what will returned
+	 *
+	 * @param string $value
+	 *
+	 * @return string
+	 */
+	public function loadTime($value)
+	{
+		$objDate = new \Date(date('H:i:s', $value), 'H:i:s');
+		return $objDate->tstamp;
+	}
+	
+	
+	/**
+	 * Reset the date and/or time to the current time if empty
+	 *
+	 * @param string $value
+	 */
+	public function resetTime($value)
+	{
+		return empty($value) ? time() : $value;
+	}
+
+
+	/**
+	 * Adjust date and time to have both containing date and time
 	 *
 	 * @param DataContainer $dc
 	 */
-	public function adjustTime(DataContainer $dc)
+	public function adjustTime($dc)
 	{
 		// Return if there is no active record (override all)
 		if (!$dc->activeRecord)
@@ -833,6 +888,7 @@ class tl_posts extends Backend
 	 */
 	public function adjustTags($insertID, DataContainer $dc=null)
 	{
+		// Handle oncut_callback as well as oncopy_callback
 		if (null === $dc)
 		{
 			$dc = $insertID;
