@@ -85,7 +85,7 @@ class ModuleContainer extends \Module
 		}
 
 		$this->Template->column = $this->inColumn;
-		$this->Template->noMarkup = $this->blnNoMarkup;
+		$this->Template->noMarkup = ($this->noMarkup || $this->blnNoMarkup);
 
 		// Add the modification date
 		$this->Template->timestamp = $this->tstamp;

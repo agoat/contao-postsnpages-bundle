@@ -31,7 +31,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['poststagmenu']  = '{title_legend},n
 $GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpostscontent']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['static']  = '{title_legend},name,headline,type;{static_legend:hide},staticContent;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['static']  = '{title_legend},name,headline,type;{static_legend:hide},staticContent;{template_legend:hide},customTpl, noMarkup;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'] = array_merge
@@ -106,6 +106,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['tagsTpl'] = array
 	'options_callback'        => array('tl_module_posts', 'getTagsTemplates'),
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "varchar(64) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['noMarkup'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['noMarkup'],
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'eval'                    => array('tl_class'=>'w50 m12'),
+	'sql'                     => "char(1) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['filterByCategory'] = array
 (

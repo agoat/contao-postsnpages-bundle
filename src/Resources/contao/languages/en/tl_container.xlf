@@ -26,6 +26,12 @@
       <trans-unit id="tl_container.customTpl.1">
         <source>Here you can overwrite the default container template.</source>
       </trans-unit>
+      <trans-unit id="tl_container.noMarkup.0">
+        <source>Raw output</source>
+      </trans-unit>
+      <trans-unit id="tl_container.noMarkup.1">
+        <source>Show only the content without the container html wrapper.</source>
+      </trans-unit>
       <trans-unit id="tl_container.protected.0">
         <source>Protect container</source>
       </trans-unit>

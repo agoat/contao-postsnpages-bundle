@@ -44,6 +44,12 @@
       <trans-unit id="tl_module.tagsTpl.1">
         <source>Here you can select a tags template.</source>
       </trans-unit>
+      <trans-unit id="tl_module.noMarkup.0">
+        <source>Raw output</source>
+      </trans-unit>
+      <trans-unit id="tl_module.noMarkup.1">
+        <source>Show only the content without the html wrapper.</source>
+      </trans-unit>
       <trans-unit id="tl_module.static_legend">
         <source>Static settings</source>
       </trans-unit>

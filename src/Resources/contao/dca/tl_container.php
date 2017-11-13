@@ -138,7 +138,7 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('protected'),
-		'default'                     => '{title_legend},title;{layout_legend},inColumn,keywords;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published,start,stop'
+		'default'                     => '{title_legend},title;{layout_legend},inColumn,keywords;{template_legend:hide},customTpl,noMarkup;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published,start,stop'
 	),
 
 	// Subpalettes
@@ -208,6 +208,14 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 			'options_callback'        => array('tl_container', 'getContainerTemplates'),
 			'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(64) NOT NULL default ''"
+		),
+		'noMarkup' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_container']['noMarkup'],
+			'exclude'                 => true,
+			'inputType'               => 'checkbox',
+			'eval'                    => array('tl_class'=>'w50 m12'),
+			'sql'                     => "char(1) NOT NULL default ''"
 		),
 		'protected' => array
 		(

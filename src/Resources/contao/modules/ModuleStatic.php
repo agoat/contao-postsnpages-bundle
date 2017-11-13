@@ -84,7 +84,7 @@ class ModuleStatic extends \Module
 			$this->cssID = array($id, $this->cssID[1]);
 		}
 
-		$this->Template->noMarkup = $this->blnNoMarkup;
+		$this->Template->noMarkup = ($this->noMarkup || $this->blnNoMarkup);
 
 		// Add the modification date
 		$this->Template->timestamp = $this->tstamp;
