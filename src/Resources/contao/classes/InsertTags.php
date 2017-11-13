@@ -32,8 +32,9 @@ class InsertTags extends \Controller
 		
 		switch ($elements[0])
 		{
-			// Insert article
-			case 'insert_article':
+			// Insert post
+			case 'insert_post':
+				// use the Post:render method
 				if (($strOutput = $this->getArticle($elements[1], false, true)) !== false)
 				{
 					$return = ltrim($strOutput);
@@ -44,7 +45,7 @@ class InsertTags extends \Controller
 				}
 				break;
 
-			// Article
+			// Post
 			case 'post':
 			case 'post_open':
 			case 'post_url':
@@ -79,8 +80,9 @@ class InsertTags extends \Controller
 				
 				break;
 				
-			// Article teaser
+			// Post teaser
 			case 'article_teaser':
+				// use the Post:render method
 				$objTeaser = \ArticleModel::findByIdOrAlias($elements[1]);
 				
 				if ($objTeaser !== null)

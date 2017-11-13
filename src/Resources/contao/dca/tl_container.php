@@ -51,7 +51,6 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 		'sorting' => array
 		(
 			'mode'                    => 6,
-			'fields'                  => array('published DESC', 'title'),
 			'paste_button_callback'   => array('tl_container', 'pasteContainer'),
 			'panelLayout'             => 'filter;search',
 			'pfilter'				  => array("type IN ('regular','error_403','error_404')"),
@@ -745,12 +744,38 @@ class tl_container extends Backend
 
 		if ($table == $GLOBALS['TL_DCA'][$dc->table]['config']['ptable'])
 		{
-			return (!in_array($row['type'], array('regular', 'error_403', 'error_404')) || !$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $row) || $cr) ? Image::getHtml('pasteinto_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ';
+			if (
+				!in_array($row['type'], array('regular', 'error_403', 'error_404')) || 
+				!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $row) ||
+				$cr
+			)
+			{
+				return Image::getHtml('pasteinto_.svg').' ';
+			}
+			else
+			{
+				return '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ';
+			}
 		}
 
 		$objPage = \PageModel::findById($row['pid']);
-
-		return (($arrClipboard['mode'] == 'cut' && $arrClipboard['id'] == $row['id']) || ($arrClipboard['mode'] == 'cutAll' && in_array($row['id'], $arrClipboard['id'])) || !$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) || $cr) ? Image::getHtml('pasteafter_.svg').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
+		
+		$objContainer = \ContainerModel::findById($arrClipboard['id']);
+		
+		if (
+			($arrClipboard['mode'] == 'cut' && $arrClipboard['id'] == $row['id']) ||
+			($arrClipboard['mode'] == 'cutAll' && in_array($row['id'], $arrClipboard['id'])) || 
+			!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) || 
+			$cr||
+			$row[$GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['group']] != $objContainer->{$GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['group']}
+		)
+		{
+			return Image::getHtml('pasteafter_.svg').' ';
+		}
+		else
+		{
+			return '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$dc->table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
+		}
 	}
 
 
