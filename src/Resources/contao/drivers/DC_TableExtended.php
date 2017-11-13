@@ -478,16 +478,11 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			// Get the child records of the table itself
 			if ($this->strTable != $table)
 			{
-				// Order the child table
-				if (is_array($this->orderBy) && strlen($this->orderBy[0]))
-				{
-					$arrOrder = $this->orderBy;
-				}
-				else if (is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields']) && strlen($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields'][0]))
+				if (is_array($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields']) && strlen($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields'][0]))
 				{
 					$arrOrder = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['fields'];
 				}
-				else if ($blnHasSorting)
+				elseif ($blnHasSorting)
 				{
 					$arrOrder = array('sorting');
 				}
@@ -509,15 +504,15 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 					$arrValues = $this->values;
 					array_unshift($arrValues, $id);
 
-					$objSubChilds = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE pid=? AND " . (implode(' AND ', $this->procedure)) . (is_array($arrOrder) ? " ORDER BY " . implode(',', $arrOrder) : ''))
+					$objSubChilds = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE pid=? AND " . (implode(' AND ', $this->procedure)) . (!empty($arrOrder) ? " ORDER BY " . implode(',', $arrOrder) : ''))
 												   ->execute($arrValues);
 				}
 				else
 				{
-					$objSubChilds = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE pid=?" . (is_array($arrOrder) ? " ORDER BY " . implode(',', $arrOrder) : ''))
+					$objSubChilds = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE pid=?" . (!empty($arrOrder) ? " ORDER BY " . implode(',', $arrOrder) : ''))
 												   ->execute($id);
 				}
-			
+		
 				if ($objSubChilds->numRows)
 				{
 					$subChilds = $objSubChilds->fetchEach('id');
