@@ -110,5 +110,6 @@ if (array_key_exists('ContaoCommentsBundle', $bundles))
 
 if (array_key_exists('AgoatContentElementsBundle', $bundles))
 {
+	$GLOBALS['TL_HOOKS']['getRootPageId'][] = array('Agoat\\PostsnPages\\Controller', 'getRootPageId'); 
 	$GLOBALS['TL_HOOKS']['getLayoutId'][] = array('Agoat\\PostsnPages\\Controller', 'getLayoutId'); 
 }

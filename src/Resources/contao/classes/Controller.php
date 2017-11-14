@@ -110,11 +110,81 @@ class Controller extends \Controller
 		return $strBuffer;
 	}	
 
+
 	/**
-	 * Get the layout ID for an article
+	 * Get the rootpage ID
 	 *
-	 * @param string  $strTable The name of the table (article or news) 
-	 * @param integer $intId    An article or a news article ID
+	 * @param string  $strTable
+	 * @param integer $intId
+	 *
+	 * @return integer The theme ID
+	 */
+	public function getRootPageId ($strTable, $intId)
+	{
+		if ('tl_posts' == $strTable)
+		{
+			$objPost = \PostsModel::findByPk($intId);
+		
+			if ($objPost === null)
+			{
+				return null;
+			}
+			
+			$objArchive = \ArchiveModel::findByPk($objPost->pid);
+		
+			if ($objArchive === null)
+			{
+				return null;
+			}
+
+			$objPage = \PageModel::findWithDetails($objArchive->pid);
+			
+			if ($objPage === null)
+			{
+				return null;
+			}
+			
+			return $objPage->rootId;
+		}
+		
+		elseif ('tl_container' == $strTable)
+		{
+			$objContainer = \ContainerModel::findByPk($intId);
+		
+			if ($objContainer === null)
+			{
+				return null;
+			}
+
+			$objPage = \PageModel::findWithDetails($objContainer->pid);
+			
+			if ($objPage === null)
+			{
+				return null;
+			}
+			
+			return $objPage->rootId;
+		}
+		
+		elseif ('tl_static' == $strTable)
+		{
+			$objStatic = \StaticModel::findByPk($intId);
+
+			if ($objStatic === null)
+			{
+				return null;
+			}
+
+			return $objStatic->rootId;
+		}
+	}
+	
+	
+	/**
+	 * Get the layout ID
+	 *
+	 * @param string  $strTable
+	 * @param integer $intId
 	 *
 	 * @return integer The theme ID
 	 */
@@ -126,21 +196,21 @@ class Controller extends \Controller
 		
 			if ($objPost === null)
 			{
-				return false;
+				return null;
 			}
 			
 			$objArchive = \ArchiveModel::findByPk($objPost->pid);
 		
 			if ($objArchive === null)
 			{
-				return false;
+				return null;
 			}
 
 			$objPage = \PageModel::findWithDetails($objArchive->pid);
 			
 			if ($objPage === null)
 			{
-				return false;
+				return null;
 			}
 			
 			return $objPage->layout;
@@ -152,14 +222,14 @@ class Controller extends \Controller
 		
 			if ($objContainer === null)
 			{
-				return false;
+				return null;
 			}
 
 			$objPage = \PageModel::findWithDetails($objContainer->pid);
 			
 			if ($objPage === null)
 			{
-				return false;
+				return null;
 			}
 			
 			return $objPage->layout;
@@ -171,7 +241,7 @@ class Controller extends \Controller
 
 			if ($objStatic === null)
 			{
-				return false;
+				return null;
 			}
 
 			return $objStatic->layout;
