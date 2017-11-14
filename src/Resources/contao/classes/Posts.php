@@ -34,7 +34,6 @@ class Posts extends \Frontend
 	 */
 	public static function generatePostUrl($objPost, $blnNoAlternativeLink=false)
 	{
-
 		if (!$objPost instanceof \PostsModel)
 		{
 			return;
@@ -58,7 +57,7 @@ class Posts extends \Frontend
 		else
 		{
 			$objArchive = \ArchiveModel::findByPk($objPost->pid);
-			$objPage = \PageModel::findByPk($objArchive->pid);
+			$objPage = \PageModel::findWithDetails($objArchive->pid);
 			
 			$urlGenerator = \System::getContainer()->get('contao.routing.url_generator');
 

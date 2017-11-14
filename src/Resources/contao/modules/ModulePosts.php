@@ -171,8 +171,8 @@ abstract class ModulePosts extends \Module
 		// Add html data
 		$objPostTemplate->cssId = ($strId) ?: 'teaser-' . $objPost->id;
 		$objPostTemplate->cssClass = $strClass;
-		$objPostTemplate->href = Posts::generatePostUrl($objPost, $this->objModel->getRelated('jumpTo'));
-		$objPostTemplate->attributes = ( $objPost->alternativeLink && $objPost->target) ? ' target="_blank"' : '';
+		$objPostTemplate->href = Posts::generatePostUrl($objPost);
+		$objPostTemplate->attributes = ($objPost->alternativeLink && $objPost->target) ? ' target="_blank"' : '';
 		$objPostTemplate->readMore = \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $objPost->url));
 		$objPostTemplate->more = $GLOBALS['TL_LANG']['MSC']['more'];
 		
