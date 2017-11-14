@@ -120,13 +120,13 @@
       <trans-unit id="tl_module.edit_module">
         <source>Edit the module</source>
       </trans-unit>
-      <trans-unit id="tl_module.all_articles">
+      <trans-unit id="tl_module.all_posts">
         <source>Show all articles</source>
       </trans-unit>
-      <trans-unit id="tl_module.featured_articles">
+      <trans-unit id="tl_module.featured_posts">
         <source>Show featured articles only</source>
       </trans-unit>
-      <trans-unit id="tl_module.unfeatured_articles">
+      <trans-unit id="tl_module.unfeatured_posts">
         <source>Skip featured articles</source>
       </trans-unit>
       <trans-unit id="tl_module.archive.page">

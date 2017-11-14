@@ -71,13 +71,9 @@ class PostsModel extends \Model
 			$arrValues = array($varIds);
 		}
 		
-		if ($blnFeatured === true)
+		if (null !== $blnFeatured)
 		{
-			$arrColumns[] = "$t.featured='1'";
-		}
-		elseif ($blnFeatured === false)
-		{
-			$arrColumns[] = "$t.featured=''";
+			$arrColumns[] = $blnFeatured === true ? "$t.featured='1'" : "$t.featured=''";
 		}
 
 		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
@@ -113,14 +109,10 @@ class PostsModel extends \Model
 			$arrColumns = array("$t.pid=?");
 			$arrValues = array($varPids);
 		}
-		
-		if ($blnFeatured === true)
+
+		if (null !== $blnFeatured)
 		{
-			$arrColumns[] = "$t.featured='1'";
-		}
-		elseif ($blnFeatured === false)
-		{
-			$arrColumns[] = "$t.featured=''";
+			$arrColumns[] = $blnFeatured === true ? "$t.featured='1'" : "$t.featured=''";
 		}
 
 		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)

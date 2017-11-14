@@ -67,7 +67,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['featured'] = array
 	'default'                 => 'all',
 	'exclude'                 => true,
 	'inputType'               => 'select',
-	'options'                 => array('all_articles', 'featured_articles', 'unfeatured_articles'),
+	'options'                 => array('all_posts', 'featured_posts', 'unfeatured_posts'),
 	'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "varchar(32) NOT NULL default ''"

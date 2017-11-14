@@ -46,11 +46,11 @@ abstract class ModulePosts extends \Module
 		}
 		
 		// Handle featured articles
-		if ($this->featured == 'featured_articles')
+		if ($this->featured == 'featured_posts')
 		{
 			$blnFeatured = true;
 		}
-		elseif ($this->featured == 'unfeatured_articles')
+		elseif ($this->featured == 'unfeatured_posts')
 		{
 			$blnFeatured = false;
 		}
