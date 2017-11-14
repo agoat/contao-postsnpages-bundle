@@ -685,7 +685,7 @@ class tl_posts extends Backend
 		$time = \Date::floorToMinute();
 		$unpublished = !$arrRow['published'] || $arrRow['start'] != '' && $arrRow['start'] > $time || $arrRow['stop'] != '' && $arrRow['stop'] < $time;
 	
-		$return = '<div class="tl_content_left tl_post">';
+		$return = '<div class="tl_content_left cte_type tl_post' . ($arrRow['published'] ? ' published' : ' unpublished') . '">';
 		
 		// Title
 		$return .= '<h2>' . $arrRow['title'] . '</h2>';
