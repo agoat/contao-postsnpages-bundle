@@ -14,7 +14,7 @@
 namespace Agoat\PostsnPages;
 
 
-class Controller extends \Controller
+class Controller extends \Contao\Controller
 {
 	
 	/**
@@ -25,7 +25,7 @@ class Controller extends \Controller
 	 *
 	 * @return string The module HTML markup
 	 */	
-	public function renderContainer ($intId, $strColumn)
+	public function renderContainer ($intId, $strColumn='main')
 	{
 		$objContainer = \ContainerModel::findPublishedByPidAndColumn($intId, $strColumn);
 
@@ -61,7 +61,7 @@ class Controller extends \Controller
 				$objRow->classes = $arrCss;
 			}
 			
-			$return .= static::compileContainer($objRow, false, $strColumn);
+			$return .= static::generateContainer($objRow, false, $strColumn);
 			++$intCount;
 		}
 		
@@ -72,14 +72,13 @@ class Controller extends \Controller
 	/**
 	 * Generate the content of a container and return it as html
 	 *
-	 * @param mixed   $varId          The article ID or a Model object
-	 * @param boolean $blnMultiMode   If true, only teasers will be shown
+	 * @param mixed   $objRow         The ModelContainer object
 	 * @param boolean $blnIsInsertTag If true, there will be no page relation
 	 * @param string  $strColumn      The name of the column
 	 *
-	 * @return string|boolean The article HTML markup or false
+	 * @return string|boolean The container HTML markup or false
 	 */
-	public static function compileContainer($objRow, $blnIsInsertTag=false, $strColumn='main')
+	public static function generateContainer(\ContainerModel $objRow, $blnIsInsertTag=false, $strColumn='main')
 	{
 		// Check the visibility (see #6311)
 		if (!static::isVisibleElement($objRow))
@@ -98,11 +97,11 @@ class Controller extends \Controller
 			}
 		}
 
-		$objArticle = new ModuleContainer($objRow, $strColumn);
-		$strBuffer = $objArticle->generate($blnIsInsertTag);
+		$objContainer = new ModuleContainer($objRow, $strColumn);
+		$strBuffer = $objContainer->generate($blnIsInsertTag);
 
 		// Disable indexing if protected
-		if ($objArticle->protected && !preg_match('/^\s*<!-- indexer::stop/', $strBuffer))
+		if ($objContainer->protected && !preg_match('/^\s*<!-- indexer::stop/', $strBuffer))
 		{
 			$strBuffer = "\n<!-- indexer::stop -->". $strBuffer ."<!-- indexer::continue -->\n";
 		}
@@ -111,6 +110,65 @@ class Controller extends \Controller
 	}	
 
 
+	/**
+	 * Generate the content of a container and return it as html
+	 *
+	 * @param mixed   $objRow         The ModelStatic object
+	 * @param boolean $blnIsInsertTag If true, there will be no page relation
+	 * @param string  $strColumn      The name of the column
+	 *
+	 * @return string|boolean The article HTML markup or false
+	 */
+	public static function generateStatic(\StaticModel $objRow, $blnIsInsertTag=false)
+	{
+		$objStatic = new ModuleStatic($objRow);
+		
+		if ($blnIsInsertTag)
+		{
+			$objStatic->staticContent = $objRow->id;
+		}
+
+		$strBuffer = $objStatic->generate($blnIsInsertTag);
+
+		// Disable indexing if protected
+		if ($objStatic->protected && !preg_match('/^\s*<!-- indexer::stop/', $strBuffer))
+		{
+			$strBuffer = "\n<!-- indexer::stop -->". $strBuffer ."<!-- indexer::continue -->\n";
+		}
+
+		return $strBuffer;
+	}	
+
+	
+	/**
+	 * Generate the content of a container and return it as html
+	 *
+	 * @param mixed   $objRow         The ModelStatic object
+	 * @param boolean $blnIsInsertTag If true, there will be no page relation
+	 * @param string  $strColumn      The name of the column
+	 *
+	 * @return string|boolean The article HTML markup or false
+	 */
+	public static function generatePost(\PostsModel $objRow, $blnIsInsertTag=false)
+	{
+		// Check the visibility (see #6311)
+		if (!static::isVisibleElement($objRow))
+		{
+			return '';
+		}
+
+		$strBuffer = implode('', Posts::getPostContent($objRow));
+
+		// Disable indexing if protected
+		if ($objRow->protected && !preg_match('/^\s*<!-- indexer::stop/', $strBuffer))
+		{
+			$strBuffer = "\n<!-- indexer::stop -->". $strBuffer ."<!-- indexer::continue -->\n";
+		}
+
+		return $strBuffer;
+	}	
+
+	
 	/**
 	 * Get the rootpage ID
 	 *

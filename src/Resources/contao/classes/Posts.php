@@ -76,5 +76,44 @@ class Posts extends \Frontend
 		return self::$arrUrlCache[$strCacheKey];
 	}
 
+	
+	public static function getPostContent ($objPost)
+	{
+		$arrElements = array();
+		$objCte = \ContentModel::findPublishedByPidAndTable($objPost->id, 'tl_posts');
 
+		if ($objCte !== null)
+		{
+			$intCount = 0;
+			$intLast = $objCte->count() - 1;
+
+			while ($objCte->next())
+			{
+				$arrCss = array();
+
+				/** @var ContentModel $objRow */
+				$objRow = $objCte->current();
+
+				// Add the "first" and "last" classes (see #2583)
+				if ($intCount == 0 || $intCount == $intLast)
+				{
+					if ($intCount == 0)
+					{
+						$arrCss[] = 'first';
+					}
+
+					if ($intCount == $intLast)
+					{
+						$arrCss[] = 'last';
+					}
+				}
+
+				$objRow->classes = $arrCss;
+				$arrElements[] = parent::getContentElement($objRow);
+				++$intCount;
+			}
+		}
+
+		return $arrElements;
+	}
 }

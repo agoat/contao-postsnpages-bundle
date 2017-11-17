@@ -135,7 +135,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('type', 'protected'),
-		'container'                   => '{title_legend},title;{layout_legend},keywords;' . (array_key_exists('AgoatContentElementsBundle', \System::getContainer()->getParameter('kernel.bundles')) ? '{elements_legend:hide},layout;' : '') .  '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID',
+		'container'                   => '{title_legend},title;{layout_legend},keywords;' . (array_key_exists('AgoatContentElementsBundle', \System::getContainer()->getParameter('kernel.bundles')) ? '{elements_legend:hide},layout;' : '') .  '{protected_legend:hide},protected,guests',
 		'group'                       => '{title_legend},title;'
 	),
 
@@ -192,15 +192,6 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
 		),
-		'customTpl' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['customTpl'],
-			'exclude'                 => true,
-			'inputType'               => 'select',
-			'options_callback'        => array('tl_static', 'getContainerTemplates'),
-			'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
-			'sql'                     => "varchar(64) NOT NULL default ''"
-		),
 		'protected' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['protected'],
@@ -229,15 +220,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 			'inputType'               => 'checkbox',
 			'eval'                    => array('tl_class'=>'w50'),
 			'sql'                     => "char(1) NOT NULL default ''"
-		),
-		'cssID' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_static']['cssID'],
-			'exclude'                 => true,
-			'inputType'               => 'text',
-			'eval'                    => array('multiple'=>true, 'size'=>2, 'tl_class'=>'w50 clr'),
-			'sql'                     => "varchar(255) NOT NULL default ''"
-		),
+		)
 	)
 );
 

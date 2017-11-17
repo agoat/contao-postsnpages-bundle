@@ -56,13 +56,21 @@ class ModuleStatic extends \Module
 	 */
 	public function generate($blnNoMarkup=false)
 	{
-//		if (TL_MODE == 'FE' && !BE_USER_LOGGED_IN && (!$this->published || ($this->start != '' && $this->start > time()) || ($this->stop != '' && $this->stop < time())))
-//		{
-//			return '';
-//		}
-
 		$this->type = 'static';
 		$this->blnNoMarkup = $blnNoMarkup;
+
+		$objStatic = \StaticModel::findById($this->staticContent);
+		
+		if (null === $objStatic)
+		{
+			return '';
+		}
+	
+		// Check the visibility
+		if (!static::isVisibleElement($objStatic))
+		{
+			return '';
+		}
 
 		return parent::generate();
 	}
@@ -120,7 +128,7 @@ class ModuleStatic extends \Module
 				}
 
 				$objRow->classes = $arrCss;
-				$arrElements[] = $this->getContentElement($objRow, $this->strColumn);
+				$arrElements[] = $this->getContentElement($objRow);
 				++$intCount;
 			}
 		}

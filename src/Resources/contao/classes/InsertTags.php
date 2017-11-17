@@ -13,88 +13,141 @@
 
 namespace Agoat\PostsnPages;
 
+use Agoat\PostsnPages\Controller;
+use Agoat\PostsnPages\ModulePosts;
 
-class InsertTags extends \Controller
+
+class InsertTags extends \Contao\Controller
 {
 	
 	/**
-	 * Render page content
+	 * Replace the insert tags
 	 *
-	 * @param mixed  $intId     The page id
-	 * @param string $strColumn The name of the column
+	 * @param mixed  $strTag
 	 *
-	 * @return string The module HTML markup
+	 * @return string
 	 */	
 	public function doReplace ($strTag)
 	{
-		
 		$elements = explode('::', $strTag);
 		
 		switch ($elements[0])
 		{
-			// Insert post
-			case 'insert_post':
-				// use the Post:render method
-				if (($strOutput = $this->getArticle($elements[1], false, true)) !== false)
-				{
-					$return = ltrim($strOutput);
-				}
-				else
-				{
-					$return = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], $elements[1]) . '</p>';
-				}
-				break;
-
 			// Post
-			case 'post':
+			case 'post_link':
 			case 'post_open':
 			case 'post_url':
 			case 'post_title':
+			case 'post_subtitle':
+			case 'post_teaser':
+			case 'post_date':
+			case 'post_location':
+			case 'post_latlong':
+			case 'post_category':
+			case 'post_tags':
 				if (($objPost = \PostsModel::findByIdOrAlias($elements[1])) === null)
 				{
 					break;
 				}
 
-				/** @var PageModel $objPage */
-				$strUrl = Posts::generatePostUrl($objPost);
+				// Check the visibility
+				if (!static::isVisibleElement($objPost))
+				{
+					break;
+				}
 
 				// Replace the tag
 				switch (strtolower($elements[0]))
 				{
-					case 'post':
-						$return = sprintf('<a href="%s" title="%s">%s</a>', $strUrl, \StringUtil::specialchars($objPost->title), $objPost->title);
+					case 'post_link':
+						$return = sprintf(
+							'<a href="%s" title="%s">%s</a>',
+							Posts::generatePostUrl($objPost, ('target' == $elements[2])),
+							\StringUtil::specialchars($objPost->title),
+							$objPost->title
+						);
 						break;
 						
 					case 'post_open':
-						$return = sprintf('<a href="%s" title="%s">', $strUrl, \StringUtil::specialchars($objPost->title));
+						$return = sprintf(
+							'<a href="%s" title="%s">',
+							Posts::generatePostUrl($objPost, ('target' == $elements[2])),
+							\StringUtil::specialchars($objPost->title)
+						);
 						break;
 						
 					case 'post_url':
-						$return = $strUrl;
+						$return = Posts::generatePostUrl($objPost, ('target' == $elements[2]));
 						break;
 						
 					case 'post_title':
 						$return = \StringUtil::specialchars($objPost->title);
 						break;
+
+					case 'post_subtitle':
+						$return = \StringUtil::specialchars($objPost->subTitle);
+						break;
+
+					case 'post_teaser':
+						$return = \StringUtil::toHtml5($objPost->teaser);
+						break;
+
+					case 'post_date':
+						$return = \Date::parse($elements[2] ?: \Config::get('dateFormat'), $objPost->date);
+						break;
+
+					case 'post_location':
+						$return = \StringUtil::specialchars($objPost->location);
+						break;
+
+					case 'post_latlong':
+						$return = \StringUtil::specialchars(implode(', ', \StringUtil::deserialize($objPost->latlong)));
+						break;
+
+					case 'post_category':
+						$return = \StringUtil::specialchars($objPost->category);
+						break;
+
+					case 'post_tags':
+						$return = \StringUtil::specialchars($objPost->category);
+						break;
 				}
 				
 				break;
 				
-			// Post teaser
-			case 'article_teaser':
-				// use the Post:render method
-				$objTeaser = \ArticleModel::findByIdOrAlias($elements[1]);
-				
-				if ($objTeaser !== null)
+			// Insert post
+			case 'insert_post':
+				if (($objPost = \PostsModel::findByIdOrAlias($elements[1])) === null)
 				{
-					$return = \StringUtil::toHtml5($objTeaser->teaser);
+					break;
 				}
 				
+				$return = Controller::generatePost($objPost, true);
 				break;
 
-					
+			// Insert static
+			case 'insert_static':
+				if (($objStatic = \StaticModel::findByIdOrAlias($elements[1])) === null)
+				{
+					break;
+				}
+				
+				$return = Controller::generateStatic($objStatic, true);
+				break;
+
+			// Insert container
+			case 'insert_container':
+				if (($objContainer = \ContainerModel::findByIdOrAlias($elements[1])) === null)
+				{
+					break;
+				}
+
+				$return = Controller::generateContainer($objContainer, true);
+				break;
+
 		}
 	
 		return $return;
 	}
+	
 }
