@@ -19,7 +19,17 @@
     <?php $this->endblock(); ?>
   <?php endif; ?>
 
-  <?php if ($this->allowComments && !$this->noComments && $this->post) : ?>
+  <?php if ($this->addRelated && $this->related) : ?>
+    <?php $this->block('related'); ?>
+      <!-- indexer::stop -->
+      <div class="related">
+        <?= $this->related ?>
+      </div>
+      <!-- indexer::continue -->
+    <?php $this->endblock(); ?>
+  <?php endif; ?>
+
+  <?php if ($this->addComments && !$this->noComments && $this->post) : ?>
     <?php $this->block('comments'); ?>
       <div class="comments">
         <?php if (is_array($this->comments)) { echo implode('', $this->comments); } ?>

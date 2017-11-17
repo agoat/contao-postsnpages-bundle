@@ -139,8 +139,56 @@ abstract class ModulePosts extends \Module
 			$arrOptions['order'] = $this->sortPosts . ' ' . (($this->sortOrder == 'descending') ? 'DESC' : 'ASC');
 		}
 		
+		// Maximum number of items
+		if ($this->numberOfItems > 0)
+		{
+			$arrOptions['limit'] = intval($this->numberOfItems);
+		}
+
+		// Skip items
+		if ($this->skipFirst > 0)
+		{
+			$arrOptions['offset'] = intval($this->skipFirst);
+		}
+
 		// Return published articles
 		return \PostsModel::findPublishedByIdsAndFeatured($varIds, $blnFeatured, $arrOptions);
+	}
+	
+	
+	protected function getRelatedPosts ($varId)
+	{
+		$objPost = \PostsModel::findPublishedByIdOrAlias($varId);
+	
+		if (null === $objPost)
+		{
+			return;
+		}
+
+		$varIds = \StringUtil::deserialize($objPost->related);
+
+		$arrOptions = array();
+
+		// Handle sorting
+		if (!in_array($this->sortRelated, ['random', 'custom']))
+		{
+			$arrOptions['order'] = $this->sortRelated . ' ' . (($this->sortOrder == 'descending') ? 'DESC' : 'ASC');
+		}
+		
+		// Maximum number of items
+		if ($this->numberOfItems > 0)
+		{
+			$arrOptions['limit'] = intval($this->numberOfItems);
+		}
+
+		// Skip items
+		if ($this->skipFirst > 0)
+		{
+			$arrOptions['offset'] = intval($this->skipFirst);
+		}
+
+		// Return published articles
+		return \PostsModel::findPublishedByIds($varIds, $arrOptions);
 	}
 	
 	

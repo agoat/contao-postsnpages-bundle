@@ -26,6 +26,12 @@
       <trans-unit id="tl_module.showTeaser.1">
         <source>Show the teaser within the post.</source>
       </trans-unit>
+      <trans-unit id="tl_module.alternativeLink.0">
+        <source>Use the alternative link directly</source>
+      </trans-unit>
+      <trans-unit id="tl_module.alternativeLink.1">
+        <source>Select to forward directly to the alternative link instead of using the posts link (The popularity will not be countable anymore).</source>
+      </trans-unit>
       <trans-unit id="tl_module.postTpl.0">
         <source>Post template</source>
       </trans-unit>
@@ -104,10 +110,25 @@
       <trans-unit id="tl_module.category.1">
         <source>Please choose a category.</source>
       </trans-unit>
-      <trans-unit id="tl_module.allowComments.0">
+      <trans-unit id="tl_module.related_legend">
+        <source>Related posts settings</source>
+      </trans-unit>
+      <trans-unit id="tl_module.addRelated.0">
+        <source>Add related posts</source>
+      </trans-unit>
+      <trans-unit id="tl_module.addRelated.1">
+        <source>Here you can choose to show related posts.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.relatedModule.0">
+        <source>Related posts teaser module</source>
+      </trans-unit>
+      <trans-unit id="tl_module.relatedModule.1">
+        <source>Select the related posts teaser module to render the teaser of related posts.</source>
+      </trans-unit>
+      <trans-unit id="tl_module.addComments.0">
         <source>Add Comments</source>
       </trans-unit>
-      <trans-unit id="tl_module.allowComments.1">
+      <trans-unit id="tl_module.addComments.1">
         <source>Allow visitors to comment the article.</source>
       </trans-unit>
       <trans-unit id="tl_module.notifyAdmin.0">

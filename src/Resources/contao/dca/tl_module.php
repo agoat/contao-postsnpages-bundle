@@ -12,24 +12,17 @@
 /**
  * Palettes
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['postscontent']  = '{title_legend},name,headline,type;{config_legend},featured,showTeaser,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['poststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,readerModule,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-
 $bundles = \System::getContainer()->getParameter('kernel.bundles');
 
-if (isset($bundles['ContaoCommentsBundle']))
-{
-	$GLOBALS['TL_DCA']['tl_module']['palettes']['postreader']  = '{title_legend},name,headline,type;{config_legend},showTeaser;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{comment_legend},allowComments;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-}
-else
-{
-	$GLOBALS['TL_DCA']['tl_module']['palettes']['postreader']  = '{title_legend},name,headline,type;{config_legend},showTeaser;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-}
+$GLOBALS['TL_DCA']['tl_module']['palettes']['postscontent']  = '{title_legend},name,headline,type;{config_legend},featured,showTeaser,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['poststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,readerModule,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
+$GLOBALS['TL_DCA']['tl_module']['palettes']['postreader']  = '{title_legend},name,headline,type;{config_legend},showTeaser;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{related_legend},addRelated;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},addComments;' : '') . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['poststagmenu']  = '{title_legend},name,headline,type;{config_legend},numberOfItems;{archive_legend:hide},archive;{sort_legend:hide},sortTags, sortOrder;{redirect_legend},jumpTo;{template_legend:hide},tagsTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpostscontent']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['poststagmenu']  = '{title_legend},name,headline,type;{config_legend},numberOfItems;{archive_legend:hide},archive;{sort_legend:hide},sortTags, sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},tagsTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+
+$GLOBALS['TL_DCA']['tl_module']['palettes']['relatedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},numberOfItems,skipFirst,perPage;{sort_legend:hide},sortRelated,sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['static']  = '{title_legend},name,headline,type;{static_legend:hide},staticContent;{template_legend:hide},customTpl, noMarkup;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
@@ -37,10 +30,11 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['static']  = '{title_legend},name,he
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'] = array_merge
 (
 	$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'],
-	array('filterByCategory', 'allowComments')
+	array('filterByCategory', 'addRelated', 'addComments')
 );
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['filterByCategory'] = 'category';
-$GLOBALS['TL_DCA']['tl_module']['subpalettes']['allowComments'] = 'com_order,perPage,com_moderate,com_bbcode,com_protected,com_requireLogin,com_disableCaptcha,com_template,notifyAdmin';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['addRelated'] = 'relatedModule';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['addComments'] = 'com_order,perPage,com_moderate,com_bbcode,com_protected,com_requireLogin,com_disableCaptcha,com_template,notifyAdmin';
 
 
 
@@ -85,7 +79,10 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['postTpl'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['postTpl'],
 	'exclude'                 => true,
 	'inputType'               => 'select',
-	'options_callback'        => array('tl_module_posts', 'getPostTemplates'),
+	'options_callback' => function ()
+	{
+		return $this->getTemplateGroup('post_');
+	},
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "varchar(64) NOT NULL default ''"
 );
@@ -94,7 +91,10 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['teaserTpl'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['teaserTpl'],
 	'exclude'                 => true,
 	'inputType'               => 'select',
-	'options_callback'        => array('tl_module_posts', 'getTeaserTemplates'),
+	'options_callback' => function ()
+	{
+		return $this->getTemplateGroup('teaser_');
+	},
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "varchar(64) NOT NULL default ''"
 );
@@ -103,9 +103,20 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['tagsTpl'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['tagsTpl'],
 	'exclude'                 => true,
 	'inputType'               => 'select',
-	'options_callback'        => array('tl_module_posts', 'getTagsTemplates'),
+	'options_callback' => function ()
+	{
+		return $this->getTemplateGroup('tags_');
+	},
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "varchar(64) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['alternativeLink'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['alternativeLink'],
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'eval'                    => array('tl_class'=>'w50 m12'),
+	'sql'                     => "char(1) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['noMarkup'] = array
 (
@@ -160,6 +171,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['sortPosts'] = array
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "char(16) NOT NULL default ''"
 );
+$GLOBALS['TL_DCA']['tl_module']['fields']['sortRelated'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['sortPosts'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options'                 => array('custom', 'date', 'title', 'popular', 'location', 'random'),
+	'reference'               => &$GLOBALS['TL_LANG']['MSC']['sortPosts'],
+	'eval'                    => array('tl_class'=>'w50'),
+	'sql'                     => "char(16) NOT NULL default ''"
+);
 $GLOBALS['TL_DCA']['tl_module']['fields']['sortTags'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['sortTags'],
@@ -184,9 +205,31 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['sortOrder'] = array
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "varchar(16) NOT NULL default ''"
 );
-$GLOBALS['TL_DCA']['tl_module']['fields']['allowComments'] = array
+$GLOBALS['TL_DCA']['tl_module']['fields']['addRelated'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['allowComments'],
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['addRelated'],
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'eval'                    => array('submitOnChange'=>true),
+	'sql'                     => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['relatedModule'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['relatedModule'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options_callback'        => array('tl_module_posts', 'getRelatedModules'),
+	'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
+	'eval'                    => array('mandatory'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50 wizard'),
+	'wizard' => array
+	(
+		array('tl_module_posts', 'editModule')
+	),
+	'sql'                     => "int(10) unsigned NOT NULL default '0'"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['addComments'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['addComments'],
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
 	'eval'                    => array('submitOnChange'=>true),
@@ -232,7 +275,7 @@ class tl_module_posts extends Backend
 	 *
 	 * @return array
 	 */
-	public function adjustDCA($value, DataContainer $dc)
+	public function adjustDCA ($value, DataContainer $dc)
 	{
 		switch ($value)
 		{
@@ -253,52 +296,12 @@ class tl_module_posts extends Backend
 	}
 	
 
-	
-	/**
-	 * Return all article templates as array
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return array
-	 */
-	public function getPostTemplates()
-	{
-		return $this->getTemplateGroup('post_');
-	}
-	
-	
-	/**
-	 * Return all article teaser templates as array
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return array
-	 */
-	public function getTeaserTemplates()
-	{
-		return $this->getTemplateGroup('teaser_');
-	}	
-
-	
-	/**
-	 * Return all article teaser templates as array
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return array
-	 */
-	public function getTagsTemplates()
-	{
-		return $this->getTemplateGroup('tags_');
-	}	
-
-	
 	/**
 	 * Get all news reader modules and return them as array
 	 *
 	 * @return array
 	 */
-	public function getReaderModules()
+	public function getReaderModules ()
 	{
 		$arrModules = array();
 		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='postreader' ORDER BY t.name, m.name");
@@ -311,6 +314,26 @@ class tl_module_posts extends Backend
 		return $arrModules;
 	}
 
+
+	/**
+	 * Get all news reader modules and return them as array
+	 *
+	 * @return array
+	 */
+	public function getRelatedModules ()
+	{
+		$arrModules = array();
+		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='relatedpoststeaser' ORDER BY t.name, m.name");
+		
+		while ($objModules->next())
+		{
+			$arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
+		}
+		
+		return $arrModules;
+	}
+
+
 	/**
 	 * Return the edit article alias wizard
 	 *
@@ -318,7 +341,7 @@ class tl_module_posts extends Backend
 	 *
 	 * @return string
 	 */
-	public function editModule(DataContainer $dc)
+	public function editModule (DataContainer $dc)
 	{
 		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['tl_module']['edit_module']) . '" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['tl_module']['edit_module'])) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.svg', $GLOBALS['TL_LANG']['tl_module']['edit_module']) . '</a>';
 	}
@@ -332,7 +355,7 @@ class tl_module_posts extends Backend
 	 *
 	 * @return string
 	 */
-	public function setOrder($value, DataContainer $dc)
+	public function setOrder ($value, DataContainer $dc)
 	{
 		if ('' == $value && in_array($dc->activeRecord->type, array_keys($GLOBALS['FE_MOD']['posts'])))
 		{
@@ -350,7 +373,7 @@ class tl_module_posts extends Backend
 	 *
 	 * @return array
 	 */
-	public function getArchives(DataContainer $dc)
+	public function getArchives (DataContainer $dc)
 	{
 		$arrArchives = array
 		(
@@ -381,7 +404,7 @@ class tl_module_posts extends Backend
 	 *
 	 * @return array
 	 */
-	public function getTags(DataContainer $dc)
+	public function getTags (DataContainer $dc)
 	{
 		$arrTags = array
 		(
@@ -411,7 +434,7 @@ class tl_module_posts extends Backend
 	 *
 	 * @return array
 	 */
-	public function getArticleCategories(DataContainer $dc)
+	public function getArticleCategories (DataContainer $dc)
 	{
 		$objArticles = \ArticleModel::findAll();
 

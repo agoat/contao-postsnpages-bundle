@@ -27,6 +27,9 @@
         <source>No comments</source>
       </trans-unit>
 
+      <trans-unit id="MSC.sortPosts.custom">
+        <source>Custom</source>
+      </trans-unit>
       <trans-unit id="MSC.sortPosts.date">
         <source>Date</source>
       </trans-unit>

@@ -39,7 +39,7 @@ class ModulePostReader extends ModulePosts
 	 *
 	 * @return string
 	 */
-	public function generate()
+	public function generate($intId=null)
 	{
 		global $objPage;
 		
@@ -67,6 +67,12 @@ class ModulePostReader extends ModulePosts
 		if (!isset($_GET['posts']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
 		{
 			\Input::setGet('posts', \Input::get('auto_item'));
+		}
+
+		// Overwrite the item id
+		if (null !== $intId)
+		{
+			\Input::setGet('posts', $intId);
 		}
 		
 		return parent::generate();
@@ -98,6 +104,10 @@ class ModulePostReader extends ModulePosts
 	
 		// Check protection (TODO)
 		
+		// Increase the popularity counter (TODO: check the session)
+		$objPost->popular = ++$objPost->popular;
+		$objPost->save();
+		
 		// Redirect to link target if setGet
 		if ($objPost->alternativeLink)
 		{
@@ -118,10 +128,6 @@ class ModulePostReader extends ModulePosts
 			}
 		}		
 
-		// Increase the popularity counter (TODO: check the session)
-		$objPost->popular = ++$objPost->popular;
-		$objPost->save();
-		
 		// Set custom post template
 		$this->postTemplate = $objPost->customTpl ? $objPost->customTpl : $this->postTpl;
 
@@ -132,12 +138,18 @@ class ModulePostReader extends ModulePosts
 		$this->Template->backlink = 'javascript:history.go(-1)'; // see #6955
 		$this->Template->back = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['goBack']);
 
+		// Add related
+		if ($this->addRelated && $this->relatedModule > 0)
+		{
+			$this->Template->related = $this->getFrontendModule($this->relatedModule);
+		}
+	
 		// Add comments (if comments bundle installed)
 		$bundles = \System::getContainer()->getParameter('kernel.bundles');
 
-		if ($this->allowComments && isset($bundles['ContaoCommentsBundle']))
+		if ($this->addComments && isset($bundles['ContaoCommentsBundle']))
 		{
-			$this->Template->allowComments = true;
+			$this->Template->addComments = true;
 			$this->Template->noComments = ($objPost->noComments) ? true : false;
 			
 			// Adjust the comments headline level

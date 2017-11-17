@@ -50,15 +50,15 @@ $arrModules['posts']['postscontent'] 		= 'Agoat\PostsnPages\ModulePostsContent';
 $arrModules['posts']['poststeaser'] 		= 'Agoat\PostsnPages\ModulePostsTeaser';
 $arrModules['posts']['postreader'] 			= 'Agoat\PostsnPages\ModulePostReader';
 
-$arrModules['posts']['taggedpostscontent'] 	= 'Agoat\PostsnPages\ModuleTaggedPostsContent';
 $arrModules['posts']['taggedpoststeaser'] 	= 'Agoat\PostsnPages\ModuleTaggedPostsTeaser';
+$arrModules['posts']['relatedpoststeaser'] 	= 'Agoat\PostsnPages\ModuleRelatedPostsTeaser';
 
 $GLOBALS['FE_MOD'] = $arrModules + $GLOBALS['FE_MOD'];
 
 
 $GLOBALS['FE_MOD']['navigationMenu']['poststagmenu']		= 'Agoat\PostsnPages\ModulePostsTagMenu';
-$GLOBALS['FE_MOD']['navigationMenu']['postsarchivemenu'] 	= 'Agoat\PostsnPages\ModulePostsArchiveMenu';
-$GLOBALS['FE_MOD']['navigationMenu']['poststimetablemenu'] 	= 'Agoat\PostsnPages\ModulePostsTimetableMenu';
+//$GLOBALS['FE_MOD']['navigationMenu']['postscategorymenu'] 	= 'Agoat\PostsnPages\ModulePostsArchiveMenu';
+//$GLOBALS['FE_MOD']['navigationMenu']['poststimetablemenu'] 	= 'Agoat\PostsnPages\ModulePostsTimetableMenu';
 
 $GLOBALS['FE_MOD']['miscellaneous']['static'] 			= 'Agoat\PostsnPages\ModuleStatic';
 

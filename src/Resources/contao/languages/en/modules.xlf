@@ -67,11 +67,11 @@
       <trans-unit id="FMD.postreader.1">
         <source>Renders a certain post (To be used with 'Posts content' or 'Posts teasers').</source>
       </trans-unit>
-      <trans-unit id="FMD.taggedpostscontent.0">
-        <source>Tagged posts content</source>
+      <trans-unit id="FMD.relatedpoststeaser.0">
+        <source>Related posts teaser</source>
       </trans-unit>
-      <trans-unit id="FMD.taggedpostscontent.1">
-        <source>Renders the content of tagged posts (To be used in conjunction with the 'Post tag menu' module).</source>
+      <trans-unit id="FMD.relatedpoststeaser.1">
+        <source>Renders the teaser of related posts (To be used with the 'Post reader' module).</source>
       </trans-unit>
       <trans-unit id="FMD.taggedpoststeaser.0">
         <source>Tagged posts teaser</source>
