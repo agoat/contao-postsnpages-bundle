@@ -32,7 +32,7 @@ class Posts extends \Frontend
 	 *
 	 * @return string
 	 */
-	public static function generatePostUrl($objPost, $blnNoAlternativeLink=false)
+	public static function generatePostUrl ($objPost, $blnAlternativeLink=false, $intJumpTo=false)
 	{
 		if (!$objPost instanceof \PostsModel)
 		{
@@ -50,14 +50,14 @@ class Posts extends \Frontend
 		// Initialize the cache
 		self::$arrUrlCache[$strCacheKey] = null;
 		
-		if ($objPost->alternativeLink && !$blnNoAlternativeLink)
+		if ($objPost->alternativeLink && $blnAlternativeLink)
 		{
 			self::$arrUrlCache[$strCacheKey] = $objPost->url;
 		}
 		else
 		{
 			$objArchive = \ArchiveModel::findByPk($objPost->pid);
-			$objPage = \PageModel::findWithDetails($objArchive->pid);
+			$objPage = \PageModel::findWithDetails($intJumpTo ?: $objArchive->pid);
 			
 			$urlGenerator = \System::getContainer()->get('contao.routing.url_generator');
 
