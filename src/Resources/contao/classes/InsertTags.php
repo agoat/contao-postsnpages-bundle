@@ -1,23 +1,24 @@
 <?php
- 
- /**
- * Contao Open Source CMS - Content management extension
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen (aGoat)
- *
- *
- * @package   contentblocks
- * @author    Arne Stappen <http://agoat.de>
- * @license	  LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Agoat\PostsnPages;
 
+use \Contao\Controller as ContaoController;
 use Agoat\PostsnPages\Controller;
-use Agoat\PostsnPages\ModulePosts;
 
 
-class InsertTags extends \Contao\Controller
+/**
+ * Controller class
+ */
+class InsertTags extends ContaoController
 {
 	
 	/**
@@ -149,5 +150,4 @@ class InsertTags extends \Contao\Controller
 	
 		return $return;
 	}
-	
 }

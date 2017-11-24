@@ -1,13 +1,14 @@
 <?php
-
 /*
- * This file is part of the Extended Articles Extension.
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen (alias aGoat)
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
-
+ 
 namespace Agoat\PostsnPagesBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -43,7 +44,6 @@ class AgoatPostsnPagesExtension extends Extension
 			$container->setParameter('contao.permalink.posts', '{{year}}/{{alias}}');
 		}
 
-       //$loader->load('listener.yml');
         $loader->load('services.yml');		
     }
 }

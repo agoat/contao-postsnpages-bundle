@@ -1,27 +1,21 @@
 <?php
-
 /*
- * Contao Extended Articles Extension
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
- 
+
 namespace Agoat\PostsnPages;
 
 use Patchwork\Utf8;
 
 
 /**
- * Provides methodes to handle article teaser rendering
- *
- * @property array  $news_archives
- * @property string $news_jumpToCurrent
- * @property string $news_format
- * @property int    $news_readerModule
- *
- * @author Leo Feyer <https://github.com/leofeyer>
+ * ModulePostsContent class
  */
 class ModulePostsContent extends ModulePosts
 {
@@ -34,7 +28,7 @@ class ModulePostsContent extends ModulePosts
 
 
 	/**
-	 * Do not render the module if an article is called directly
+	 * Do not render the module if a post is called directly
 	 *
 	 * @return string
 	 */

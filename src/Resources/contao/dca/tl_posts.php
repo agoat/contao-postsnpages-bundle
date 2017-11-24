@@ -1,13 +1,14 @@
 <?php
-
 /*
- * Contao Extended Articles Extension
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
- 
+
  
  /**
  * Load tl_content language file
@@ -502,12 +503,9 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
- *
- * @author Arne Stappen <https://github.com/agoat>
  */
 class tl_posts extends Backend
 {
-
 
 	/**
 	 * Import the back end user object
@@ -673,10 +671,9 @@ class tl_posts extends Backend
 
 
 	/**
-	 * Add an image to each page in the tree
+	 * Render a teaser preview of the post
 	 *
-	 * @param array  $row
-	 * @param string $label
+	 * @param array  $arrRow
 	 *
 	 * @return string
 	 */
@@ -778,7 +775,7 @@ class tl_posts extends Backend
 
 	
 	/**
-	 * Auto-generate an article alias if it has not been set yet
+	 * Auto-generate an post alias if it has not been set yet
 	 *
 	 * @param mixed         $varValue
 	 * @param DataContainer $dc
@@ -822,11 +819,11 @@ class tl_posts extends Backend
 
 
 	/**
-	 * Reduce the tstamp to contain only the date tstamp to be equal to what will returned
+	 * Reduce the tstamp to contain only the date tstamp
 	 *
-	 * @param string $value
+	 * @param integer $value
 	 *
-	 * @return string
+	 * @return integer
 	 */
 	public function loadDate($value)
 	{
@@ -836,11 +833,11 @@ class tl_posts extends Backend
 	
 	
 	/**
-	 * Reduce the tstamp to contain only the time tstamp to be equal to what will returned
+	 * Reduce the tstamp to contain only the time tstamp
 	 *
-	 * @param string $value
+	 * @param integer $value
 	 *
-	 * @return string
+	 * @return integer
 	 */
 	public function loadTime($value)
 	{
@@ -852,7 +849,9 @@ class tl_posts extends Backend
 	/**
 	 * Reset the date and/or time to the current time if empty
 	 *
-	 * @param string $value
+	 * @param integer $value
+	 *
+	 * @return integer
 	 */
 	public function resetTime($value)
 	{
@@ -1046,7 +1045,7 @@ class tl_posts extends Backend
 	
 	
 	/**
-	 * Return the article formats
+	 * Return the posts formats
 	 *
 	 * @param DataContainer $dc
 	 *
@@ -1070,7 +1069,7 @@ class tl_posts extends Backend
 
 	
 	/**
-	 * Return the edit article button
+	 * Return the edit post button
 	 *
 	 * @param array  $row
 	 * @param string $href
@@ -1116,7 +1115,7 @@ class tl_posts extends Backend
 
 
 	/**
-	 * Return the copy article button
+	 * Return the copy post button
 	 *
 	 * @param array  $row
 	 * @param string $href
@@ -1142,7 +1141,7 @@ class tl_posts extends Backend
 
 
 	/**
-	 * Return the cut article button
+	 * Return the cut post button
 	 *
 	 * @param array  $row
 	 * @param string $href
@@ -1162,7 +1161,7 @@ class tl_posts extends Backend
 
 
 	/**
-	 * Return the delete article button
+	 * Return the delete post button
 	 *
 	 * @param array  $row
 	 * @param string $href
@@ -1180,6 +1179,7 @@ class tl_posts extends Backend
 		return $this->User->isAllowed(BackendUser::CAN_DELETE_ARTICLES, $objArchive->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
+	
 	/**
 	 * Return the "toggle visibility" button
 	 *
@@ -1228,6 +1228,7 @@ class tl_posts extends Backend
 		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"').'</a> ';
 	}
 
+	
 	/**
 	 * Disable/enable a user group
 	 *
@@ -1379,7 +1380,7 @@ class tl_posts extends Backend
 
 	
 	/**
-	 * Feature/unfeature an article
+	 * Feature/unfeature a post
 	 *
 	 * @param integer       $intId
 	 * @param boolean       $blnVisible
@@ -1429,5 +1430,4 @@ class tl_posts extends Backend
 					   
 		$objVersions->create();
 	}
-
 }

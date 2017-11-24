@@ -1,11 +1,12 @@
 <?php
-
-/**
- * Contao Open Source CMS - Posts'n'Pages extension
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Agoat\PostsnPagesBundle\Permalink;
@@ -17,7 +18,7 @@ use Contao\CoreBundle\Exception\AccessDeniedException;
 
 
 /**
- * Main front end controller.
+ * Permalink provider for Posts
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
@@ -42,7 +43,7 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 
 		if (null === $objPost)
 		{
-			// throw fatal error;
+			// Todo: throw fatal error;
 		}
 
 		$objPost->refresh(); // Fetch current from database (maybe modified from other onsubmit_callbacks)
@@ -52,7 +53,7 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 
 		if (null === $objPage)
 		{
-			// throw fatal error;
+			// Todo: throw fatal error;
 		}
 
 		$objPage->refresh(); // Fetch current from database
@@ -62,7 +63,7 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 
 		$permalink->setScheme($objPage->rootUseSSL ? 'https' : 'http')
 				  ->setHost($objPage->domain)
-				  ->setPath($this->validatePath($this->generatePathFromPermalink($objPost)))
+				  ->setPath($this->validatePath($this->resolvePattern($objPost)))
 				  ->setSuffix($this->suffix);
 
 		$this->registerPermalink($permalink, $context, $source);
@@ -87,7 +88,7 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 
 		if (null === $objPost)
 		{
-			// throw fatal error;
+			// Todo: throw fatal error;
 		}
 
 		$objArchive = \ArchiveModel::findByPk($objPost->pid);
@@ -95,7 +96,7 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 
 		if (null === $objPage)
 		{
-			// throw fatal error;
+			// Todo: throw fatal error;
 		}
 
 		$objPermalink = \PermalinkModel::findByContextAndSource($context, $source);
@@ -111,13 +112,15 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 
 
 	/**
-	 * Run the controller
+	 * Resolve pattern to strings
 	 *
-	 * @return Response
+	 * @param \PostsModel $objPost
 	 *
-	 * @throws PageNotFoundException
+	 * @return String
+	 *
+	 * @throws AccessDeniedException
 	 */
-	protected function generatePathFromPermalink($objPost)
+	protected function resolvePattern($objPost)
 	{
 		$tags = preg_split('~{{([\pL\pN][^{}]*)}}~u', $objPost->permalink, -1, PREG_SPLIT_DELIM_CAPTURE);
 		

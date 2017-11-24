@@ -1,18 +1,18 @@
 <?php
-
 /*
- * Contao Extended Articles Extension
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
- 
+
  
 /**
  * Register back end module (additional javascript)
  */
-
 $content = array
 (
 	'posts'	=> array
@@ -49,7 +49,6 @@ $GLOBALS['BE_MOD']['content'] = $content + $GLOBALS['BE_MOD']['content'];
 $arrModules['posts']['postscontent'] 		= 'Agoat\PostsnPages\ModulePostsContent';
 $arrModules['posts']['poststeaser'] 		= 'Agoat\PostsnPages\ModulePostsTeaser';
 $arrModules['posts']['postreader'] 			= 'Agoat\PostsnPages\ModulePostReader';
-
 $arrModules['posts']['taggedpoststeaser'] 	= 'Agoat\PostsnPages\ModuleTaggedPostsTeaser';
 $arrModules['posts']['relatedpoststeaser'] 	= 'Agoat\PostsnPages\ModuleRelatedPostsTeaser';
 
@@ -89,7 +88,6 @@ if (TL_MODE == 'BE')
 }
 
 
-
 /**
  * Register HOOKS
  */
@@ -105,7 +103,7 @@ $bundles = \System::getContainer()->getParameter('kernel.bundles');
 
 if (array_key_exists('ContaoCommentsBundle', $bundles))
 {
-	$GLOBALS['TL_HOOKS']['listComments'][] = array('tl_comments_extendedarticle', 'listPatternComments'); 
+	$GLOBALS['TL_HOOKS']['listComments'][] = array('Agoat\\PostsnPages\\Controller', 'listPatternComments'); 
 }
 
 if (array_key_exists('AgoatContentElementsBundle', $bundles))

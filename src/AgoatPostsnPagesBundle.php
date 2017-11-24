@@ -1,11 +1,12 @@
 <?php
-
 /*
- * Contao Extended Articles Extension
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
  
 namespace Agoat\PostsnPagesBundle;
@@ -14,9 +15,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 
 /**
- * Configures the Agoat contentblocks bundle.
- *
- * @author Arne Stappen (alias aGoat) <https://github.com/agoat>
+ * Configures the postsnpages bundle.
  */
 class AgoatPostsnPagesBundle extends Bundle
 {

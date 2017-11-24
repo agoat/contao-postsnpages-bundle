@@ -1,32 +1,30 @@
 <?php
-
 /*
- * Contao Extended Articles Extension
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
- 
+
 namespace Agoat\PostsnPages;
 
 use Patchwork\Utf8;
 
 
 /**
- * Provides methodes to handle posts content and teaser rendering
- *
- * @property array  $news_archives
- * @property string $news_jumpToCurrent
- * @property string $news_format
- * @property int    $news_readerModule
- *
- * @author Arne Stappen <https://github.com/agoat>
+ * Abstract ModulePosts class
  */
 abstract class ModulePosts extends \Module
 {
 
-
+	/**
+	 * Return posts in consideration of the selection procedures 
+	 *
+	 * @return Collection|\PostsModel|Null
+	 */
 	protected function getPosts ()
 	{
 		/** @var PageModel $objPage */
@@ -90,6 +88,13 @@ abstract class ModulePosts extends \Module
 	}
 	
 	
+	/**
+	 * Return posts with a specific tag label in consideration of the selection procedures 
+	 *
+	 * @param string $strTag The tag name
+	 *
+	 * @return Collection|\PostsModel|Null
+	 */
 	protected function getTaggedPosts ($strTag)
 	{
 		/** @var PageModel $objPage */
@@ -156,6 +161,13 @@ abstract class ModulePosts extends \Module
 	}
 	
 	
+	/**
+	 * Return posts related to the given post id in consideration of the selection procedures 
+	 *
+	 * @param integer $varId The post id
+	 *
+	 * @return Collection|\PostsModel|Null
+	 */
 	protected function getRelatedPosts ($varId)
 	{
 		$objPost = \PostsModel::findPublishedByIdOrAlias($varId);
@@ -192,6 +204,15 @@ abstract class ModulePosts extends \Module
 	}
 	
 	
+	/**
+	 * Renders a post article with teaser and its content
+	 *
+	 * @param \PostsModel $objPost
+	 * @param boolean     $blnTeaser
+	 * @param boolean     $blnContent
+	 *
+	 * @return string
+	 */
 	protected function renderPost ($objPost, $blnTeaser=false, $blnContent=true)
 	{
 		/** @var PageModel $objPage */

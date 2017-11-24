@@ -1,7 +1,17 @@
 <?php
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
+ *
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
+ */
 
+ 
 /**
- * Dynamically add the permission check and parent table (see #5241)
+ * Dynamically set the parent tabel and onload_callback
  */
 if (Input::get('do') == 'posts')
 {

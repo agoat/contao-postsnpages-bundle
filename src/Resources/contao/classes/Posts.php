@@ -1,19 +1,20 @@
 <?php
- 
- /**
- * Contao Open Source CMS - Content management extension
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen (aGoat)
- *
- *
- * @package   contentblocks
- * @author    Arne Stappen <http://agoat.de>
- * @license	  LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Agoat\PostsnPages;
 
 
+/**
+ * Posts class
+ */
 class Posts extends \Frontend
 {
 
@@ -27,8 +28,9 @@ class Posts extends \Frontend
 	/**
 	 * Generate a URL and return it as string
 	 *
-	 * @param PostModel $objPost
-	 * @param boolean   $blnNoAlternativeLink
+	 * @param \PostModel $objPost
+	 * @param boolean    $blnAlternativeLink
+	 * @param boolean    $intJumpTo
 	 *
 	 * @return string
 	 */
@@ -77,6 +79,13 @@ class Posts extends \Frontend
 	}
 
 	
+	/**
+	 * Render the content of a post article
+	 *
+	 * @param \PostModel $objPost
+	 *
+	 * @return array
+	 */
 	public static function getPostContent ($objPost)
 	{
 		$arrElements = array();

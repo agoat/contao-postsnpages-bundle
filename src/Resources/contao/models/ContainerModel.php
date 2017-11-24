@@ -1,16 +1,20 @@
 <?php
-
-/**
- * Contao Open Source CMS
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Contao;
 
 
+/**
+ * Reads and writes page container
+ */
 class ContainerModel extends \Model 
 {
 
@@ -22,13 +26,13 @@ class ContainerModel extends \Model
 
 	
 	/**
-	 * Find an article by its ID or alias and its page
+	 * Find a page container by his id or alias and his parent page
 	 *
 	 * @param mixed   $varId      The numeric ID or alias name
 	 * @param integer $intPid     The page ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return ArticleModel|null The model or null if there is no article
+	 * @return ContainerModel|null The model or null if there is no page container
 	 */
 	public static function findByIdOrAliasAndPid($varId, $intPid, array $arrOptions=array())
 	{
@@ -47,13 +51,13 @@ class ContainerModel extends \Model
 
 
 	/**
-	 * Find a published article by its ID or alias and its page
+	 * Find a published page container by his ids or alias and his parent page
 	 *
 	 * @param mixed   $varId      The numeric ID or alias name
 	 * @param integer $intPid     The page ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return ArticleModel|null The model or null if there is no article
+	 * @return ContainerModel|null The model or null if there is no page container
 	 */
 	public static function findPublishedByIdOrAliasAndPid($varId, $intPid, array $arrOptions=array())
 	{
@@ -78,12 +82,12 @@ class ContainerModel extends \Model
 
 
 	/**
-	 * Find a published article by its ID
+	 * Find a published page container his id
 	 *
 	 * @param integer $intId      The article ID
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return ArticleModel|null The model or null if there is no published article
+	 * @return ContainerModel|null The model or null if there is no published page container
 	 */
 	public static function findPublishedById($intId, array $arrOptions=array())
 	{
@@ -101,13 +105,13 @@ class ContainerModel extends \Model
 
 
 	/**
-	 * Find all published articles by their parent ID and column
+	 * Find all published page container by their parent ids and column
 	 *
 	 * @param integer $intPid     The page ID
 	 * @param string  $strColumn  The column name
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 * @return Model\Collection|ContainerModel|null A collection of models or null if there are no page containers in the given column
 	 */
 	public static function findPublishedByPidAndColumn($intPid, $strColumn, array $arrOptions=array())
 	{
@@ -128,5 +132,4 @@ class ContainerModel extends \Model
 
 		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
-	
 }

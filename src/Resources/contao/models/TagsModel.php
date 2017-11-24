@@ -1,16 +1,20 @@
 <?php
-
-/**
- * Contao Open Source CMS
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Contao;
 
 
+/**
+ * Reads and writes tags
+ */
 class TagsModel extends \Model 
 {
 
@@ -22,13 +26,12 @@ class TagsModel extends \Model
 
 	
 	/**
-	 * Find all published articles by their parent ID, column and featured status
+	 * Find tags by their label(s)
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
-	 * @param array   $arrOptions An optional options array
+	 * @param array $arrTags    An array with labels
+	 * @param array $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 * @return Model|TagsModel|null A model or null if there are no tags
 	 */
 	public static function findByLabels($arrTags, array $arrOptions=array())
 	{
@@ -45,13 +48,12 @@ class TagsModel extends \Model
 
 
 	/**
-	 * Find all published articles by their parent ID, column and featured status
+	 * Find tags by their archive
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
+	 * @param integer $intArchive The archive id
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 * @return Model\Collection|TagsModel|null A collection of models or null if there are no tags in the archive
 	 */
 	public static function findByArchive($intArchive, array $arrOptions=array())
 	{
@@ -70,13 +72,13 @@ class TagsModel extends \Model
 
 
 	/**
-	 * Find all published articles by their parent ID, column and featured status
+	 * Find published tags by their label and archive(s)
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
-	 * @param array   $arrOptions An optional options array
+	 * @param integer       $strTag      The tag label
+	 * @param integer|array $varArchives The archive id or an array of archive ids
+	 * @param array         $arrOptions  An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 * @return Model\Collection|TagsModel|null A collection of models or null if there are no articles in the archive
 	 */
 	public static function findPublishedByLabelAndArchives($strTag, $varArchives, array $arrOptions=array())
 	{
@@ -100,12 +102,12 @@ class TagsModel extends \Model
 
 
 	/**
-	 * Find all published tags by their posts archive
+	 * Find and count tags by their archive
 	 *
-	 * @param integer $intArchive The archive ID
+	 * @param integer $intArchive The archive id
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no tags in the given column
+	 * @return Model\Collection|TagsModel|null A collection of models or null if there are no tags in archive
 	 */
 	public static function findAndCountPublishedByArchive($intArchive, array $arrOptions=array())
 	{

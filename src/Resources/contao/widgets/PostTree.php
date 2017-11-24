@@ -1,25 +1,19 @@
 <?php
-
-/**
- * Contao Posts'n'Pages extension
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Agoat\PostsnPages;
 
 
 /**
- * Provide methods to handle input field "post tree".
- *
- * @property string  $orderField
- * @property boolean $multiple
- * @property array   $rootNodes
- * @property string  $fieldType
- *
- * @author Arne Stappen (alias aGoat) <https://github.com/agoat>
+ * Provide methods to handle input field "post tree"
  */
 class PostTree extends \Widget
 {

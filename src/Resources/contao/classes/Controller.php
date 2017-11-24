@@ -1,22 +1,24 @@
 <?php
- 
- /**
- * Contao Open Source CMS - Content management extension
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen (aGoat)
- *
- *
- * @package   contentblocks
- * @author    Arne Stappen <http://agoat.de>
- * @license	  LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Agoat\PostsnPages;
 
+use \Contao\Controller as ContaoController;
 
-class Controller extends \Contao\Controller
+
+/**
+ * Controller class
+ */
+class Controller extends ContaoController
 {
-	
 	/**
 	 * Render page content
 	 *
@@ -76,7 +78,7 @@ class Controller extends \Contao\Controller
 	 * @param boolean $blnIsInsertTag If true, there will be no page relation
 	 * @param string  $strColumn      The name of the column
 	 *
-	 * @return string|boolean The container HTML markup or false
+	 * @return string The container HTML markup or false
 	 */
 	public static function generateContainer(\ContainerModel $objRow, $blnIsInsertTag=false, $strColumn='main')
 	{
@@ -117,7 +119,7 @@ class Controller extends \Contao\Controller
 	 * @param boolean $blnIsInsertTag If true, there will be no page relation
 	 * @param string  $strColumn      The name of the column
 	 *
-	 * @return string|boolean The article HTML markup or false
+	 * @return string The article HTML markup or false
 	 */
 	public static function generateStatic(\StaticModel $objRow, $blnIsInsertTag=false)
 	{
@@ -147,7 +149,7 @@ class Controller extends \Contao\Controller
 	 * @param boolean $blnIsInsertTag If true, there will be no page relation
 	 * @param string  $strColumn      The name of the column
 	 *
-	 * @return string|boolean The article HTML markup or false
+	 * @return string The article HTML markup or false
 	 */
 	public static function generatePost(\PostsModel $objRow, $blnIsInsertTag=false)
 	{
@@ -316,4 +318,27 @@ class Controller extends \Contao\Controller
 		unset($GLOBALS['BE_MOD']['content']['article']);
 	}	
 
+	
+	/**
+	 * Show post informations for comments
+	 *
+	 * @param $arrRow
+	 *
+	 * @return string
+	 */
+	public function listPatternComments($arrRow) 
+	{
+		if ($arrRow['source'] == 'tl_posts')
+		{
+			$db = Database::getInstance();
+			
+			$objParent = $db->prepare("SELECT id, title FROM tl_posts WHERE id=?")
+						    ->execute($arrRow['parent']);
+			
+			if ($objParent->numRows)
+			{
+				return ' (<a href="contao/main.php?do=posts&amp;table=tl_content&amp;id=' . $objParent->id . '&amp;rt=' . REQUEST_TOKEN . '">' . $objParent->title . '</a>)';
+			}
+		}
+	}
 }

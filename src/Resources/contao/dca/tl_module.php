@@ -1,13 +1,14 @@
 <?php
-
 /*
- * Contao Extended Articles Extension
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
- 
+
 
 /**
  * Palettes
@@ -16,13 +17,11 @@ $bundles = \System::getContainer()->getParameter('kernel.bundles');
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postscontent']  = '{title_legend},name,headline,type;{config_legend},featured,showTeaser,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['poststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,readerModule,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postreader']  = '{title_legend},name,headline,type;{config_legend},showTeaser;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{related_legend},addRelated;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},addComments;' : '') . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['relatedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},numberOfItems,skipFirst,perPage;{sort_legend:hide},sortRelated,sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['poststagmenu']  = '{title_legend},name,headline,type;{config_legend},numberOfItems;{archive_legend:hide},archive;{sort_legend:hide},sortTags, sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},tagsTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-
-$GLOBALS['TL_DCA']['tl_module']['palettes']['relatedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},numberOfItems,skipFirst,perPage;{sort_legend:hide},sortRelated,sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['static']  = '{title_legend},name,headline,type;{static_legend:hide},staticContent;{template_legend:hide},customTpl, noMarkup;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
@@ -139,7 +138,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['category'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['category'],
 	'exclude'                 => true,
 	'inputType'               => 'select',
-	'options_callback'        => array('tl_module_posts', 'getArticleCategories'),
+	'options_callback'        => array('tl_module_posts', 'getPostsCategories'),
 	'eval'                    => array('chosen'=>true, 'tl_class'=>'w50'),
 	'sql'                     => "varchar(255) NOT NULL default ''"
 );
@@ -262,14 +261,12 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['numberOfItems']['default'] = 10;
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
- *
- * @author Arne Stappen <https://github.com/agoat>
  */
 class tl_module_posts extends Backend
 {
 
 	/**
-	 * Explizit DCA configuration for some modules
+	 * Explicitly set the DCA configuration for some modules
 	 *
 	 * @param DataContainer $dc
 	 *
@@ -279,13 +276,13 @@ class tl_module_posts extends Backend
 	{
 		switch ($value)
 		{
-			// tags module
+			// Tags module
 			case 'tags':
 				$GLOBALS['TL_DCA']['tl_module']['fields']['archive']['eval']['mandatory'] = true;
 				$GLOBALS['TL_DCA']['tl_module']['fields']['jumpTo']['eval']['mandatory'] = true;
 				break;
 
-			// tagged teaser module
+			// Tagged teaser module
 			case 'taggedposts':
 			case 'taggedteaser':
 				$GLOBALS['TL_DCA']['tl_module']['fields']['archive']['eval']['mandatory'] = true;
@@ -297,7 +294,7 @@ class tl_module_posts extends Backend
 	
 
 	/**
-	 * Get all news reader modules and return them as array
+	 * Get all post reader modules and return them as array
 	 *
 	 * @return array
 	 */
@@ -316,7 +313,7 @@ class tl_module_posts extends Backend
 
 
 	/**
-	 * Get all news reader modules and return them as array
+	 * Get all related posts modules and return them as array
 	 *
 	 * @return array
 	 */
@@ -335,7 +332,7 @@ class tl_module_posts extends Backend
 
 
 	/**
-	 * Return the edit article alias wizard
+	 * Return the edit module alias wizard
 	 *
 	 * @param DataContainer $dc
 	 *
@@ -398,7 +395,7 @@ class tl_module_posts extends Backend
 	
 	
 	/**
-	 * Return the archives
+	 * Return the tags
 	 *
 	 * @param DataContainer $dc
 	 *
@@ -428,30 +425,32 @@ class tl_module_posts extends Backend
 	
 	
 	/**
-	 * Return the article categories
+	 * Return the posts categories
 	 *
 	 * @param DataContainer $dc
 	 *
 	 * @return array
 	 */
-	public function getArticleCategories (DataContainer $dc)
+	public function getPostsCategories (DataContainer $dc)
 	{
-		$objArticles = \ArticleModel::findAll();
+		$objPosts = \PostsModel::findAll();
 
 		$arrCat = array();
 		
-		foreach ($objArticles as $objArticle)
+		if ($objPosts !== null)
 		{
-			if (is_array($category = \StringUtil::deserialize($objArticle->category)))
+			foreach ($objPosts as $objPost)
 			{
-				foreach ($category as $val)
+				if (is_array($category = \StringUtil::deserialize($objPost->category)))
 				{
-					$arrCat[$val] = $val;
+					foreach ($category as $val)
+					{
+						$arrCat[$val] = $val;
+					}
 				}
 			}
 		}
 
 		return $arrCat;
 	}
-
 }

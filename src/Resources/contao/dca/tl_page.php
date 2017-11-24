@@ -1,11 +1,12 @@
 <?php
-
 /*
- * Contao Extended Articles Extension
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
  
@@ -33,14 +34,12 @@ unset ($callback);
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
- *
- * @author Arne Stappen (alias aGOAT) <https://github.com/agoat>
  */
 class tl_page_extendedarticles extends Backend
 {
 
 	/**
-	 * Automatically create an container in the main column of a new page
+	 * Automatically create an container in the main column for new pages
 	 *
 	 * @param DataContainer $dc
 	 */
@@ -87,7 +86,5 @@ class tl_page_extendedarticles extends Backend
 		$arrSet['published'] = $dc->activeRecord->published;
 
 		$this->Database->prepare("INSERT INTO tl_container %s")->set($arrSet)->execute();
-		
 	}
-	
 }

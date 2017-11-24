@@ -1,13 +1,14 @@
 <?php
-
-/**
- * Contao Open Source CMS- Posts'n'pages extension
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
-
+ 
 namespace Agoat\PostsnPagesBundle\Controller;
 
 use Agoat\PermalinkBundle\Controller\ControllerInterface;

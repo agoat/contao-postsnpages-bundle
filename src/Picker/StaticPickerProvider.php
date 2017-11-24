@@ -1,11 +1,12 @@
 <?php
-
 /*
- * This file is part of the Contao Posts'n'Pages extensino.
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Agoat\PostsnPagesBundle\Picker;
@@ -18,7 +19,7 @@ use Contao\CoreBundle\Picker\PickerConfig;
 
 
 /**
- * Provides the archive picker.
+ * Provides the archive picker
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
@@ -26,6 +27,7 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
 {
     use FrameworkAwareTrait;
 
+	
 	/**
      * {@inheritdoc}
      */
@@ -34,6 +36,7 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
         return 'staticPicker';
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -42,6 +45,7 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
 		return in_array($context, ['static'], true) && $this->getUser()->hasAccess('static', 'modules');
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -54,6 +58,7 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
         return false;
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -62,6 +67,7 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
         return 'tl_static';
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -85,6 +91,7 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
         return $attributes;
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -93,6 +100,7 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
         return (int) $value;
     }
 
+	
     /**
      * {@inheritdoc}
      */

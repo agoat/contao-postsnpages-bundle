@@ -1,16 +1,20 @@
 <?php
-
-/**
- * Contao Open Source CMS
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Contao;
 
 
+/**
+ * Reads and writes archives
+ */
 class ArchiveModel extends \Model 
 {
 
@@ -22,13 +26,12 @@ class ArchiveModel extends \Model
 
 	
 	/**
-	 * Find all published articles by their parent ID, column, featured status and category
+	 * Find all published archives by their id(s)
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
+	 * @param integer|array $varIds     The archive id(s)
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 * @return Model\Collection|ArchiveModel|null A collection of models or null if there are no archives
 	 */
 	public static function findByIds($varIds, array $arrOptions=array())
 	{
@@ -47,6 +50,4 @@ class ArchiveModel extends \Model
 
 		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
-
-	
 }

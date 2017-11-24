@@ -1,11 +1,12 @@
 <?php
-
-/**
- * Contao Open Source CMS
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 
@@ -227,8 +228,6 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
  */
 class tl_static extends Backend
 {
@@ -244,7 +243,7 @@ class tl_static extends Backend
 
 
 	/**
-	 * Check permissions to edit table tl_page
+	 * Check permissions to edit table tl_archive
 	 *
 	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
 	 */
@@ -430,7 +429,7 @@ class tl_static extends Backend
 
 
 	/**
-	 * Add an image to each page in the tree
+	 * Add an image to each container in the tree
 	 *
 	 * @param array  $row
 	 * @param string $label
@@ -449,16 +448,12 @@ class tl_static extends Backend
 
 
 	/**
-	 * Auto-generate an article alias if it has not been set yet
+	 * Set the type for groups
 	 *
-	 * @param mixed         $varValue
-	 * @param DataContainer $dc
-	 *
-	 * @return string
-	 *
-	 * @throws Exception
+	 * @param string  $strTable
+	 * @param inteder $insertID
 	 */
-	public function addGroup($strTable, $insertID, $set, DataContainer $dc)
+	public function addGroup($strTable, $insertID)
 	{
 		$objStatic = \StaticModel::findById($insertID);
 		
@@ -496,7 +491,7 @@ class tl_static extends Backend
 
 
 	/**
-	 * Return all module templates as array
+	 * Return all container templates as array
 	 *
 	 * @return array
 	 */
@@ -507,7 +502,7 @@ class tl_static extends Backend
 
 
 	/**
-	 * Return the edit article button
+	 * Return the edit static button
 	 *
 	 * @param array  $row
 	 * @param string $href
@@ -543,7 +538,7 @@ class tl_static extends Backend
 
 
 	/**
-	 * Return the copy article button
+	 * Return the copy static button
 	 *
 	 * @param array  $row
 	 * @param string $href
@@ -566,7 +561,7 @@ class tl_static extends Backend
 
 
 	/**
-	 * Return the cut article button
+	 * Return the cut static button
 	 *
 	 * @param array  $row
 	 * @param string $href
@@ -584,7 +579,7 @@ class tl_static extends Backend
 
 
 	/**
-	 * Return the paste article button
+	 * Return the paste static button
 	 *
 	 * @param DataContainer $dc
 	 * @param array         $row
@@ -660,7 +655,7 @@ class tl_static extends Backend
 
 
 	/**
-	 * Return the delete article button
+	 * Return the delete static button
 	 *
 	 * @param array  $row
 	 * @param string $href

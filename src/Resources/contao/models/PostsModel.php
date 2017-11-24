@@ -1,16 +1,20 @@
 <?php
-
-/**
- * Contao Open Source CMS
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Contao;
 
 
+/**
+ * Reads and writes posts
+ */
 class PostsModel extends \Model
 {
 	
@@ -22,13 +26,12 @@ class PostsModel extends \Model
 
 
 	/**
-	 * Find all published articles by their parent ID, column, featured status and category
+	 * Find a published post by his id or alias
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
+	 * @param integer $varId     The post id or alias
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 * @return Model\Collection|PostsModel|null A collection of models or null if there are no posts
 	 */
 	public static function findPublishedByIdOrAlias($varId, array $arrOptions=array())
 	{
@@ -48,13 +51,12 @@ class PostsModel extends \Model
 
 	
 	/**
-	 * Find all published articles by their parent ID, column, featured status and category
+	 * Find published posts by their ids
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
+	 * @param integer $varIds     The post ids
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
+	 * @return Model\Collection|PostsModel|null A collection of models or null if there are no posts
 	 */
 	public static function findPublishedByIds($varIds, array $arrOptions=array())
 	{
@@ -82,11 +84,11 @@ class PostsModel extends \Model
 
 	
 	/**
-	 * Find all published articles by their parent ID, column, featured status and category
+	 * Find published posts by their ids and featured status
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
-	 * @param array   $arrOptions An optional options array
+	 * @param integer $intPid      The post id(s)
+	 * @param boolean $blnFeatured True for featured posts
+	 * @param array   $arrOptions  An optional options array
 	 *
 	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
 	 */
@@ -121,11 +123,12 @@ class PostsModel extends \Model
 
 	
 	/**
-	 * Find all published articles by their parent ID, column, featured status and category
+	 * Find published posts by their ids, featured status and category
 	 *
-	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
-	 * @param array   $arrOptions An optional options array
+	 * @param integer $intPid      The post id(s)
+	 * @param boolean $blnFeatured True for featured posts
+	 * @param string  $strCategory The category
+	 * @param array   $arrOptions  An optional options array
 	 *
 	 * @return Model\Collection|ArticleModel[]|ArticleModel|null A collection of models or null if there are no articles in the given column
 	 */
@@ -163,6 +166,4 @@ class PostsModel extends \Model
 		
 		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
-
-
 }

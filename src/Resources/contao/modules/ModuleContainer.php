@@ -1,35 +1,19 @@
 <?php
-
-/**
- * Contao Open Source CMS
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2005-2017 Leo Feyer
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Agoat\PostsnPages;
 
 
 /**
- * Provides methodes to handle articles.
- *
- * @property integer $tstamp
- * @property string  $title
- * @property string  $alias
- * @property string  $inColumn
- * @property boolean $showTeaser
- * @property boolean $multiMode
- * @property string  $teaser
- * @property string  $teaserCssID
- * @property string  $classes
- * @property string  $keywords
- * @property boolean $printable
- * @property boolean $published
- * @property integer $start
- * @property integer $stop
- *
- * @author Leo Feyer <https://github.com/leofeyer>
+ * ModuleContainer class
  */
 class ModuleContainer extends \Module
 {

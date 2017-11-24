@@ -1,11 +1,12 @@
 <?php
-
 /*
- * This file is part of the Contao Posts'n'Pages extensino.
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Agoat\PostsnPagesBundle\Picker;
@@ -18,7 +19,7 @@ use Contao\CoreBundle\Picker\PickerConfig;
 
 
 /**
- * Provides the posts picker.
+ * Provides the posts picker
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
@@ -26,6 +27,7 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
 {
     use FrameworkAwareTrait;
 
+	
 	/**
      * {@inheritdoc}
      */
@@ -34,6 +36,7 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return 'postPicker';
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -42,6 +45,7 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return in_array($context, ['post', 'link'], true) && $this->getUser()->hasAccess('post', 'modules');
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -54,6 +58,7 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return false !== strpos($config->getValue(), '{{post_url::');
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -62,6 +67,7 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return 'tl_posts';
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -92,6 +98,7 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return $attributes;
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -104,6 +111,7 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return '{{post_url::'.$value.'}}';
     }
 
+	
     /**
      * {@inheritdoc}
      */

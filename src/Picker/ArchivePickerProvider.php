@@ -1,11 +1,12 @@
 <?php
-
 /*
- * This file is part of the Contao Posts'n'Pages extensino.
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * Copyright (c) 2017 Arne Stappen
- *
- * @license LGPL-3.0+
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
  */
 
 namespace Agoat\PostsnPagesBundle\Picker;
@@ -18,7 +19,7 @@ use Contao\CoreBundle\Picker\PickerConfig;
 
 
 /**
- * Provides the archive picker.
+ * Provides the archive picker
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
