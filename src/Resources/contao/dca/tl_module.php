@@ -13,8 +13,6 @@
 /**
  * Palettes
  */
-$bundles = \System::getContainer()->getParameter('kernel.bundles');
-
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postscontent']  = '{title_legend},name,headline,type;{config_legend},featured,showTeaser,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['poststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,readerModule,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postreader']  = '{title_legend},name,headline,type;{config_legend},showTeaser;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{related_legend},addRelated;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},addComments;' : '') . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';

@@ -9,7 +9,7 @@
  * @license    LGPL-3.0
  */
 
-namespace Agoat\PostsnPages;
+namespace Agoat\PostsnPagesBundle\Contao;
 
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Patchwork\Utf8;

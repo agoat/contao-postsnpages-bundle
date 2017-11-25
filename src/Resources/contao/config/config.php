@@ -46,30 +46,30 @@ $GLOBALS['BE_MOD']['content'] = $content + $GLOBALS['BE_MOD']['content'];
 /**
  * Register front end modules
  */
-$arrModules['posts']['postscontent'] 		= 'Agoat\PostsnPages\ModulePostsContent';
-$arrModules['posts']['poststeaser'] 		= 'Agoat\PostsnPages\ModulePostsTeaser';
-$arrModules['posts']['postreader'] 			= 'Agoat\PostsnPages\ModulePostReader';
-$arrModules['posts']['taggedpoststeaser'] 	= 'Agoat\PostsnPages\ModuleTaggedPostsTeaser';
-$arrModules['posts']['relatedpoststeaser'] 	= 'Agoat\PostsnPages\ModuleRelatedPostsTeaser';
+$arrModules['posts']['postscontent'] 		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsContent';
+$arrModules['posts']['poststeaser'] 		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTeaser';
+$arrModules['posts']['postreader'] 			= 'Agoat\PostsnPagesBundle\Contao\ModulePostReader';
+$arrModules['posts']['taggedpoststeaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleTaggedPostsTeaser';
+$arrModules['posts']['relatedpoststeaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleRelatedPostsTeaser';
 
 $GLOBALS['FE_MOD'] = $arrModules + $GLOBALS['FE_MOD'];
 
 
-$GLOBALS['FE_MOD']['navigationMenu']['poststagmenu']		= 'Agoat\PostsnPages\ModulePostsTagMenu';
-//$GLOBALS['FE_MOD']['navigationMenu']['postscategorymenu'] 	= 'Agoat\PostsnPages\ModulePostsArchiveMenu';
-//$GLOBALS['FE_MOD']['navigationMenu']['poststimetablemenu'] 	= 'Agoat\PostsnPages\ModulePostsTimetableMenu';
+$GLOBALS['FE_MOD']['navigationMenu']['poststagmenu']		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTagMenu';
+//$GLOBALS['FE_MOD']['navigationMenu']['postscategorymenu'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsArchiveMenu';
+//$GLOBALS['FE_MOD']['navigationMenu']['poststimetablemenu'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTimetableMenu';
 
-$GLOBALS['FE_MOD']['miscellaneous']['static'] 			= 'Agoat\PostsnPages\ModuleStatic';
+$GLOBALS['FE_MOD']['miscellaneous']['static'] 			= 'Agoat\PostsnPagesBundle\Contao\ModuleStatic';
 
 
 /**
  * Back end form fields (widgets)
  */
-$GLOBALS['BE_FFL']['inputselect'] 	= '\Agoat\PostsnPages\InputSelect';
-$GLOBALS['BE_FFL']['moduleWizard'] 	= '\Agoat\PostsnPages\ModuleWizard';
-$GLOBALS['BE_FFL']['archiveTree'] 	= '\Agoat\PostsnPages\ArchiveTree';
-$GLOBALS['BE_FFL']['postTree'] 		= '\Agoat\PostsnPages\PostTree';
-$GLOBALS['BE_FFL']['staticTree'] 	= '\Agoat\PostsnPages\StaticTree';
+$GLOBALS['BE_FFL']['inputselect'] 	= '\Agoat\PostsnPagesBundle\Contao\InputSelect';
+$GLOBALS['BE_FFL']['moduleWizard'] 	= '\Agoat\PostsnPagesBundle\Contao\ModuleWizard';
+$GLOBALS['BE_FFL']['archiveTree'] 	= '\Agoat\PostsnPagesBundle\Contao\ArchiveTree';
+$GLOBALS['BE_FFL']['postTree'] 		= '\Agoat\PostsnPagesBundle\Contao\PostTree';
+$GLOBALS['BE_FFL']['staticTree'] 	= '\Agoat\PostsnPagesBundle\Contao\StaticTree';
 
 
 /**
@@ -92,22 +92,22 @@ if (TL_MODE == 'BE')
  * Register HOOKS
  */
 
-$GLOBALS['TL_HOOKS']['getArticles'][] = array('Agoat\\PostsnPages\\Controller', 'renderContainer'); 
+$GLOBALS['TL_HOOKS']['getArticles'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'renderContainer'); 
  
-$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Agoat\\PostsnPages\\Controller', 'hideArticles'); 
-$GLOBALS['TL_HOOKS']['executePostActions'][] = array('Agoat\\PostsnPages\\Ajax','postActions');
-$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('Agoat\\PostsnPages\\InsertTags','doReplace');
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'hideArticles'); 
+$GLOBALS['TL_HOOKS']['executePostActions'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Ajax','postActions');
+$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('Agoat\\PostsnPagesBundle\\Contao\\InsertTags','doReplace');
 
 
 $bundles = \System::getContainer()->getParameter('kernel.bundles');
 
 if (array_key_exists('ContaoCommentsBundle', $bundles))
 {
-	$GLOBALS['TL_HOOKS']['listComments'][] = array('Agoat\\PostsnPages\\Controller', 'listPatternComments'); 
+	$GLOBALS['TL_HOOKS']['listComments'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'listPatternComments'); 
 }
 
 if (array_key_exists('AgoatContentElementsBundle', $bundles))
 {
-	$GLOBALS['TL_HOOKS']['getRootPageId'][] = array('Agoat\\PostsnPages\\Controller', 'getRootPageId'); 
-	$GLOBALS['TL_HOOKS']['getLayoutId'][] = array('Agoat\\PostsnPages\\Controller', 'getLayoutId'); 
+	$GLOBALS['TL_HOOKS']['getRootPageId'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'getRootPageId'); 
+	$GLOBALS['TL_HOOKS']['getLayoutId'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'getLayoutId'); 
 }

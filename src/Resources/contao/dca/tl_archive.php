@@ -348,7 +348,7 @@ class tl_archive extends Backend
 
 					if ($objParent->numRows && $objParent->type == 'root')
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Attempt to insert an article into website root page ID ' . Input::get('pid') . '.');
+						throw new \Contao\CoreBundle\Exception\AccessDeniedException('Attempt to insert an article into website root page ID ' . Input::get('pid') . '.');
 					}
 					break;
 
@@ -376,7 +376,7 @@ class tl_archive extends Backend
 				{
 					if (!in_array($id, $pagemounts))
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Page ID ' . $id . ' is not mounted.');
+						throw new \Contao\CoreBundle\Exception\AccessDeniedException('Page ID ' . $id . ' is not mounted.');
 					}
 
 					$objPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
@@ -386,7 +386,7 @@ class tl_archive extends Backend
 					// Check whether the current user has permission for the current page
 					if ($objPage->numRows && !$this->User->isAllowed($permission, $objPage->row()))
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'article ID ' . Input::get('id') : ' articles') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
+						throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'article ID ' . Input::get('id') : ' articles') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
 					}
 				}
 			}

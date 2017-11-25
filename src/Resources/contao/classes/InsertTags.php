@@ -9,10 +9,10 @@
  * @license    LGPL-3.0
  */
 
-namespace Agoat\PostsnPages;
+namespace Agoat\PostsnPagesBundle\Contao;
 
 use \Contao\Controller as ContaoController;
-use Agoat\PostsnPages\Controller;
+use Agoat\PostsnPagesBundle\Contao\Controller;
 
 
 /**

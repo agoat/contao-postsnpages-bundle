@@ -9,7 +9,7 @@
  * @license    LGPL-3.0
  */
 
-namespace Agoat\PostsnPages;
+namespace Agoat\PostsnPagesBundle\Contao;
 
 use Patchwork\Utf8;
 

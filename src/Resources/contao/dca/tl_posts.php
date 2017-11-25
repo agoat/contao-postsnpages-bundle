@@ -736,7 +736,7 @@ class tl_posts extends Backend
 		}
 
 		// Readmore
-		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPages\Posts::generatePostUrl(\PostsModel::findById($arrRow['id']), true) . '" target="_blank">Read more</a></p>';
+		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPagesBundle\Contao\Posts::generatePostUrl(\PostsModel::findById($arrRow['id']), true) . '" target="_blank">Read more</a></p>';
 
 		$return .= '</div>';
 		

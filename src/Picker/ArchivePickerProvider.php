@@ -27,6 +27,7 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
 {
     use FrameworkAwareTrait;
 
+	
 	/**
      * {@inheritdoc}
      */
@@ -35,6 +36,7 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
         return 'archivePicker';
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -43,6 +45,7 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
         return in_array($context, ['archive'], true) && $this->getUser()->hasAccess('archive', 'modules');
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -55,6 +58,7 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
         return false;
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -63,6 +67,7 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
         return 'tl_archive';
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -89,6 +94,7 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
          return $attributes;
     }
 
+	
     /**
      * {@inheritdoc}
      */
@@ -97,6 +103,7 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
         return (int) $value;
     }
 
+	
     /**
      * {@inheritdoc}
      */
