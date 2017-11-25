@@ -5,9 +5,9 @@
 [![Downloads](https://img.shields.io/packagist/dt/agoat/contao-postsnpages.svg?style=flat-square)](http://packagist.org/packages/agoat/contao-postsnpages) 
 
 ## About
-An alternative structure to manage content in contao. It is similar to the structure of Wordpress. It's based on the idea that a website basically contains 3 types of content blocks:
+An alternative structure to manage content in contao - similar to Wordpress but with a more comprehensive approach. It's based on the idea that a website basically contains 3 types of content blocks:
 
-#### Posts content
+#### Post content
 Content that refers to an article or topic (which is typical for blogs), which can be called under a separate url, but which are also listed in an overview within a page (usually as a teaser).
 
 #### Page content
