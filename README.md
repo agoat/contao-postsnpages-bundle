@@ -1,6 +1,3 @@
-# Contao Posts'n'Pages extension
-An alternative Contao content organization with posts and pages (a bit like wordpress)
-
 # Posts'n'Pages for Contao 4
 
 [![Version](https://img.shields.io/packagist/v/agoat/contao-postsnpages.svg?style=flat-square)](http://packagist.org/packages/agoat/contao-postsnpages)
@@ -8,7 +5,7 @@ An alternative Contao content organization with posts and pages (a bit like word
 [![Downloads](https://img.shields.io/packagist/dt/agoat/contao-postsnpages.svg?style=flat-square)](http://packagist.org/packages/agoat/contao-postsnpages) 
 
 ## About
-A new management structure for contao. It is similar to the structure of Wordpress. It's based on the idea that a website basically contains 3 types of content blocks:
+An alternative structure to manage content in contao. It is similar to the structure of Wordpress. It's based on the idea that a website basically contains 3 types of content blocks:
 
 #### Posts content
 Content that refers to an article or topic (which is typical for blogs), which can be called under a separate url, but which are also listed in an overview within a page (usually as a teaser).
