@@ -62,7 +62,7 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 		$permalink = new PermalinkUrl();
 
 		$permalink->setScheme($objPage->rootUseSSL ? 'https' : 'http')
-				  ->setHost($objPage->domain)
+				  ->setHost($objPage->domain ?: $this->getHost())
 				  ->setPath($this->validatePath($this->resolvePattern($objPost)))
 				  ->setSuffix($this->suffix);
 
@@ -104,7 +104,7 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 		$permalink = new PermalinkUrl();
 		
 		$permalink->setScheme($objPage->rootUseSSL ? 'https' : 'http')
-				  ->setGuid((null !== $objPermalink) ? $objPermalink->guid : $objPage->domain)
+				  ->setGuid((null !== $objPermalink) ? $objPermalink->guid : ($objPage->domain ?: $this->getHost()))
 				  ->setSuffix((strpos($permalink->getGuid(), '/')) ? $this->suffix : '');
 
 		return $permalink;

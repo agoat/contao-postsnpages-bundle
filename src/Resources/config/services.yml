@@ -47,6 +47,7 @@ services:
         class: Agoat\PostsnPagesBundle\Permalink\PostPermalinkProvider
         public: false
         arguments:
+            - "@request_stack"
             - "%contao.url_suffix%"
         tags:
             - { name: permalink.provider, context: posts }
