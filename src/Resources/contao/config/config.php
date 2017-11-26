@@ -98,6 +98,8 @@ $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Agoat\\PostsnPagesBundle\\Co
 $GLOBALS['TL_HOOKS']['executePostActions'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Ajax','postActions');
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('Agoat\\PostsnPagesBundle\\Contao\\InsertTags','doReplace');
 
+$GLOBALS['TL_HOOKS']['getLayoutId'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller','getLayoutId');
+
 
 $bundles = \System::getContainer()->getParameter('kernel.bundles');
 
