@@ -312,12 +312,16 @@ class Controller extends ContaoController
 	 */
 	public static function hideArticles()
 	{
-		// Remove the articles from the backend module array
+		// Remove articles from the backend module array
 		unset($GLOBALS['BE_MOD']['content']['article']);
 
-		// Remove the article related modules
+		// Remove article related modules
 		unset($GLOBALS['FE_MOD']['navigationMenu']['articlenav']);
 		unset($GLOBALS['FE_MOD']['miscellaneous']['articlelist']);
+
+		// Remove article related content elements
+		unset($GLOBALS['TL_CTE']['includes']['article']);
+		unset($GLOBALS['TL_CTE']['includes']['teaser']);
 	}	
 
 	
