@@ -36,6 +36,14 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 			array('tl_container', 'addCustomLayoutSectionReferences'),
 			array('tl_page', 'addBreadcrumb')
 		),
+		'oncreate_callback' => array
+		(
+			array('tl_container', 'setSection'),
+		),
+		'oncut_callback' => array
+		(
+			array('tl_container', 'setSection'),
+		),
 		'sql' => array
 		(
 			'keys' => array
@@ -511,47 +519,28 @@ class tl_container extends Backend
 
 
 	/**
-	 * Auto-generate an article alias if it has not been set yet
+	 * Set the section automatically
 	 *
-	 * @param mixed         $varValue
-	 * @param DataContainer $dc
-	 *
-	 * @return string
-	 *
-	 * @throws Exception
+	 * @param string|DataContainer $mixed    The table name or DataContainer
+	 * @param string               $insertID The id of the new row
 	 */
-	public function generateAlias($varValue, DataContainer $dc)
+	public function setSection($mixed, $insertID=null)
 	{
-		$autoAlias = false;
-
-		// Generate an alias if there is none
-		if ($varValue == '')
+		if (null === $insertID)
 		{
-			$autoAlias = true;
-			$varValue = StringUtil::generateAlias($dc->activeRecord->title);
+			$insertID = \Input::get('id');
 		}
-
-		// Add a prefix to reserved names (see #6066)
-		if (in_array($varValue, array('top', 'wrapper', 'header', 'container', 'main', 'left', 'right', 'footer')))
+		
+		if (\Input::get('mode') == '1')
 		{
-			$varValue = 'article-' . $varValue;
-		}
-
-		$objAlias = $this->Database->prepare("SELECT id FROM tl_container WHERE id=? OR alias=?")
-								   ->execute($dc->id, $varValue);
-
-		// Check whether the page alias exists
-		if ($objAlias->numRows > 1)
-		{
-			if (!$autoAlias)
+			$objParent = \ContainerModel::findById(\Input::get('pid'));
+			
+			if (null !== $objParent)
 			{
-				throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+				$objInsertStmt = $this->Database->prepare("UPDATE tl_container SET section=? WHERE id=?")
+												->execute($objParent->section, $insertID);
 			}
-
-			$varValue .= '-' . $dc->id;
 		}
-
-		return $varValue;
 	}
 
 
@@ -592,7 +581,7 @@ class tl_container extends Backend
 					continue;
 				}
 
-				// Find all sections with an article module (see #6094)
+				// Find all sections with an container module
 				foreach ($arrModules as $arrModule)
 				{
 					if ($arrModule['mod'] == 0 && $arrModule['enable'])
@@ -768,13 +757,12 @@ class tl_container extends Backend
 		$objPage = \PageModel::findById($row['pid']);
 		
 		$objContainer = \ContainerModel::findById($arrClipboard['id']);
-		
+
 		if (
 			($arrClipboard['mode'] == 'cut' && $arrClipboard['id'] == $row['id']) ||
 			($arrClipboard['mode'] == 'cutAll' && in_array($row['id'], $arrClipboard['id'])) || 
 			!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) || 
-			$cr||
-			$row[$GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['group']] != $objContainer->{$GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['group']}
+			$cr
 		)
 		{
 			return Image::getHtml('pasteafter_.svg').' ';
