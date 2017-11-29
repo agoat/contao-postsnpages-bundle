@@ -557,7 +557,7 @@ class tl_container extends Backend
 		if ($dc->activeRecord->pid)
 		{
 			$arrSections = array();
-			$objPage = PageModel::findWithDetails($dc->activeRecord->pid);
+			$objPage = \PageModel::findWithDetails($dc->activeRecord->pid);
 
 			// Get the layout sections
 			foreach (array('layout', 'mobileLayout') as $key)
@@ -567,7 +567,7 @@ class tl_container extends Backend
 					continue;
 				}
 
-				$objLayout = LayoutModel::findByPk($objPage->$key);
+				$objLayout = \LayoutModel::findByPk($objPage->$key);
 
 				if ($objLayout === null)
 				{
