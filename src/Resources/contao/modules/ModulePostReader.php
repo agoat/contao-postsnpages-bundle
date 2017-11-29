@@ -153,7 +153,7 @@ class ModulePostReader extends ModulePosts
 			$arrNotifies = array();
 
 			// Notify the author
-			if (($objAuthor = $objPost->getRelated('author')) instanceof UserModel && $objAuthor->email != '')
+			if (($objAuthor = $objPost->getRelated('author')) instanceof \UserModel && $objAuthor->email != '')
 			{
 				$arrNotifies[] = $objAuthor->email;
 			}

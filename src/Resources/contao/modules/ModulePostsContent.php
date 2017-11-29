@@ -72,7 +72,7 @@ class ModulePostsContent extends ModulePosts
 		// Show the posts of a different page
 		if ($this->defineRoot && $this->rootPage > 0)
 		{
-			if (($objTarget = $this->objModel->getRelated('rootPage')) instanceof PageModel)
+			if (($objTarget = $this->objModel->getRelated('rootPage')) instanceof \PageModel)
 			{
 				$pageId = $objTarget->id;
 				$pageObj = $this->objModel->getRelated('rootPage');

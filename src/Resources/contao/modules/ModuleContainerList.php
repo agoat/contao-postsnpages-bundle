@@ -83,7 +83,7 @@ class ModuleContainerList extends \Module
 		// Show the container of a different page
 		if ($this->defineRoot && $this->rootPage > 0)
 		{
-			if (($objTarget = $this->objModel->getRelated('rootPage')) instanceof PageModel)
+			if (($objTarget = $this->objModel->getRelated('rootPage')) instanceof \PageModel)
 			{
 				$id = $objTarget->id;
 
