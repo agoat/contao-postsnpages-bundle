@@ -23,6 +23,8 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['poststagmenu']  = '{title_legend},n
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['static']  = '{title_legend},name,headline,type;{static_legend:hide},staticContent;{template_legend:hide},customTpl, noMarkup;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
+$GLOBALS['TL_DCA']['tl_module']['palettes']['containerlist']  = '{title_legend},name,headline,type;{config_legend},skipFirst,section;{reference_legend:hide},defineRoot;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'] = array_merge
 (
@@ -247,6 +249,17 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['staticContent'] = array
 	'inputType'               => 'staticTree',
 	'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio', 'filesOnly'=>true, 'tl_class'=>'clr'),
 	'sql'                     => "int(10) unsigned NOT NULL default '0'"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['section'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['section'],
+	'default'                 => 'main',
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options_callback'        => array('tl_module', 'getLayoutSections'),
+	'reference'               => &$GLOBALS['TL_LANG']['COLS'],
+	'eval'                    => array('tl_class'=>'w50'),
+	'sql'                     => "varchar(32) NOT NULL default ''"
 );
 
 

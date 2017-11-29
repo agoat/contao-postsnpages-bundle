@@ -68,7 +68,7 @@ class ModuleStatic extends \Module
 		/** @var PageModel $objPage */
 		global $objPage;
 		
-		$id = 'static-' . $this->staticContent;
+		$id = 'static-' . $this->id;
 
 		// Generate the CSS ID if it is not set
 		if (empty($this->cssID[0]))

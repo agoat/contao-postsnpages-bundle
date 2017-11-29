@@ -68,7 +68,7 @@ class ModuleContainer extends \Module
 			$this->cssID = array($id, $this->cssID[1]);
 		}
 
-		$this->Template->column = $this->inColumn;
+		$this->Template->section = $this->inColumn;
 		$this->Template->noMarkup = ($this->noMarkup || $this->blnNoMarkup);
 
 		// Add the modification date

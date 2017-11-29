@@ -22,14 +22,14 @@ class Controller extends ContaoController
 	/**
 	 * Render page content
 	 *
-	 * @param mixed  $intId     The page id
-	 * @param string $strColumn The name of the column
+	 * @param mixed  $intId      The page id
+	 * @param string $strSection The name of the section
 	 *
 	 * @return string The module HTML markup
 	 */	
-	public function renderContainer ($intId, $strColumn='main')
+	public function renderContainer ($intId, $strSection='main')
 	{
-		$objContainer = \ContainerModel::findPublishedByPidAndColumn($intId, $strColumn);
+		$objContainer = \ContainerModel::findPublishedByPidAndSection($intId, $strSection);
 
 		if ($objContainer === null)
 		{
@@ -63,7 +63,7 @@ class Controller extends ContaoController
 				$objRow->classes = $arrCss;
 			}
 			
-			$return .= static::generateContainer($objRow, false, $strColumn);
+			$return .= static::generateContainer($objRow, false, $strSection);
 			++$intCount;
 		}
 		
@@ -76,11 +76,11 @@ class Controller extends ContaoController
 	 *
 	 * @param mixed   $objRow         The ModelContainer object
 	 * @param boolean $blnIsInsertTag If true, there will be no page relation
-	 * @param string  $strColumn      The name of the column
+	 * @param string  $strSection     The name of the section
 	 *
 	 * @return string The container HTML markup or false
 	 */
-	public static function generateContainer(\ContainerModel $objRow, $blnIsInsertTag=false, $strColumn='main')
+	public static function generateContainer(\ContainerModel $objRow, $blnIsInsertTag=false, $strSection='main')
 	{
 		// Check the visibility (see #6311)
 		if (!static::isVisibleElement($objRow))
@@ -99,7 +99,7 @@ class Controller extends ContaoController
 			}
 		}
 
-		$objContainer = new ModuleContainer($objRow, $strColumn);
+		$objContainer = new ModuleContainer($objRow, $strSection);
 		$strBuffer = $objContainer->generate($blnIsInsertTag);
 
 		// Disable indexing if protected
@@ -117,7 +117,6 @@ class Controller extends ContaoController
 	 *
 	 * @param mixed   $objRow         The ModelStatic object
 	 * @param boolean $blnIsInsertTag If true, there will be no page relation
-	 * @param string  $strColumn      The name of the column
 	 *
 	 * @return string The article HTML markup or false
 	 */
@@ -147,7 +146,6 @@ class Controller extends ContaoController
 	 *
 	 * @param mixed   $objRow         The ModelStatic object
 	 * @param boolean $blnIsInsertTag If true, there will be no page relation
-	 * @param string  $strColumn      The name of the column
 	 *
 	 * @return string The article HTML markup or false
 	 */
@@ -316,6 +314,10 @@ class Controller extends ContaoController
 	{
 		// Remove the articles from the backend module array
 		unset($GLOBALS['BE_MOD']['content']['article']);
+
+		// Remove the article related modules
+		unset($GLOBALS['FE_MOD']['navigationMenu']['articlenav']);
+		unset($GLOBALS['FE_MOD']['miscellaneous']['articlelist']);
 	}	
 
 	

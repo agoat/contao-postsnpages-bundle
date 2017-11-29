@@ -1,0 +1,11 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+  <ul>
+    <?php foreach ($this->containers as $container): ?>
+      <li><a href="<?= $this->request ?>#<?= $container['id'] ?>" title="<?= $container['title'] ?>"><?= $container['link'] ?></a></li>
+    <?php endforeach; ?>
+  </ul>
+
+<?php $this->endblock(); ?>

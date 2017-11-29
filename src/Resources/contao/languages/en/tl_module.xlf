@@ -65,6 +65,12 @@
       <trans-unit id="tl_module.staticContent.1">
         <source>Here you can choose the container from which static content should be rendered.</source>
       </trans-unit>
+      <trans-unit id="tl_module.section.0">
+        <source>Section</source>
+      </trans-unit>
+      <trans-unit id="tl_module.section.1">
+        <source>Choose the section whose articles you want to list.</source>
+      </trans-unit>
       <trans-unit id="tl_module.archive_legend">
         <source>Archive settings</source>
       </trans-unit>

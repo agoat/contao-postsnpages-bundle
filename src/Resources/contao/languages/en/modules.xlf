@@ -49,6 +49,12 @@
       <trans-unit id="FMD.static.1">
         <source>Add static content to the page.</source>
       </trans-unit>
+      <trans-unit id="FMD.containerlist.0">
+        <source>Container list</source>
+      </trans-unit>
+      <trans-unit id="FMD.containerlist.1">
+        <source>Generates a hashtag link list of containers for a section</source>
+      </trans-unit>
       <trans-unit id="FMD.postscontent.0">
         <source>Posts content</source>
       </trans-unit>

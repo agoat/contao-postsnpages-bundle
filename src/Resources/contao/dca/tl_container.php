@@ -55,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 			'paste_button_callback'   => array('tl_container', 'pasteContainer'),
 			'panelLayout'             => 'filter;search',
 			'pfilter'				  => array("type IN ('regular','error_403','error_404')"),
-			'group'					  => 'inColumn'
+			'group'					  => 'section'
 		),
 		'label' => array
 		(
@@ -139,7 +139,7 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('protected'),
-		'default'                     => '{title_legend},title;{layout_legend},inColumn,keywords;{template_legend:hide},customTpl,noMarkup;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published,start,stop'
+		'default'                     => '{title_legend},title;{layout_legend},section,keywords;{template_legend:hide},customTpl,noMarkup;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID;{publish_legend},published,start,stop'
 	),
 
 	// Subpalettes
@@ -180,9 +180,9 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 			'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
-		'inColumn' => array
+		'section' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_container']['inColumn'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_container']['section'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'default'                 => 'main',

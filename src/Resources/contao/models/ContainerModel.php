@@ -105,19 +105,19 @@ class ContainerModel extends \Model
 
 
 	/**
-	 * Find all published page container by their parent ids and column
+	 * Find all published page container by their parent ids and section
 	 *
 	 * @param integer $intPid     The page ID
-	 * @param string  $strColumn  The column name
+	 * @param string  $strSection The section name
 	 * @param array   $arrOptions An optional options array
 	 *
 	 * @return Model\Collection|ContainerModel|null A collection of models or null if there are no page containers in the given column
 	 */
-	public static function findPublishedByPidAndColumn($intPid, $strColumn, array $arrOptions=array())
+	public static function findPublishedByPidAndSection($intPid, $strSection, array $arrOptions=array())
 	{
 		$t = static::$strTable;
-		$arrColumns = array("$t.pid=? AND $t.inColumn=?");
-		$arrValues = array($intPid, $strColumn);
+		$arrColumns = array("$t.pid=? AND $t.section=?");
+		$arrValues = array($intPid, $strSection);
 
 		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
 		{

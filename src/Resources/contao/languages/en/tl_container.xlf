@@ -8,10 +8,10 @@
       <trans-unit id="tl_container.title.1">
         <source>Please enter the container title.</source>
       </trans-unit>
-      <trans-unit id="tl_container.inColumn.0">
+      <trans-unit id="tl_container.section.0">
         <source>Display in</source>
       </trans-unit>
-      <trans-unit id="tl_container.inColumn.1">
+      <trans-unit id="tl_container.section.1">
         <source>Please choose the layout section you want the container to be displayed in.</source>
       </trans-unit>
       <trans-unit id="tl_container.keywords.0">
