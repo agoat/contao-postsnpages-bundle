@@ -81,7 +81,7 @@ class tl_page_extendedarticles extends Backend
 		$arrSet['pid'] = $dc->id;
 		$arrSet['sorting'] = 128;
 		$arrSet['tstamp'] = time();
-		$arrSet['inColumn'] = 'main';
+		$arrSet['section'] = 'main';
 		$arrSet['title'] = $dc->activeRecord->title;
 		$arrSet['published'] = $dc->activeRecord->published;
 
