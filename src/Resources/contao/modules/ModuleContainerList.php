@@ -95,30 +95,26 @@ class ModuleContainerList extends \Module
 		// Get published container
 		$objContainer = \ContainerModel::findPublishedByPidAndSection($id, $this->section);
 
-		if ($objContainer === null)
+		if (null !== $objContainer)
 		{
-			return;
-		}
-
-		$objHelper = $objTarget ?: $objPage;
-
-		while ($objContainer->next())
-		{
-			// Skip first article
-			if (++$intCount <= intval($this->skipFirst))
+			while ($objContainer->next())
 			{
-				continue;
+				// Skip first article
+				if (++$intCount <= intval($this->skipFirst))
+				{
+					continue;
+				}
+
+				$cssID = \StringUtil::deserialize($objContainer->cssID, true);
+
+				$containers[] = array
+				(
+					'link' => $objContainer->title,
+					'title' => \StringUtil::specialchars($objContainer->title),
+					'id' => $cssID[0] ?: 'container-' . $objContainer->id,
+					'containerId' => $objContainer->id
+				);
 			}
-
-			$cssID = \StringUtil::deserialize($objContainer->cssID, true);
-
-			$containers[] = array
-			(
-				'link' => $objContainer->title,
-				'title' => \StringUtil::specialchars($objContainer->title),
-				'id' => $cssID[0] ?: 'container-' . $objContainer->id,
-				'containerId' => $objContainer->id
-			);
 		}
 
 		$this->Template->containers = $containers;
