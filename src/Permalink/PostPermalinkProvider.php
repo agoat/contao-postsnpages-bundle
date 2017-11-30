@@ -236,6 +236,11 @@ class PostPermalinkProvider extends PermalinkProviderFactory implements Permalin
 					
 					if ($objPage)
 					{
+						if (false !== strpos($objPage->permalink, 'language') && 'root' !== $objPage->type)
+						{
+							break;
+						}
+						
 						$buffer .= $objPage->rootLanguage . $addition;
 					}
 					break;
