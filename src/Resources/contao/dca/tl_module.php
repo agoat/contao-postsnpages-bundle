@@ -16,12 +16,12 @@
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postscontent']  = '{title_legend},name,headline,type;{config_legend},featured,showTeaser,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['poststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,readerModule,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postreader']  = '{title_legend},name,headline,type;{config_legend},showTeaser;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{related_legend},addRelated;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},addComments;' : '') . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,numberOfItems,skipFirst,perPage;{archive_legend:hide},archive;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['taggedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},featured,numberOfItems,skipFirst,perPage;{tagmenu_legend},tagmenuModule;{sort_legend:hide},sortPosts,sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['relatedpoststeaser']  = '{title_legend},name,headline,type;{config_legend},numberOfItems,skipFirst,perPage;{sort_legend:hide},sortRelated,sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},teaserTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['poststagmenu']  = '{title_legend},name,headline,type;{config_legend},numberOfItems;{archive_legend:hide},archive;{sort_legend:hide},sortTags, sortOrder;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{template_legend:hide},tagsTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['poststagmenu']  = '{title_legend},name,headline,type;{config_legend},numberOfItems;{archive_legend:hide},archive;{sort_legend:hide},sortTags,sortOrder;{redirect_legend},jumpTo;{template_legend:hide},tagsTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
-$GLOBALS['TL_DCA']['tl_module']['palettes']['static']  = '{title_legend},name,headline,type;{static_legend:hide},staticContent;{template_legend:hide},customTpl, noMarkup;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['static']  = '{title_legend},name,headline,type;{static_legend:hide},staticContent;{template_legend:hide},customTpl,noMarkup;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['containerlist']  = '{title_legend},name,headline,type;{config_legend},skipFirst,section;{reference_legend:hide},defineRoot;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
@@ -54,10 +54,38 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['readerModule'] = array
 	),
 	'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );
+$GLOBALS['TL_DCA']['tl_module']['fields']['relatedModule'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['relatedModule'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options_callback'        => array('tl_module_posts', 'getRelatedModules'),
+	'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
+	'eval'                    => array('mandatory'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50 wizard'),
+	'wizard' => array
+	(
+		array('tl_module_posts', 'editModule')
+	),
+	'sql'                     => "int(10) unsigned NOT NULL default '0'"
+);
+$GLOBALS['TL_DCA']['tl_module']['fields']['tagmenuModule'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['tagmenuModule'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options_callback'        => array('tl_module_posts', 'getTagMenuModules'),
+	'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
+	'eval'                    => array('mandatory'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50 wizard'),
+	'wizard' => array
+	(
+		array('tl_module_posts', 'editModule')
+	),
+	'sql'                     => "int(10) unsigned NOT NULL default '0'"
+);
 $GLOBALS['TL_DCA']['tl_module']['fields']['featured'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['featured'],
-	'default'                 => 'all',
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['featuredPosts'],
+	'default'                 => 'all_posts',
 	'exclude'                 => true,
 	'inputType'               => 'select',
 	'options'                 => array('all_posts', 'featured_posts', 'unfeatured_posts'),
@@ -150,16 +178,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['archive'] = array
 	'eval'                    => array('multiple'=>	true, 'fieldType'=>'checkbox', 'tl_class'=>'clr'),
 	'sql'                     => "blob NULL"
 );
-$GLOBALS['TL_DCA']['tl_module']['fields']['tags'] = array
-(
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['tags'],
-	'exclude'                 => true,
-	'inputType'               => 'select',
-	'options_callback'		  => array('tl_module_posts', 'getArchives'),
-	'reference'               => &$GLOBALS['TL_LANG']['tl_module']['tags'],
-	'eval'                    => array('tl_class'=>'w50'),
-	'sql'                     => "varchar(8) NOT NULL default ''"
-);
 $GLOBALS['TL_DCA']['tl_module']['fields']['sortPosts'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['sortPosts'],
@@ -211,20 +229,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['addRelated'] = array
 	'inputType'               => 'checkbox',
 	'eval'                    => array('submitOnChange'=>true),
 	'sql'                     => "char(1) NOT NULL default ''"
-);
-$GLOBALS['TL_DCA']['tl_module']['fields']['relatedModule'] = array
-(
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['relatedModule'],
-	'exclude'                 => true,
-	'inputType'               => 'select',
-	'options_callback'        => array('tl_module_posts', 'getRelatedModules'),
-	'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
-	'eval'                    => array('mandatory'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50 wizard'),
-	'wizard' => array
-	(
-		array('tl_module_posts', 'editModule')
-	),
-	'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['addComments'] = array
 (
@@ -343,6 +347,25 @@ class tl_module_posts extends Backend
 
 
 	/**
+	 * Get all posts tags menu modules and return them as array
+	 *
+	 * @return array
+	 */
+	public function getTagMenuModules ()
+	{
+		$arrModules = array();
+		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='poststagmenu' ORDER BY t.name, m.name");
+		
+		while ($objModules->next())
+		{
+			$arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
+		}
+		
+		return $arrModules;
+	}
+
+
+	/**
 	 * Return the edit module alias wizard
 	 *
 	 * @param DataContainer $dc
@@ -373,67 +396,6 @@ class tl_module_posts extends Backend
 		return $value;
 	}
 
-	
-	/**
-	 * Return the archives
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return array
-	 */
-	public function getArchives (DataContainer $dc)
-	{
-		$arrArchives = array
-		(
-			'page' => array
-			(
-				'all' 	=> 'all',
-				'first'	=> 'first'
-			)
-		);
-
-		$objArchives = \ArchiveModel::findAll();
-		
-		if ($objArchives === null)
-		{
-			return $arrArchives;
-		}
-		
-		$arrArchives['particular'] = $objArchives->fetchEach('title');
-
-		return $arrArchives;
-	}
-	
-	
-	/**
-	 * Return the tags
-	 *
-	 * @param DataContainer $dc
-	 *
-	 * @return array
-	 */
-	public function getTags (DataContainer $dc)
-	{
-		$arrTags = array
-		(
-			'page' => array
-			(
-				'all' 	=> 'all'
-			)
-		);
-
-		$objTags = \TagsModel::findAll();
-		
-		if ($objTags === null)
-		{
-			return $arrTags;
-		}
-		
-		$arrTags['particular'] = $objTags->fetchEach('tag');
-
-		return $arrTags;
-	}
-	
 	
 	/**
 	 * Return the posts categories

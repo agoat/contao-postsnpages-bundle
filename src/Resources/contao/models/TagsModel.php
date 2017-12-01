@@ -104,16 +104,16 @@ class TagsModel extends \Model
 	/**
 	 * Find and count tags by their archive
 	 *
-	 * @param integer $intArchive The archive id
-	 * @param array   $arrOptions An optional options array
+	 * @param array $varArchive An array of archive ids
+	 * @param array $arrOptions An optional options array
 	 *
 	 * @return Model\Collection|TagsModel|null A collection of models or null if there are no tags in archive
 	 */
-	public static function findAndCountPublishedByArchive($intArchive, array $arrOptions=array())
+	public static function findAndCountPublishedByArchives(array $arrArchives, array $arrOptions=array())
 	{
 		$t = static::$strTable;
 			
-		$strQuery = "SELECT $t.label, COUNT($t.label) as count FROM $t WHERE $t.archive=? AND $t.published='1' GROUP BY $t.label";
+		$strQuery = "SELECT $t.label, COUNT($t.label) as count FROM $t WHERE $t.archive IN(" . implode(",", $arrArchives) . ") AND $t.published='1' GROUP BY $t.label";
 		
 		// Having (see #6446)
 		if ($arrOptions['having'] !== null)
@@ -147,7 +147,7 @@ class TagsModel extends \Model
 		}
 	
 		$objStatement = static::preFind($objStatement);
-		$objResult = $objStatement->execute($intArchive);
+		$objResult = $objStatement->execute();
 	
 		if ($objResult->numRows < 1)
 		{

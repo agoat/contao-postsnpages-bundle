@@ -99,9 +99,13 @@ abstract class ModulePosts extends \Module
 	{
 		/** @var PageModel $objPage */
 		global $objPage;
-
+	
+	
+		// Get posts tags menu settings (archives)
+		$moduleTagsMenu = \ModuleModel::findById($this->tagmenuModule);
+	
 		// Show the posts from particular archive(s)
-		if (empty($varPids = \StringUtil::deserialize($this->archive)))
+		if (null === $moduleTagsMenu || empty($varPids = \StringUtil::deserialize($moduleTagsMenu->archive)))
 		{
 			$objArchives = \ArchiveModel::findByPid($objPage->id);
 			

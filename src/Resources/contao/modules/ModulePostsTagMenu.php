@@ -60,7 +60,7 @@ class ModulePostsTagMenu extends \Module
 		/** @var PageModel $objPage */
 		global $objPage;
 
-		// Show the posts from particular archive(s)
+		// Show tags from particular archive(s)
 		if (empty($varPids = \StringUtil::deserialize($this->archive)))
 		{
 			$objArchives = \ArchiveModel::findByPid($pageId);
@@ -87,7 +87,7 @@ class ModulePostsTagMenu extends \Module
 			$arrOptions['limit'] = intval($this->numberOfItems);
 		}
 		// Get tags
-		$objTags = \TagsModel::findAndCountPublishedByArchive($varPids, $arrOptions);
+		$objTags = \TagsModel::findAndCountPublishedByArchives($varPids, $arrOptions);
 
 		if ($objTags === null)
 		{
