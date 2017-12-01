@@ -151,7 +151,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('addImage', 'alternativeLink'),
-		'default'                     => '{title_legend},title,alias,author;{layout_legend},keywords;{date_legend},date,time;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category,tags;{readmore_legend},alternativeLink;{related_legend},related;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
+		'default'                     => '{title_legend},title,alias,author;{meta_legend},keywords;{date_legend},date,time;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category,tags;{readmore_legend},alternativeLink;{related_legend},related;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
 	),
 
 	// Subpalettes

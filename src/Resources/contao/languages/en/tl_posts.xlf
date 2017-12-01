@@ -2,6 +2,48 @@
 <xliff version="1.1">
   <file datatype="php" original="src/Resources/contao/languages/en/tl_posts.php" source-language="en">
     <body>
+      <trans-unit id="tl_posts.title_legend">
+        <source>Title and author</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.meta_legend">
+        <source>Keywords</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.syndication_legend">
+        <source>Syndication</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.teaser_legend">
+        <source>Post teaser</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.template_legend">
+        <source>Template settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.protected_legend">
+        <source>Access protection</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.expert_legend">
+        <source>Expert settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.publish_legend">
+        <source>Publish settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.date_legend">
+        <source>Date and time</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.location_legend">
+        <source>Location</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.image_legend">
+        <source>Image settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.category_legend">
+        <source>Category settings</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.readmore_legend">
+        <source>Read more link</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.related_legend">
+        <source>Related settings</source>
+      </trans-unit>
       <trans-unit id="tl_posts.title.0">
         <source>Title</source>
       </trans-unit>
@@ -109,30 +151,6 @@
       </trans-unit>
       <trans-unit id="tl_posts.tstamp.1">
         <source>Date and time of the latest revision</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.title_legend">
-        <source>Title and author</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.layout_legend">
-        <source>Section and keywords</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.syndication_legend">
-        <source>Syndication</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.teaser_legend">
-        <source>Post teaser</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.template_legend">
-        <source>Template settings</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.protected_legend">
-        <source>Access protection</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.expert_legend">
-        <source>Expert settings</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.publish_legend">
-        <source>Publish settings</source>
       </trans-unit>
       <trans-unit id="tl_posts.print">
         <source>Print the page</source>
@@ -286,24 +304,6 @@
       </trans-unit>
       <trans-unit id="tl_posts.featured.1">
         <source>Show the post in a featured post list.</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.date_legend">
-        <source>Date and time</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.location_legend">
-        <source>Location</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.image_legend">
-        <source>Image settings</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.category_legend">
-        <source>Category settings</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.readmore_legend">
-        <source>Read more link</source>
-      </trans-unit>
-      <trans-unit id="tl_posts.related_legend">
-        <source>Related settings</source>
       </trans-unit>
       <trans-unit id="tl_posts.choosen_addCategory">
         <source>Add Category</source>
