@@ -113,3 +113,10 @@ if (array_key_exists('AgoatContentElementsBundle', $bundles))
 {
 	$GLOBALS['TL_HOOKS']['getRootPageId'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'getRootPageId'); 
 }
+
+if (array_key_exists('changelanguage', $bundles))
+{
+	$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Agoat\\PostsnPagesBundle\\Contao\\ChangeLanguage', 'addPostsLanguage'); 
+	$GLOBALS['TL_HOOKS']['changelanguageNavigation'][] = array('Agoat\\PostsnPagesBundle\\Contao\\ChangeLanguage', 'getPostsNavigation'); 
+}
+
