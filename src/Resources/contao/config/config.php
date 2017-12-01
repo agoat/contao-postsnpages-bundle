@@ -95,7 +95,7 @@ if (TL_MODE == 'BE')
 
 $GLOBALS['TL_HOOKS']['getArticles'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'renderContainer'); 
  
-$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'hideArticles'); 
+$GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Agoat\\PostsnPagesBundle\\Contao\\DataContainer', 'hideArticles'); 
 $GLOBALS['TL_HOOKS']['executePostActions'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Ajax','postActions');
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('Agoat\\PostsnPagesBundle\\Contao\\InsertTags','doReplace');
 
@@ -112,5 +112,4 @@ if (array_key_exists('ContaoCommentsBundle', $bundles))
 if (array_key_exists('AgoatContentElementsBundle', $bundles))
 {
 	$GLOBALS['TL_HOOKS']['getRootPageId'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'getRootPageId'); 
-	$GLOBALS['TL_HOOKS']['getLayoutId'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'getLayoutId'); 
 }

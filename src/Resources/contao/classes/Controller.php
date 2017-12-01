@@ -305,24 +305,6 @@ class Controller extends ContaoController
 			return $objStatic->layout;
 		}
 	}
-	
-	
-	/**
-	 * Hide the whole article content stuff
-	 */
-	public static function hideArticles()
-	{
-		// Remove articles from the backend module array
-		unset($GLOBALS['BE_MOD']['content']['article']);
-
-		// Remove article related modules
-		unset($GLOBALS['FE_MOD']['navigationMenu']['articlenav']);
-		unset($GLOBALS['FE_MOD']['miscellaneous']['articlelist']);
-
-		// Remove article related content elements
-		unset($GLOBALS['TL_CTE']['includes']['article']);
-		unset($GLOBALS['TL_CTE']['includes']['teaser']);
-	}	
 
 	
 	/**
