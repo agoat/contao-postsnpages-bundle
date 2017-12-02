@@ -78,10 +78,6 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         if ('post' === $config->getContext()) {
             $attributes = ['fieldType' => $config->getExtra('fieldType')];
 
-            if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
-                $attributes['rootNodes'] = $rootNodes;
-            }
-
             if ($value) {
                 $attributes['value'] = array_map('intval', explode(',', $value));
             }

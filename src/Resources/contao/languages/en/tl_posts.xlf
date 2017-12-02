@@ -44,6 +44,9 @@
       <trans-unit id="tl_posts.related_legend">
         <source>Related settings</source>
       </trans-unit>
+      <trans-unit id="tl_posts.language_legend">
+        <source>Language &amp; Translation</source>
+      </trans-unit>
       <trans-unit id="tl_posts.title.0">
         <source>Title</source>
       </trans-unit>
@@ -304,6 +307,12 @@
       </trans-unit>
       <trans-unit id="tl_posts.featured.1">
         <source>Show the post in a featured post list.</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.languageMain.0">
+        <source>Main language page</source>
+      </trans-unit>
+      <trans-unit id="tl_posts.languageMain.1">
+        <source>Choose the page in the language marked as fallback equals this page.</source>
       </trans-unit>
       <trans-unit id="tl_posts.choosen_addCategory">
         <source>Add Category</source>

@@ -11,6 +11,8 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
+use Terminal42\ChangeLanguage\PageFinder;
+
 
 /**
  * Methods to supoport the changelanguage extension for posts
@@ -29,24 +31,113 @@ class ChangeLanguage
 		{
 			$GLOBALS['TL_DCA']['tl_posts']['config']['sql']['keys']['languageMain'] = 'index';
 
-			$pattern = '/({title_legend}.*?);/';
-			$replace = '$0{language_legend},languageMain;';
+			$GLOBALS['TL_DCA']['tl_posts']['config']['onload_callback'][] = array('Agoat\\PostsnPagesBundle\\Contao\\ChangeLanguage', 'showLanguageMain'); 
 			
-			$GLOBALS['TL_DCA']['tl_posts']['palettes']['default'] = preg_replace($pattern, $replace, $GLOBALS['TL_DCA']['tl_posts']['palettes']['default']);
-				
 			$GLOBALS['TL_DCA']['tl_posts']['fields']['languageMain'] = array
 			(
 				'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['languageMain'],
 				'exclude'                 => true,
 				'inputType'               => 'postTree',
-				'eval'                    => array('fieldType'=>'radio', 'multiple'=>false, 'rootNodes'=>[0], 'tl_class'=>'w50 clr'),
+				'eval'                    => array('fieldType'=>'radio', 'multiple'=>false, 'rootNodes'=>[0], 'doNotCopy'=>true, 'tl_class'=>'w50 clr'),
 				'sql'                     => "int(10) unsigned NOT NULL default '0'",
-				//'load_callback'           => [['Terminal42\ChangeLanguage\EventListener\DataContainer\PageFieldsListener', 'onLoadLanguageMain']],
-				//'save_callback'           => [['Terminal42\ChangeLanguage\EventListener\DataContainer\PageFieldsListener', 'onSaveLanguageMain']],
+				'load_callback'           => [['Agoat\\PostsnPagesBundle\\Contao\\ChangeLanguage', 'onLoadLanguageMain']],
+				'save_callback'           => [['Agoat\\PostsnPagesBundle\\Contao\\ChangeLanguage', 'onSaveLanguageMain']],
 			);
 			
 		}
 	}	
+	
+	
+	/**
+	 * Show the languageMain field depending on the current posts root node
+	 *
+	 * @param ChangelanguageNavigationEvent $event
+	 */
+	function showLanguageMain($dc)
+	{
+		$post = \PostsModel::findById($dc->id);
+		
+		if (null === $post) {
+            return;
+        }
+		
+		$archive = \ArchiveModel::findById($post->pid);
+		$page = \PageModel::findWithDetails($archive->pid);
+
+		if (!$page->rootIsFallback) {
+			$GLOBALS['TL_DCA']['tl_posts']['palettes']['default'] = preg_replace(
+				'/({title_legend}.*?);/',
+				'$0{language_legend},languageMain;',
+				$GLOBALS['TL_DCA']['tl_posts']['palettes']['default']);
+		}
+	}
+	
+	
+    /**
+     * Sets rootNodes when initializing the languageMain field.
+     *
+     * @param mixed         $value
+     * @param DataContainer $dc
+     *
+     * @return mixed
+     */
+	public function onLoadLanguageMain($value, $dc)
+	{
+		if (!$dc->id || 'posts' !== \Input::get('do')) {
+            return $value;
+        }
+
+		$post = \PostsModel::findById($dc->id);
+		
+		if (null === $post) {
+            return $value;
+        }
+		
+		$archive = \ArchiveModel::findById($post->pid);
+		$page = \PageModel::findById($archive->pid);
+
+		$pageFinder = new PageFinder();
+        $associated = $pageFinder->findAssociatedInMaster($page);
+	
+		$GLOBALS['TL_DCA']['tl_posts']['fields']['languageMain']['eval']['rootNodes'] = [$associated->id];
+		
+		return $value;
+	}
+	
+	
+    /**
+     * Validate input value when saving tl_page.languageMain field.
+     *
+     * @param mixed         $value
+     * @param DataContainer $dc
+     *
+     * @throws \RuntimeException
+     *
+     * @return mixed
+     */
+	public function onSaveLanguageMain($value, $dc)
+	{
+		if ($value > 0) {
+			$post = \PostsModel::findById($dc->id);
+			
+			if (null === $post) {
+				return $value;
+			}
+			
+			$archive = \ArchiveModel::findById($post->pid);
+			$archives = \ArchiveModel::findByPid($archive->pid)->fetchEach('id');
+
+			$duplicates = \PostsModel::countBy(
+				['tl_posts.pid IN (' . implode(',', $archives) . ')', 'tl_posts.languageMain=?','tl_posts.id!=?'],
+				[$value, $dc->id]
+			);
+	
+			if ($duplicates > 0) {
+                throw new \RuntimeException($GLOBALS['TL_LANG']['MSC']['duplicateMainLanguage']);
+            }
+		}
+		return $value;
+	}
 	
 	
 	/**

@@ -11,9 +11,7 @@
 
 namespace Contao;
 
-use Contao\CoreBundle\Exception\AccessDeniedException;
-use Contao\CoreBundle\Exception\InternalServerErrorException;
-use Contao\CoreBundle\Exception\ResponseException;
+use Contao\CoreBundle\Picker\DcaPickerProviderInterface;
 use Contao\CoreBundle\Picker\PickerInterface;
 use Patchwork\Utf8;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
@@ -769,6 +767,30 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			$this->blnFilesOnly = $attributes['filesOnly'];
 		}
 		
+		if ($picker->getCurrentProvider() instanceof DcaPickerProviderInterface)
+		{
+			$rootNodes = $picker->getConfig()->getExtra('rootNodes');
+		}
+
+		// Predefined node set (see #3563)
+		if (isset($rootNodes) && ('tl_page' == $this->ptable || 'tl_page' == $this->strTable))
+		{
+			$arrRoot = $this->eliminateNestedPages((array) $rootNodes);
+
+			// Calculate the intersection of the root nodes with the mounted nodes (see #1001)
+			if (!empty($this->root) && $arrRoot != $this->root)
+			{
+				$arrRoot = $this->eliminateNestedPages(
+					array_intersect(
+						array_merge($arrRoot, $this->Database->getChildRecords($arrRoot, 'tl_page')),
+						array_merge($this->root, $this->Database->getChildRecords($this->root, 'tl_page'))
+					)
+				);
+			}
+
+			$this->root = $arrRoot;
+		}
+
 		return $attributes;
 	}
 }

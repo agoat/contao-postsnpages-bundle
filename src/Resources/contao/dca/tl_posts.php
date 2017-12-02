@@ -25,7 +25,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 	// Config
 	'config' => array
 	(
-		'dataContainer'               => 'Table',
+		'dataContainer'               => 'TableExtended',
 		'ptable'                      => 'tl_archive',
 		'ctable'                      => array('tl_content', 'tl_tags'),
 		'switchToEdit'                => true,
