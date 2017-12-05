@@ -181,8 +181,12 @@ class StaticTree extends \Widget
 		}
 		else
 		{
-			$extras = ['fieldType' => $this->fieldType,
-					   'filesOnly' => $this->filesOnly];
+			$extras = array
+			(
+				'fieldType' => $this->fieldType,
+				'filesOnly' => $this->filesOnly,
+				'source' => $this->strTable.'.'.$this->currentRecord,
+			);
 
 			$return .= '
 	<p><a href="' . ampersand(\System::getContainer()->get('contao.picker.builder')->getUrl('static', $extras)) . '" class="tl_submit" id="st_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>

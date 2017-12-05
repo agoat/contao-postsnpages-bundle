@@ -79,7 +79,11 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
             $attributes = ['fieldType' => $config->getExtra('fieldType'),
 						   'filesOnly' => $config->getExtra('filesOnly')];
 
-              if ($value) {
+			if ($source = $config->getExtra('source')) {
+                $attributes['preserveRecord'] = $source;
+            }
+
+			if ($value) {
                 $attributes['value'] = array_map('intval', explode(',', $value));
             }
 

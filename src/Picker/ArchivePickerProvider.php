@@ -75,19 +75,23 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
     {
         $value = $config->getValue();
 
-        if ('archive' === $config->getContext()) {
+		if ('archive' === $config->getContext()) {
             $attributes = ['fieldType' => $config->getExtra('fieldType')];
 
-            if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
-                $attributes['rootNodes'] = $rootNodes;
-            }
+			if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
+				$attributes['rootNodes'] = $rootNodes;
+			}
 
-            if ($value) {
-                $attributes['value'] = array_map('intval', explode(',', $value));
-            }
+			if ($source = $config->getExtra('source')) {
+				$attributes['preserveRecord'] = $source;
+			}
 
-            return $attributes;
-        }
+			if ($value) {
+				$attributes['value'] = array_map('intval', explode(',', $value));
+			}
+
+			return $attributes;
+		}
 
         $attributes = ['fieldType' => 'radio'];
 
