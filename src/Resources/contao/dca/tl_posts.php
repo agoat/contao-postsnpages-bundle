@@ -157,8 +157,8 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 	// Subpalettes
 	'subpalettes' => array
 	(
-		'addImage'                   => 'singleSRC,alt,caption',
-		'alternativeLink'                   => 'url,target'
+		'addImage'					=> 'singleSRC,alt,caption',
+		'alternativeLink'			=> 'url,target'
 	),
 
 	// Fields
@@ -409,6 +409,10 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['related'],
 			'exclude'                 => true,
 			'inputType'               => 'postTree',
+			'save_callback'           => array
+			(
+				array('tl_posts', 'checkRelated')
+			),
 			'eval'                    => array('multiple'=>	true, 'fieldType'=>'checkbox', 'orderField'=>'orderRelated', 'tl_class'=>'clr'),
 			'sql'                     => "blob NULL"
 		),
@@ -819,7 +823,7 @@ class tl_posts extends Backend
 
 
 	/**
-	 * Reduce the tstamp to contain only the date tstamp
+	 * Set the timestamp to 00:00:00
 	 *
 	 * @param integer $value
 	 *
@@ -827,13 +831,12 @@ class tl_posts extends Backend
 	 */
 	public function loadDate($value)
 	{
-		$objDate = new \Date(date('Y-m-d', $value), 'Y-m-d');
-		return $objDate->tstamp;
+		return strtotime(date('Y-m-d', $value) . ' 00:00:00');
 	}
 	
 	
 	/**
-	 * Reduce the tstamp to contain only the time tstamp
+	 * Set the timestamp to 1970-01-01
 	 *
 	 * @param integer $value
 	 *
@@ -841,8 +844,7 @@ class tl_posts extends Backend
 	 */
 	public function loadTime($value)
 	{
-		$objDate = new \Date(date('H:i:s', $value), 'H:i:s');
-		return $objDate->tstamp;
+		return strtotime('1970-01-01 ' . date('H:i:s', $value));
 	}
 	
 	
@@ -876,6 +878,24 @@ class tl_posts extends Backend
 		$arrSet['time'] = $arrSet['date'];
 		
 		$this->Database->prepare("UPDATE tl_posts %s WHERE id=?")->set($arrSet)->execute($dc->id);
+	}
+
+
+	/**
+	 * Prevent circular references
+	 *
+	 * @param integer $value
+	 *
+	 * @return integer
+	 */
+	public function checkRelated($value, DataContainer $dc)
+	{
+		if (is_array($related = deserialize($value)) && in_array($dc->id, $related))
+		{
+			throw new Exception($GLOBALS['TL_LANG']['ERR']['circularReference']);
+		}
+	
+		return $value;
 	}
 
 

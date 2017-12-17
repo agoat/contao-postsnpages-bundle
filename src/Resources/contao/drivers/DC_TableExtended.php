@@ -189,7 +189,20 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			// Call a recursive function that builds the tree
 			while ($objRoots->next())
 			{
-				$tree .= $this->generateXTree($table, $objRoots->id, $objRoots->row(), array('p'=>$this->root[($count-1)], 'n'=>$arrIds[($count+1)]), $blnHasSorting, 0, ($blnClipboard ? $arrClipboard : false), ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && $objRoots->id == $arrClipboard['id']), false, false, $strFound, $strPFilter);
+				$tree .= $this->generateXTree(
+					$table, 
+					$objRoots->id, 
+					$objRoots->row(), 
+					array('p'=>$this->root[($count-1)], 'n'=>$arrIds[($count+1)]), 
+					$blnHasSorting, 
+					0, 
+					($blnClipboard ? $arrClipboard : false), 
+					($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && $objRoots->id == $arrClipboard['id']), 
+					false, 
+					false, 
+					$strFound, 
+					$strPFilter
+				);
 				$count++;
 			}
 
@@ -385,7 +398,41 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 		$hasSorting = $this->Database->fieldExists('sorting', $table);
 		$intCount = 0;
 
-		$return .= ' ' . trim($this->generateXTree($table, $id, false, array('p'=>$childs[($count-1)], 'n'=>$childs[($count+1)]), $hasSorting, $level, ($blnClipboard ? $arrClipboard : false), ($id == $arrClipboard ['id'] || (is_array($arrClipboard ['id']) && in_array($id, $arrClipboard ['id'])) || (!$blnPtable && !is_array($arrClipboard['id']) && in_array($id, $this->Database->getChildRecords($arrClipboard['id'], $table)))), $blnProtected, false, array(), $intCount));
+		$strPFilter = '';
+		
+		if (!empty($filter = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['pfilter']) && is_array($filter) && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6)
+		{
+			$objPFilter = $this->Database->prepare("SELECT DISTINCT id FROM ". $table . " WHERE " . $filter[0])
+										 ->execute($filter[1]);
+
+			if ($objPFilter->numRows)
+			{
+				$arrPFilter = array();
+			
+				while ($objPFilter->next())
+				{
+					$arrPFilter = array_merge($arrPFilter, $this->Database->getParentRecords($objPFilter->id, $table));
+				}
+
+				$arrPFilter = array_unique($arrPFilter);
+				$strPFilter = implode(',', array_map('intval', $arrPFilter));
+			}
+		}
+
+		$return .= ' ' . trim($this->generateXTree(
+			$table, 
+			$id, 
+			false, 
+			array('p'=>$childs[($count-1)], 'n'=>$childs[($count+1)]), 
+			$hasSorting, 
+			$level, 
+			($blnClipboard ? $arrClipboard : false), 
+			($id == $arrClipboard ['id'] || (is_array($arrClipboard ['id']) && in_array($id, $arrClipboard ['id'])) || (!$blnPtable && !is_array($arrClipboard['id']) && in_array($id, $this->Database->getChildRecords($arrClipboard['id'], $table)))), 
+			$blnProtected, 
+			false, 
+			'', 
+			$strPFilter
+		));
 
 		return $return;
 	}
@@ -775,6 +822,15 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 		// Predefined node set (see #3563)
 		if (isset($rootNodes) && ('tl_page' == $this->ptable || 'tl_page' == $this->strTable))
 		{
+			/** @var AttributeBagInterface $objSession */
+			$objSession = \System::getContainer()->get('session')->getBag('contao_backend');
+
+			if ((array) $objSession->get('tl_page_node') == $this->root)
+			{
+				$this->import('BackendUser', 'User');
+				$this->root = $this->User->pagemounts;
+			}
+			
 			$arrRoot = $this->eliminateNestedPages((array) $rootNodes);
 
 			// Calculate the intersection of the root nodes with the mounted nodes (see #1001)

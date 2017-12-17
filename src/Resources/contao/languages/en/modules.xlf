@@ -3,19 +3,11 @@
   <file datatype="php" original="src/Resources/contao/languages/en/modules.php" source-language="en">
     <body>
       <trans-unit id="MOD.container.0">
-        <source>Page content</source>
+        <source>Page/Post content</source>
       </trans-unit>
-      <trans-unit id="MOD.tl_archive">
-        <source>Archive</source>
-      </trans-unit>
-      <trans-unit id="MOD.tl_article">
-        <source>Article</source>
-      </trans-unit>
-      <trans-unit id="MOD.tl_container">
-        <source>Container</source>
-      </trans-unit>
-      <trans-unit id="MOD.tl_static">
-        <source>Container</source>
+
+      <trans-unit id="MOD.tl_posts">
+        <source>Posts</source>
       </trans-unit>
 
       <trans-unit id="MOD.posts.0">
@@ -37,7 +29,7 @@
         <source>Manage static content</source>
       </trans-unit>
 
-      <trans-unit id="FMD.posts">
+      <trans-unit id="FMD.posts.0">
         <source>Posts</source>
       </trans-unit>
       <trans-unit id="FMD.container.0">
@@ -55,35 +47,29 @@
       <trans-unit id="FMD.containerlist.1">
         <source>Generates a hashtag link list of containers for a section</source>
       </trans-unit>
-      <trans-unit id="FMD.postscontent.0">
-        <source>Posts content</source>
-      </trans-unit>
-      <trans-unit id="FMD.postscontent.1">
-        <source>Renders the content of posts.</source>
-      </trans-unit>
       <trans-unit id="FMD.poststeaser.0">
         <source>Posts teaser</source>
       </trans-unit>
       <trans-unit id="FMD.poststeaser.1">
         <source>Renders the teaser of posts.</source>
       </trans-unit>
-      <trans-unit id="FMD.postreader.0">
-        <source>Post reader</source>
+      <trans-unit id="FMD.postscomments.0">
+        <source>Post comments</source>
       </trans-unit>
-      <trans-unit id="FMD.postreader.1">
-        <source>Renders a certain post (To be used with 'Posts content' or 'Posts teasers').</source>
+      <trans-unit id="FMD.postscomments.1">
+        <source>Adds comments to the current post.</source>
       </trans-unit>
       <trans-unit id="FMD.relatedpoststeaser.0">
         <source>Related posts teaser</source>
       </trans-unit>
       <trans-unit id="FMD.relatedpoststeaser.1">
-        <source>Renders the teaser of related posts (To be used with the 'Post reader' module).</source>
+        <source>Adds related posts teaser to the current post.</source>
       </trans-unit>
       <trans-unit id="FMD.taggedpoststeaser.0">
         <source>Tagged posts teaser</source>
       </trans-unit>
       <trans-unit id="FMD.taggedpoststeaser.1">
-        <source>Renders the teaser of tagged posts  (To be used in conjunction with the 'Post tag menu' module).</source>
+        <source>Renders the teaser of tagged posts (To be used in conjunction with the 'Post tag menu' module).</source>
       </trans-unit>
       <trans-unit id="FMD.poststagmenu.0">
         <source>Posts tags menu</source>

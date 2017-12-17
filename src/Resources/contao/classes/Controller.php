@@ -11,7 +11,11 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
-use \Contao\Controller as ContaoController;
+use Contao\Controller as ContaoController;
+use Contao\Database;
+use Contao\CoreBundle\Exception\RedirectResponseException;
+use Contao\CoreBundle\Exception\PageNotFoundException;
+use Patchwork\Utf8;
 
 
 /**
@@ -20,6 +24,119 @@ use \Contao\Controller as ContaoController;
 class Controller extends ContaoController
 {
 	/**
+	 * Render page content (output either containers or a post)
+	 *
+	 * @param mixed  $intId      The page id
+	 * @param string $strSection The name of the section
+	 *
+	 * @return string The module HTML markup
+	 */	
+	public function renderPageContent($intId, $strSection='main')
+	{
+		/** @var PageModel $objPage */
+		global $objPage;
+
+		if ('post' == $objPage->type)
+		{
+			return $this->renderPost($intId, $strSection);
+		}
+		
+		else
+		{
+			return $this->renderContainer($intId, $strSection);
+		}
+	}
+	
+
+	/**
+	 * Render post content
+	 *
+	 * @param mixed  $intId      The page id
+	 * @param string $strSection The name of the section
+	 *
+	 * @return string The module HTML markup
+	 */	
+	public function renderPost($intId, $strSection='main')
+	{
+		/** @var PageModel $objPage */
+		global $objPage;
+
+		// Set the item from the auto_item parameter
+		if (!isset($_GET['posts']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
+		{
+			\Input::setGet('posts', \Input::get('auto_item'));
+		}
+
+		// Get post id/alias
+		$strPost = \Input::get('posts');
+
+		if (!strlen($strPost))
+		{
+			switch($objPage->emptyPost)
+			{
+				case 'nothing':
+					return;
+					
+				case 'recent':
+					$objArchives = \ArchiveModel::findByPid($objPage->id);
+					
+					if (null === $objArchives)
+					{
+						break;
+					}
+
+					$objRecent = \PostsModel::findRecentPublishedByArchive($objArchives->fetchEach('id'));
+
+					if (null === $objRecent)
+					{
+						break;
+					}
+					
+					throw new RedirectResponseException(Posts::generatePostUrl($objRecent));
+					
+				case 'page':
+					if ($objPage->jumpTo && ($objTarget = $objPage->getRelated('jumpTo')) instanceof \PageModel)
+					{
+						/** @var PageModel $objTarget */
+						throw new RedirectResponseException($objTarget->getAbsoluteUrl());
+					}					
+
+				case 'notfound':
+				default:
+			}
+
+			throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
+		}
+
+		// Get published post
+		$objPost = \PostsModel::findPublishedByIdOrAlias($strPost);
+
+		if (null === $objPost)
+		{
+			throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
+		}
+	
+		// Check the visibility
+		if (!static::isVisibleElement($objPost))
+		{
+			return '';
+		}
+		
+		$objPostContent = new ModulePostsContent($objPost, $strSection);
+
+		$strBuffer = $objPostContent->generate();
+
+		// Disable indexing if protected
+		if ($objContainer->protected && !preg_match('/^\s*<!-- indexer::stop/', $strBuffer))
+		{
+			$strBuffer = "\n<!-- indexer::stop -->". $strBuffer ."<!-- indexer::continue -->\n";
+		}
+
+		return $strBuffer;
+	}
+	
+
+	/**
 	 * Render page content
 	 *
 	 * @param mixed  $intId      The page id
@@ -27,11 +144,11 @@ class Controller extends ContaoController
 	 *
 	 * @return string The module HTML markup
 	 */	
-	public function renderContainer ($intId, $strSection='main')
+	public function renderContainer($intId, $strSection='main')
 	{
 		$objContainer = \ContainerModel::findPublishedByPidAndSection($intId, $strSection);
 
-		if ($objContainer === null)
+		if (null === $objContainer)
 		{
 			return '';
 		}
@@ -328,5 +445,19 @@ class Controller extends ContaoController
 				return ' (<a href="contao/main.php?do=posts&amp;table=tl_content&amp;id=' . $objParent->id . '&amp;rt=' . REQUEST_TOKEN . '">' . $objParent->title . '</a>)';
 			}
 		}
+	}
+	
+	
+	/**
+	 * Calculate the page status icon for postreader pages
+	 *
+	 * @param $objPage
+	 * @param $image
+	 *
+	 * @return string
+	 */
+	public static function getPostsPageStatusIcon($objPage, $image) 
+	{
+		return str_replace('post', 'bundles/agoatpostsnpages/post', $image);
 	}
 }

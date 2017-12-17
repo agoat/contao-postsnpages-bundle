@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_page.php" source-language="en">
+    <body>
+      <trans-unit id="tl_page.posts_legend">
+        <source>Post reader settings</source>
+      </trans-unit>
+      <trans-unit id="tl_page.empty_legend">
+        <source>Empty post settings</source>
+      </trans-unit>
+      <trans-unit id="tl_page.template_legend">
+        <source>Template settings</source>
+      </trans-unit>
+      <trans-unit id="tl_page.comment_legend">
+        <source>Comment settings</source>
+      </trans-unit>
+      <trans-unit id="tl_page.showTeaser.0">
+        <source>Show teaser</source>
+      </trans-unit>
+      <trans-unit id="tl_page.showTeaser.1">
+        <source>Show the teaser within the post.</source>
+      </trans-unit>
+      <trans-unit id="tl_page.teaserImgSize.0">
+        <source>Image size</source>
+      </trans-unit>
+      <trans-unit id="tl_page.teaserImgSize.1">
+        <source>Here you can set the image dimensions and the resize mode.</source>
+      </trans-unit>
+      <trans-unit id="tl_page.emptyPost.0">
+        <source>No post behaviour</source>
+      </trans-unit>
+      <trans-unit id="tl_page.emptyPost.1">
+        <source>Here you can set what will happen if the page is directly (without a post).</source>
+      </trans-unit>
+      <trans-unit id="tl_page.emptyPost.nothing">
+        <source>Show nothing</source>
+      </trans-unit>
+      <trans-unit id="tl_page.emptyPost.recent">
+        <source>Show latest post</source>
+      </trans-unit>
+      <trans-unit id="tl_page.emptyPost.page">
+        <source>Redirect to another page</source>
+      </trans-unit>
+      <trans-unit id="tl_page.emptyPost.notfound">
+        <source>Show a 404 error</source>
+      </trans-unit>
+      <trans-unit id="tl_page.postTpl.0">
+        <source>Post template</source>
+      </trans-unit>
+      <trans-unit id="tl_page.postTpl.1">
+        <source>Here you can select a post template.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

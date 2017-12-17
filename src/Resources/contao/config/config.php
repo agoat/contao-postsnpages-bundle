@@ -9,9 +9,11 @@
  * @license    LGPL-3.0
  */
 
- 
+
+$bundles = \System::getContainer()->getParameter('kernel.bundles');
+
 /**
- * Register back end module (additional javascript)
+ * Back end modules
  */
 $content = array
 (
@@ -44,23 +46,37 @@ $GLOBALS['BE_MOD']['content'] = $content + $GLOBALS['BE_MOD']['content'];
 
 
 /**
- * Register front end modules
+ * Front end modules
  */
-$arrModules['posts']['postscontent'] 		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsContent';
+//$arrModules['posts']['postscontent'] 		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsContent';
+//$arrModules['posts']['postreader'] 			= 'Agoat\PostsnPagesBundle\Contao\ModulePostReader';
+
+
 $arrModules['posts']['poststeaser'] 		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTeaser';
-$arrModules['posts']['postreader'] 			= 'Agoat\PostsnPagesBundle\Contao\ModulePostReader';
-$arrModules['posts']['taggedpoststeaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleTaggedPostsTeaser';
+if (array_key_exists('ContaoCommentsBundle', $bundles))
+{
+	$arrModules['posts']['postscomments'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsComments';
+}
 $arrModules['posts']['relatedpoststeaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleRelatedPostsTeaser';
+$arrModules['posts']['taggedpoststeaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleTaggedPostsTeaser';
 
 $GLOBALS['FE_MOD'] = $arrModules + $GLOBALS['FE_MOD'];
-
 
 $GLOBALS['FE_MOD']['navigationMenu']['poststagmenu']		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTagMenu';
 //$GLOBALS['FE_MOD']['navigationMenu']['postscategorymenu'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsArchiveMenu';
 //$GLOBALS['FE_MOD']['navigationMenu']['poststimetablemenu'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTimetableMenu';
-
 $GLOBALS['FE_MOD']['miscellaneous']['static'] 			= 'Agoat\PostsnPagesBundle\Contao\ModuleStatic';
 $GLOBALS['FE_MOD']['miscellaneous']['containerlist'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleContainerList';
+
+
+/**
+ * Page types
+ */
+$GLOBALS['TL_PTY'] = array_merge(
+	array_slice($GLOBALS['TL_PTY'], 0, 1, true),
+	array('post' => 'PageRegular'),
+	array_slice($GLOBALS['TL_PTY'], 1, null, true)
+);
 
 
 /**
@@ -81,7 +97,7 @@ $GLOBALS['TL_AUTO_ITEM'][] = 'tags';
 
 
 /**
- * Style sheet
+ * Backend style sheet
  */
 if (TL_MODE == 'BE')
 {
@@ -93,16 +109,16 @@ if (TL_MODE == 'BE')
  * Register HOOKS
  */
 
-$GLOBALS['TL_HOOKS']['getArticles'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'renderContainer'); 
+$GLOBALS['TL_HOOKS']['getArticles'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller', 'renderPageContent'); 
  
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = array('Agoat\\PostsnPagesBundle\\Contao\\DataContainer', 'hideArticles'); 
 $GLOBALS['TL_HOOKS']['executePostActions'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Ajax','postActions');
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('Agoat\\PostsnPagesBundle\\Contao\\InsertTags','doReplace');
 
 $GLOBALS['TL_HOOKS']['getLayoutId'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller','getLayoutId');
+$GLOBALS['TL_HOOKS']['getPageStatusIcon'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller','getPostsPageStatusIcon');
 
 
-$bundles = \System::getContainer()->getParameter('kernel.bundles');
 
 if (array_key_exists('ContaoCommentsBundle', $bundles))
 {

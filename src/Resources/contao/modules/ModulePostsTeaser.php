@@ -48,10 +48,10 @@ class ModulePostsTeaser extends ModulePosts
 			return $objTemplate->parse();
 		}
 
-		// Show the article reader if an article is called directly
-		if ($this->readerModule > 0 && (isset($_GET['posts']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
+		// Don't show teasers when a post is called directly
+		if ((isset($_GET['posts']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
 		{
-			return $this->getFrontendModule($this->readerModule, $this->strColumn);
+			return;
 		}
 		
 		return parent::generate();

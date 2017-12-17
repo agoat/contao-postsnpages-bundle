@@ -55,11 +55,12 @@ $GLOBALS['TL_DCA']['tl_archive'] = array
 			'fields'                  => array('title'),
 			'paste_button_callback'   => array('tl_archive', 'pasteArchiv'),
 			'panelLayout'             => 'filter;search',
-			'pfilter'				  => array('type=?', 'regular')
+			'pfilter'				  => array('type=?', 'post')
 		),
 		'label' => array
 		(
 			'fields'                  => array('title'),
+			'label_callback'          => array('tl_archive', 'addIcon')
 		),
 		'global_operations' => array
 		(
@@ -404,8 +405,14 @@ class tl_archive extends Backend
 	 */
 	public function addIcon($row, $label)
 	{
+		$image = 'archive.svg';
 
-		return '<a>'.Image::getHtml('iconPLAIN.svg', '', '').'</a> '.$label;
+		if ($row['protected'])
+		{
+			$image = 'archive_4.svg';
+		}
+
+		return '<a>'.Image::getHtml('bundles/agoatpostsnpages/' . $image, '', '').'</a> '.$label;
 	}
 
 
@@ -519,7 +526,7 @@ class tl_archive extends Backend
 		if (
 			$table != $GLOBALS['TL_DCA'][$dc->table]['config']['ptable'] ||
 			!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $row) ||
-			$row['type'] == 'root' ||
+			$row['type'] != 'post' ||
 			$cr
 		)
 		{

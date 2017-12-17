@@ -11,11 +11,12 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
+use Contao\CoreBundle\Exception\PageNotFoundException;
 use Patchwork\Utf8;
 
 
 /**
- * ModulePostsContent class
+ * ModulePostReader class
  */
 class ModulePostsContent extends ModulePosts
 {
@@ -24,38 +25,7 @@ class ModulePostsContent extends ModulePosts
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = 'mod_postscontent';
-
-
-	/**
-	 * Do not render the module if a post is called directly
-	 *
-	 * @return string
-	 */
-	public function generate()
-	{
-		if (TL_MODE == 'BE')
-		{
-			/** @var BackendTemplate|object $objTemplate */
-			$objTemplate = new \BackendTemplate('be_wildcard');
-
-			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
-			$objTemplate->title = $this->headline;
-			$objTemplate->id = $this->id;
-			$objTemplate->link = $this->name;
-			$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
-
-			return $objTemplate->parse();
-		}
-
-		// Don't render articles if an article is called directly
-		if (isset($_GET['posts']) || (\Config::get('useAutoItem') && isset($_GET['auto_item'])))
-		{
-			return;
-		}
-		
-		return parent::generate();
-	}
+	protected $strTemplate = 'mod_post';
 
 
 	/**
@@ -66,49 +36,43 @@ class ModulePostsContent extends ModulePosts
 		/** @var PageModel $objPage */
 		global $objPage;
 
-		$pageId = $objPage->id;
-		$pageObj = $objPage;
-
-		// Show the posts of a different page
-		if ($this->defineRoot && $this->rootPage > 0)
+		// Check protection (TODO)
+		
+		// Increase the popularity counter (TODO: check the session)
+		$this->objModel->popular = ++$this->objModel->popular;
+		$this->objModel->save();
+		
+		// Redirect to link target if setGet
+		if ($this->alternativeLink)
 		{
-			if (($objTarget = $this->objModel->getRelated('rootPage')) instanceof \PageModel)
+			if ($this->url)
 			{
-				$pageId = $objTarget->id;
-				$pageObj = $this->objModel->getRelated('rootPage');
-
-				/** @var PageModel $objTarget */
-				$this->Template->request = $objTarget->getFrontendUrl();
+				$this->redirect($this->replaceInsertTags($this->url));
 			}
 		}
+		
+		// Overwrite the page title (see @contao/core #2853 and #4955)
+		if ($strPost != '' && ($strPost == $this->id || $strPost == $this->alias) && $this->title != '')
+		{
+			$objPage->pageTitle = strip_tags(\StringUtil::stripInsertTags($this->title));
+			
+			if ($this->teaser != '')
+			{
+				$objPage->description = $this->prepareMetaDescription($this->teaser);
+			}
+		}		
 
 		// Set custom post template
-		$this->postTemplate = $this->postTpl;
-	
-		// Get published posts
-		$objPosts = $this->getPosts($pageId);
+		$this->postTemplate = $objPage->postTpl;
+		
+		// Set teaser image size
+		$this->imgSize = $objPage->imgSize;
 
-		if ($objPosts === null)
-		{
-			return;
-		}
+		// Render the post
+		$this->Template->post = $this->renderPost($this->objModel, $objPage->showTeaser, true);
 
-		$arrPosts = array();
-	
-		if ($objPosts !== null)
-		{
-			while ($objPosts->next())
-			{
-				// Render the post content
-				$arrPosts[] = $this->renderPost($objPosts->current(), $pageObj, $this->showTeaser, true);
-			}
-		}
-
-		if ($this->sortPosts == 'random')
-		{
-			shuffle($arrPosts);
-		}
-
-		$this->Template->posts = $arrPosts;
+		// Back link
+		$this->Template->backlink = 'javascript:history.go(-1)'; // see #6955
+		$this->Template->back = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['goBack']);
 	}
 }

@@ -25,7 +25,7 @@ abstract class ModulePosts extends \Module
 	 *
 	 * @return Collection|\PostsModel|Null
 	 */
-	protected function getPosts ()
+	protected function getPosts()
 	{
 		/** @var PageModel $objPage */
 		global $objPage;
@@ -95,7 +95,7 @@ abstract class ModulePosts extends \Module
 	 *
 	 * @return Collection|\PostsModel|Null
 	 */
-	protected function getTaggedPosts ($strTag)
+	protected function getTaggedPosts($strTag)
 	{
 		/** @var PageModel $objPage */
 		global $objPage;
@@ -172,7 +172,7 @@ abstract class ModulePosts extends \Module
 	 *
 	 * @return Collection|\PostsModel|Null
 	 */
-	protected function getRelatedPosts ($varId)
+	protected function getRelatedPosts($varId)
 	{
 		$objPost = \PostsModel::findPublishedByIdOrAlias($varId);
 	
@@ -217,7 +217,7 @@ abstract class ModulePosts extends \Module
 	 *
 	 * @return string
 	 */
-	protected function renderPost ($objPost, $blnTeaser=false, $blnContent=true)
+	protected function renderPost($objPost, $blnTeaser=false, $blnContent=true)
 	{
 		/** @var PageModel $objPage */
 		global $objPage;
@@ -237,7 +237,7 @@ abstract class ModulePosts extends \Module
 		{
 			$strClass .= ' ' . $objPost->format;
 		}
-		
+
 		$objPostTemplate = new \FrontendTemplate($this->postTemplate);
 		$objPostTemplate->setData($objPost->row());
 
@@ -274,7 +274,7 @@ abstract class ModulePosts extends \Module
 		
 			// Add image
 			$objPostTemplate->addImage = false;
-			
+		
 			if ($objPost->addImage && $objPost->singleSRC != '')
 			{
 				$objModel = \FilesModel::findByUuid($objPost->singleSRC);
@@ -294,7 +294,7 @@ abstract class ModulePosts extends \Module
 			if (!$blnContent)
 			{
 				// Add comments information
-				$intCCount = \CommentsModel::countPublishedBySourceAndParent('tl_article', $objPost->id);
+				$intCCount = \CommentsModel::countPublishedBySourceAndParent('tl_posts', $objPost->id);
 				
 				$objPostTemplate->ccount = $intCCount;
 				$objPostTemplate->comments = ($intCCount > 0) ? sprintf($GLOBALS['TL_LANG']['MSC']['commentCount'], $intCCount) : $GLOBALS['TL_LANG']['MSC']['noComments'];
@@ -305,6 +305,10 @@ abstract class ModulePosts extends \Module
 		if ($blnContent)
 		{
 			$objPostTemplate->elements = Posts::getPostContent($objPost);
+		}
+		else
+		{
+			$objPostTemplate->elements = array();
 		}
 
 		return $objPostTemplate->parse();

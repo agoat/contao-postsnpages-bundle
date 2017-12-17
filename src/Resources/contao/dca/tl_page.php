@@ -9,13 +9,15 @@
  * @license    LGPL-3.0
  */
 
- 
+/**
+ * Change page dca configuration
+ */
+// Set new driver
 $GLOBALS['TL_DCA']['tl_page']['config']['dataContainer'] = 'TableExtended';
 
-
+// Set sorting icon
 $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['icon'] = 'NA';
 $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['folders'] = 'root';
-
 
 // Set new child tables
 $GLOBALS['TL_DCA']['tl_page']['config']['ctable'] = array('tl_container', 'tl_archive');
@@ -26,16 +28,96 @@ foreach ($GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'] as &$callb
 {
 	if ($callback[0] == 'tl_page' && $callback[1] == 'generateArticle')
 	{
-		$callback = array('tl_page_extendedarticles', 'generateContainer');
+		$callback = array('tl_page_postsnpages', 'generateContainer');
 	}
 }
 unset ($callback);
+
+// Change the articles edit button
+unset($GLOBALS['TL_DCA']['tl_page']['list']['operations']['articles']);
+$GLOBALS['TL_DCA']['tl_page']['list']['operations']['content'] = array
+(
+	'label'               => &$GLOBALS['TL_LANG']['tl_page']['content'],
+	'href'                => 'do=pages',
+	'icon'                => 'articles.svg',
+	'button_callback'     => array('tl_page_postsnpages', 'editContent')
+);
+
+
+/**
+ * Load tl_content language file
+ */
+System::loadLanguageFile('tl_content');
+
+
+/**
+ * Palettes
+ */
+$bundles = \System::getContainer()->getParameter('kernel.bundles');
+
+$GLOBALS['TL_DCA']['tl_page']['palettes']['post'] = '{title_legend},title,alias,type;{meta_legend},pageTitle,robots,description;{posts_legend},showTeaser;{empty_legend},emptyPost;{template_legend:hide},postTpl;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},;' : '') . '{layout_legend:hide},includeLayout;{cache_legend:hide},includeCache;{chmod_legend:hide},includeChmod;{search_legend},noSearch;{expert_legend:hide},cssClass,sitemap,hide;{publish_legend},published,start,stop';
+
+$GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'] = array_merge
+(
+	$GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'],
+	array('showTeaser', 'emptyPost')
+);
+$GLOBALS['TL_DCA']['tl_page']['subpalettes']['showTeaser'] = 'imgSize';
+$GLOBALS['TL_DCA']['tl_page']['subpalettes']['emptyPost_page'] = 'jumpTo';
+
+
+/**
+ * Fields
+ */
+$GLOBALS['TL_DCA']['tl_page']['fields']['showTeaser'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['showTeaser'],
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
+	'sql'                     => "char(1) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_page']['fields']['imgSize'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_content']['size'],
+	'exclude'                 => true,
+	'inputType'               => 'imageSize',
+	'reference'               => &$GLOBALS['TL_LANG']['MSC'],
+	'eval'                    => array('rgxp'=>'natural', 'includeBlankOption'=>true, 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'),
+	'options_callback' => function ()
+	{
+		return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
+	},
+	'sql'                     => "varchar(64) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_page']['fields']['postTpl'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['postTpl'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options_callback' => function ()
+	{
+		return $this->getTemplateGroup('post_');
+	},
+	'eval'                    => array('tl_class'=>'w50'),
+	'sql'                     => "varchar(64) NOT NULL default ''"
+);
+$GLOBALS['TL_DCA']['tl_page']['fields']['emptyPost'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['emptyPost'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options'                 => array('nothing', 'recent', 'page', 'notfound'),
+	'reference'               => &$GLOBALS['TL_LANG']['tl_page']['emptyPost'],
+	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'w50'),
+	'sql'                     => "char(16) NOT NULL default ''"
+);
 
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
  */
-class tl_page_extendedarticles extends Backend
+class tl_page_postsnpages extends Backend
 {
 
 	/**
@@ -68,8 +150,8 @@ class tl_page_extendedarticles extends Backend
 			return;
 		}
 
-		// Check whether there are articles (e.g. on copied pages)
-		$objTotal = $this->Database->prepare("SELECT COUNT(*) AS count FROM tl_article WHERE pid=?")
+		// Check whether there are containers (e.g. on copied pages)
+		$objTotal = $this->Database->prepare("SELECT COUNT(*) AS count FROM tl_container WHERE pid=?")
 								   ->execute($dc->id);
 
 		if ($objTotal->count > 0)
@@ -77,7 +159,7 @@ class tl_page_extendedarticles extends Backend
 			return;
 		}
 
-		// Create article
+		// Create container
 		$arrSet['pid'] = $dc->id;
 		$arrSet['sorting'] = 128;
 		$arrSet['tstamp'] = time();
@@ -86,5 +168,38 @@ class tl_page_extendedarticles extends Backend
 		$arrSet['published'] = $dc->activeRecord->published;
 
 		$this->Database->prepare("INSERT INTO tl_container %s")->set($arrSet)->execute();
+	}
+	
+	
+	/**
+	 * Generate an "edit content" button and return it as string
+	 *
+	 * @param array  $row
+	 * @param string $href
+	 * @param string $label
+	 * @param string $title
+	 * @param string $icon
+	 *
+	 * @return string
+	 */
+	public function editContent($row, $href, $label, $title, $icon)
+	{
+		switch($row['type'])
+		{
+			case 'post':
+				return '<a href="' . $this->addToUrl('do=posts&amp;pn='.$row['id']) . '" title="'.StringUtil::specialchars($title).'">'.Image::getHtml('bundles/agoatpostsnpages/archive.svg', $label).'</a> ';
+				
+				break;
+				
+			case 'regular':
+			case 'error_403':
+			case 'error_404':
+				return '<a href="' . $this->addToUrl('do=pages&amp;pn='.$row['id']) . '" title="'.StringUtil::specialchars($title).'">'.Image::getHtml($icon, $label).'</a> ';
+			
+				break;
+				
+			default:
+				return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+		}
 	}
 }

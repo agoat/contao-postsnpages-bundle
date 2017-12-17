@@ -55,12 +55,19 @@
         <source>Random order</source>
       </trans-unit>
 
-		<trans-unit id="tl_settings.postsPermalink.0">
-			<source>Post permalink pattern</source>
-		</trans-unit>
-		<trans-unit id="tl_settings.postsPermalink.1">
-			<source>Here you can set a default pattern, which will be used for the post permalinks.</source>
-		</trans-unit>
+      <trans-unit id="PTY.post.0">
+        <source>Post reader page</source>
+      </trans-unit>
+      <trans-unit id="PTY.post.1">
+        <source>A post reader page outputs a single post from an archive within this page.</source>
+      </trans-unit>
+
+      <trans-unit id="tl_settings.postsPermalink.0">
+         <source>Post permalink pattern</source>
+      </trans-unit>
+      <trans-unit id="tl_settings.postsPermalink.1">
+         <source>Here you can set a default pattern, which will be used for the post permalinks.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -1,0 +1,12 @@
+
+<div class="<?= $this->class ?> block"<?= $this->cssID ?><?php if ($this->style): ?> style="<?= $this->style ?>"<?php endif; ?>>
+
+<?php $this->block('comments'); ?>
+  <div class="comments">
+	<?php if (is_array($this->comments)) { echo implode('', $this->comments); } ?>
+	<?= $this->pagination ?>
+	<?php $this->insert('mod_comment_form', $this->arrData); ?>
+  </div>
+<?php $this->endblock(); ?>
+
+</div>

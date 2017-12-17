@@ -84,6 +84,48 @@ class PostsModel extends \Model
 
 	
 	/**
+	 * Find published posts by their pids
+	 *
+	 * @param integer $varPids    The post pids (archive ids)
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return Model\Collection|PostsModel|null A collection of models or null if there are no posts
+	 */
+	public static function findRecentPublishedByArchive($varArchives, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		
+		if (is_array($varArchives))
+		{
+			$arrColumns = array("$t.pid in ('" . implode("','", $varArchives) . "')");
+			$arrValues = array();
+		}
+		else
+		{
+			$arrColumns = array("$t.pid=?");
+			$arrValues = array($varArchives);
+		}
+			
+		if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN)
+		{
+			$time = \Date::floorToMinute();
+			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
+		}
+
+		$arrOptions = array_merge
+		(
+			array
+			(
+				'order' => 'Date DESC'
+			),
+			$arrOptions
+		);
+		
+		return static::findOneBy($arrColumns, $arrValues, $arrOptions);
+	}
+
+	
+	/**
 	 * Find published posts by their ids and featured status
 	 *
 	 * @param integer $intPid      The post id(s)

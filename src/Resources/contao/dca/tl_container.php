@@ -756,7 +756,7 @@ class tl_container extends Backend
 
 		$objPage = \PageModel::findById($row['pid']);
 		
-		$objContainer = \ContainerModel::findById($arrClipboard['id']);
+		//$objContainer = \ContainerModel::findById($arrClipboard['id']);
 
 		if (
 			($arrClipboard['mode'] == 'cut' && $arrClipboard['id'] == $row['id']) ||

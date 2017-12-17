@@ -54,12 +54,12 @@ class ModuleRelatedPostsTeaser extends ModulePosts
 			\Input::setGet('posts', \Input::get('auto_item'));
 		}
 
-		// Overwrite the item id
+		// Overwrite the post id
 		if (null !== $intId)
 		{
 			\Input::setGet('posts', $intId);
 		}
-		
+	
 		return parent::generate();
 	}
 
@@ -69,7 +69,7 @@ class ModuleRelatedPostsTeaser extends ModulePosts
 	 */
 	protected function compile()
 	{
-		// Get section and article alias
+		// Get the post alias(id)
 		$strPost = \Input::get('posts');
 
 		if (!strlen($strPost))

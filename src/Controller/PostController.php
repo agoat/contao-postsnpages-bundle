@@ -45,7 +45,7 @@ class PostController implements ControllerInterface
 	{
 		$objPost = \PostsModel::findByPk($source);
 
-		// Throw a 404 error if the event could not be found
+		// Throw a 404 error if the post could not be found
 		if (null === $objPost)
 		{
 			throw new PageNotFoundException('Post not found: ' . $request->getUri());
@@ -55,8 +55,14 @@ class PostController implements ControllerInterface
 		\Input::setGet('posts', $objPost->id, true);
 
 		$objArchive = \ArchiveModel::FindByPk($objPost->pid);
-		$objPage = \PageModel::findByPk($objArchive->pid);
+		$objPage = \PageModel::findPublishedById($objArchive->pid);
 	
+		// Throw a 404 error if the page is not visible
+		if (null === $objPage)
+		{
+			throw new PageNotFoundException('Page not found: ' . $request->getUri());
+		}
+
 		// Render the corresponding page from the calender setting
 		$frontendIndex = new FrontendIndex();
 		return $frontendIndex->renderPage($objPage);
