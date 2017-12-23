@@ -155,7 +155,7 @@ class ChangeLanguage
             return;
         }
 	
-		$currentPost = \PostsModel::findById($event->getUrlParameterBag()->getUrlAttribute('posts'));
+		$currentPost = \PostsModel::findByIdOrAlias($event->getUrlParameterBag()->getUrlAttribute('posts'));
 		
 		$archives = \ArchiveModel::findBy(
 			['tl_archive.pid=?'],
