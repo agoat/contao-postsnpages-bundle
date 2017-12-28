@@ -145,7 +145,10 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 
 					while ($objRoot->next())
 					{
-						$arrRoot = array_merge($arrRoot, $this->Database->getParentRecords($objRoot->$fld, $table));
+						if (\count(array_intersect($this->root, $this->Database->getParentRecords($objRoot->$fld, $table))) > 0)
+						{
+							$arrRoot[] = $objRoot->$fld;
+						}
 					}
 
 					$arrFound = $arrRoot;
