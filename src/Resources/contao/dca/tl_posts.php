@@ -365,7 +365,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 				array('tl_posts', 'saveTags')
 			),
 			'options_callback'        => array('tl_posts', 'getTags'),
-			'eval'                    => array('multiple'=>true, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['choosen_addTag'], 'tl_class'=>'clr long'),
+			'eval'                    => array('multiple'=>true, 'rgxp'=>'alias', 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['choosen_addTag'], 'tl_class'=>'clr long'),
 			'sql'                     => "varchar(1022) NOT NULL default ''"
 		),
 		'alternativeLink' => array
@@ -991,19 +991,14 @@ class tl_posts extends Backend
 	 */
 	public function saveTags($value, $dc)
 	{
-		if (empty($value))
-		{
-			return;
-		}
-		
 		$blnChanged = false;
-		$tags = \StringUtil::deserialize($value);
+		$tags = (array) \StringUtil::deserialize($value);
 	
 		$tagIds = array_filter($tags, 'is_numeric');
 		$newTags = (is_array($tagIds)) ? array_diff_key($tags, $tagIds) : array();
 
 		$objTags = \TagsModel::findByPid($dc->activeRecord->id);
-		
+	
 		$removedTags = (null !== $objTags) ? array_diff($objTags->fetchEach('id'), $tagIds) : array();
 		$selectedTags = (null !== $objTags) ? array_diff($tagIds, $objTags->fetchEach('id')) : $tagIds;
 	
