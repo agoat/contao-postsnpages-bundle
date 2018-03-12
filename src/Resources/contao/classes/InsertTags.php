@@ -28,10 +28,10 @@ class InsertTags extends ContaoController
 	 *
 	 * @return string
 	 */	
-	public function doReplace ($strTag)
+	public function doReplace ($strTag, $blnCache, $arrCache,array $flags)
 	{
 		$elements = explode('::', $strTag);
-		
+
 		switch ($elements[0])
 		{
 			// Post
@@ -63,7 +63,7 @@ class InsertTags extends ContaoController
 					case 'post_link':
 						$return = sprintf(
 							'<a href="%s" title="%s">%s</a>',
-							Posts::generatePostUrl($objPost, ('target' == $elements[2])),
+							($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, ('target' == $elements[2]), false, \in_array('absolute', $flags, true)),
 							\StringUtil::specialchars($objPost->title),
 							$objPost->title
 						);
@@ -72,13 +72,13 @@ class InsertTags extends ContaoController
 					case 'post_open':
 						$return = sprintf(
 							'<a href="%s" title="%s">',
-							Posts::generatePostUrl($objPost, ('target' == $elements[2])),
+							($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, ('target' == $elements[2]), false, \in_array('absolute', $flags, true)),
 							\StringUtil::specialchars($objPost->title)
 						);
 						break;
 						
 					case 'post_url':
-						$return = Posts::generatePostUrl($objPost, ('target' == $elements[2]));
+						$return = ($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, ('target' == $elements[2]), false, \in_array('absolute', $flags, true));
 						break;
 						
 					case 'post_title':

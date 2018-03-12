@@ -34,14 +34,14 @@ class Posts extends \Frontend
 	 *
 	 * @return string
 	 */
-	public static function generatePostUrl ($objPost, $blnAlternativeLink=false, $intJumpTo=false)
+	public static function generatePostUrl ($objPost, $blnAlternativeLink=false, $intJumpTo=false, $blnAbsolute=false)
 	{
 		if (!$objPost instanceof \PostsModel)
 		{
 			return;
 		}
 	
-		$strCacheKey = 'id_' . $objPost->id;
+		$strCacheKey = 'id_' . $objPost->id . ($blnAbsolute ? '_absolute' : '');
 		
 		// Load the URL from cache
 		if (isset(self::$arrUrlCache[$strCacheKey]))
@@ -60,19 +60,17 @@ class Posts extends \Frontend
 		{
 			$objArchive = \ArchiveModel::findByPk($objPost->pid);
 			$objPage = \PageModel::findWithDetails($intJumpTo ?: $objArchive->pid);
-			
-			$urlGenerator = \System::getContainer()->get('contao.routing.url_generator');
-
-			self::$arrUrlCache[$strCacheKey] = $urlGenerator->generate
-			(
-				($objPage->alias ?: $objPage->id) . '/posts/' . ($objPost->alias ?: $objPost->id),
-				array
-				(
-					'_locale' => ($strForceLang ?: $objPage->rootLanguage),
-					'_domain' => $objPage->domain,
-					'_ssl' => (bool) $objPage->rootUseSSL,
-				)
-			);
+		
+			if (!$objPage instanceof \PageModel)
+			{
+				self::$arrUrlCache[$strCacheKey] = ampersand(\Environment::get('request'), true);
+			}
+			else
+			{
+				$params = (\Config::get('useAutoItem') ? '/' : '/posts/') . ($objPost->alias ?: $objPost->id);
+		
+				self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
+			}
 		}
 
 		return self::$arrUrlCache[$strCacheKey];
