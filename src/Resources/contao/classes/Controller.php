@@ -92,11 +92,6 @@ class Controller extends ContaoController
 						break;
 					}
 
-					if ($objRecent->alternativeLink && substr($objRecent->url, 0, 7) === 'mailto:')
-					{
-						return;
-					}
-
 					throw new RedirectResponseException(Posts::generatePostUrl($objRecent, false, false, true));
 					
 				case 'page':

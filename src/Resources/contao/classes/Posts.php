@@ -11,6 +11,9 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
+use Contao\Controller as ContaoController;
+
+
 
 /**
  * Posts class
@@ -54,7 +57,7 @@ class Posts extends \Frontend
 		
 		if ($objPost->alternativeLink && $blnAlternativeLink)
 		{
-			self::$arrUrlCache[$strCacheKey] = $objPost->url;
+			self::$arrUrlCache[$strCacheKey] = ContaoController::replaceInsertTags($blnAbsolute ? str_replace('}}', '|absolute}}', $objPost->url) : $objPost->url, false);
 		}
 		else
 		{

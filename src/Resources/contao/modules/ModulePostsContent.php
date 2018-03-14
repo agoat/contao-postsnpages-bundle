@@ -12,6 +12,7 @@
 namespace Agoat\PostsnPagesBundle\Contao;
 
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\CoreBundle\Exception\RedirectResponseException;
 use Patchwork\Utf8;
 
 
@@ -47,7 +48,7 @@ class ModulePostsContent extends ModulePosts
 		{
 			if ($this->url)
 			{
-				$this->redirect($this->replaceInsertTags($this->url));
+				throw new RedirectResponseException($this->replaceInsertTags(str_replace('}}', '|absolute}}', $this->url), false), 303);
 			}
 		}
 		
