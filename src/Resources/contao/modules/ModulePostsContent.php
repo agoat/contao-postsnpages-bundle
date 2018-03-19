@@ -51,8 +51,11 @@ class ModulePostsContent extends ModulePosts
 				throw new RedirectResponseException($this->replaceInsertTags(str_replace('}}', '|absolute}}', $this->url), false), 303);
 			}
 		}
+
+		// Get post alias
+		$strPost = \Input::get('posts');
 		
-		// Overwrite the page title (see @contao/core #2853 and #4955)
+		// Overwrite the page title
 		if ($strPost != '' && ($strPost == $this->id || $strPost == $this->alias) && $this->title != '')
 		{
 			$objPage->pageTitle = strip_tags(\StringUtil::stripInsertTags($this->title));
@@ -62,7 +65,7 @@ class ModulePostsContent extends ModulePosts
 				$objPage->description = $this->prepareMetaDescription($this->teaser);
 			}
 		}		
-
+	
 		// Set custom post template
 		$this->postTemplate = $objPage->postTpl;
 		
