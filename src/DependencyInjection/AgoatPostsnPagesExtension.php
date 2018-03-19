@@ -44,6 +44,6 @@ class AgoatPostsnPagesExtension extends Extension
 			$container->setParameter('contao.permalink.posts', '{{year}}/{{alias}}');
 		}
 
-        $loader->load('services.yml');		
+        $loader->load('services.yml');	
     }
 }
