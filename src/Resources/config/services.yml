@@ -59,4 +59,27 @@ services:
             - "%fragment.path%"
         tags:
             - { name: kernel.event_listener, event: kernel.terminate, method: onKernelTerminate }
-            
+ 
+    contao.listener.post_preview_url_create:
+        class: Agoat\PostsnPagesBundle\EventListener\PostPreviewUrlCreateListener
+        arguments:
+            - "@request_stack"
+            - "@contao.framework"
+        tags:
+            - { name: kernel.event_listener, event: contao.preview_url_create, method: onPreviewUrlCreate }
+     
+    contao.listener.page_preview_url_create:
+        class: Agoat\PostsnPagesBundle\EventListener\PagePreviewUrlCreateListener
+        arguments:
+            - "@request_stack"
+            - "@contao.framework"
+        tags:
+            - { name: kernel.event_listener, event: contao.preview_url_create, method: onPreviewUrlCreate }
+
+    contao.listener.post_preview_url_convert:
+        class: Agoat\PostsnPagesBundle\EventListener\PostPreviewUrlConvertListener
+        arguments:
+            - "@request_stack"
+            - "@contao.framework"
+        tags:
+            - { name: kernel.event_listener, event: contao.preview_url_convert, method: onPreviewUrlConvert }

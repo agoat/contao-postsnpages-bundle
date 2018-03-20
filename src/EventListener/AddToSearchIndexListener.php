@@ -43,7 +43,7 @@ class AddToSearchIndexListener
      *
      * @param PostResponseEvent $event
      */
-    public function onKernelTerminate($event): void
+    public function onKernelTerminate(PostResponseEvent $event): void
     {
 		if (!$this->framework->isInitialized()) {
             return;
