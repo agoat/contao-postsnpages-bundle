@@ -72,10 +72,10 @@
         <source>Renders the teaser of tagged posts (To be used in conjunction with the 'Post tag menu' module).</source>
       </trans-unit>
       <trans-unit id="FMD.poststagmenu.0">
-        <source>Posts tags menu</source>
+        <source>Posts tags</source>
       </trans-unit>
       <trans-unit id="FMD.poststagmenu.1">
-        <source>Generates a tags menu from tagged posts.</source>
+        <source>Creates a tag menu of posts from an archive.</source>
       </trans-unit>
     </body>
   </file>
