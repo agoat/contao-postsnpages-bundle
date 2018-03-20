@@ -61,7 +61,7 @@ class PostPreviewUrlCreateListener
 			if (null !== ($archiveModel = \ArchiveModel::findByPk($event->getId()))) {
 				$event->setQuery('page='.$archiveModel->pid);
 			}
-			dump('archive > page');
+
 			return;
         }
 
