@@ -1,20 +1,22 @@
 <?php
 /*
- * Language relations for Contao Open Source CMS.
+ * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2018
- * @package    contao-languagerelation
+ * @copyright  Arne Stappen (alias aGoat) 2017
+ * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
  * @license    LGPL-3.0
  */
- 
+
 namespace Agoat\PostsnPagesBundle\LanguageRelation;
 
 use Agoat\LanguageRelationBundle\LanguageRelation\AbstractLanguageRelationProvider;
 use Agoat\LanguageRelationBundle\LanguageRelation\LanguageRelationProviderInterface;
 use Agoat\LanguageRelationBundle\LanguageRelation\LanguageRelation;
 use Contao\Backend;
+use Contao\ArchiveModel;
+use Contao\PageModel;
 
 
 
@@ -40,13 +42,13 @@ class ArchiveLanguageRelationProvider extends AbstractLanguageRelationProvider i
 	
 	public function build($id, $published)
 	{
-		$this->currentEntity = \ArchiveModel::findByPk($id);
+		$this->currentEntity = ArchiveModel::findByPk($id);
 
 		if (null === $this->currentEntity) {
 			return null;
 		} 
 		
-		$this->parentEntity = \PageModel::findByPk($this->currentEntity->pid);
+		$this->parentEntity = PageModel::findByPk($this->currentEntity->pid);
 		
 		$this->setRootLanguages($this->parentEntity, $published);
 

@@ -118,6 +118,8 @@ $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('Agoat\\PostsnPagesBundle\\C
 $GLOBALS['TL_HOOKS']['getLayoutId'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller','getLayoutId');
 $GLOBALS['TL_HOOKS']['getPageStatusIcon'][] = array('Agoat\\PostsnPagesBundle\\Contao\\Controller','getPostsPageStatusIcon');
 
+$GLOBALS['TL_HOOKS']['loadDataContainer'][] = array('Agoat\\PostsnPagesBundle\\DataContainer\\LanguageRelationAssembler','buildDca');
+
 
 
 if (array_key_exists('ContaoCommentsBundle', $bundles))

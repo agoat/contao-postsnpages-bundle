@@ -84,6 +84,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: contao.preview_url_convert, method: onPreviewUrlConvert }
 
+    contao.relation.provider.container:
+        class: Agoat\PostsnPagesBundle\LanguageRelation\ContainerLanguageRelationProvider
+        tags:
+            - { name: contao.languagerelation_provider }
+
     contao.relation.provider.archive:
         class: Agoat\PostsnPagesBundle\LanguageRelation\ArchiveLanguageRelationProvider
         tags:
