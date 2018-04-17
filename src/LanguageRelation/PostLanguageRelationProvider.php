@@ -42,6 +42,15 @@ class PostLanguageRelationProvider extends AbstractLanguageRelationProvider impl
 	}
 	
 	
+	/**
+     * {@inheritdoc}
+     */	
+	public function getQueryName()
+	{
+		return 'posts';
+	}
+
+
 	public function build($id, $published)
 	{
 		$this->currentEntity = Postmodel::findByPk($id);
