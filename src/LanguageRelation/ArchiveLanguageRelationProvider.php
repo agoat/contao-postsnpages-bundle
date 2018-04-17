@@ -108,18 +108,6 @@ class ArchiveLanguageRelationProvider extends AbstractLanguageRelationProvider i
 	public function getCreateUrl($language)
 	{
 		return false; // Post archives shouldn't be copied to another language (?)
-	
-		$this->setParentRelations(false);
-		
-		$articles = \ArchiveModel::findByPid($this->parentRelations[$language]->id, ['order'=>'sorting']);
-	
-		if (null === $articles) {
-			$query = 'act=copy&mode=2&id='.$this->currentEntity->id.'&pid='.$this->parentRelations[$language]->id;
-		} else {
-			$query = 'act=copy&mode=1&id='.$this->currentEntity->id.'&pid='.$articles->last()->id;
-		}
-		
-		return Backend::addToUrl($query);
 	}
 
 
