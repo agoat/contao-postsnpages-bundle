@@ -11,7 +11,7 @@
 
 namespace Agoat\PostsnPagesBundle\Permalink;
 
-use Agoat\PermalinkBundle\Permalink\PermalinkProviderFactory;
+use Agoat\PermalinkBundle\Permalink\AbstractPermalinkProvider;
 use Agoat\PermalinkBundle\Permalink\PermalinkProviderInterface;
 use Agoat\PermalinkBundle\Permalink\PermalinkUrl;
 use Contao\CoreBundle\Exception\AccessDeniedException;
@@ -22,7 +22,7 @@ use Contao\CoreBundle\Exception\AccessDeniedException;
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
-class PostPermalinkProvider extends PermalinkProviderFactory implements PermalinkProviderInterface
+class PostPermalinkProvider extends AbstractPermalinkProvider implements PermalinkProviderInterface
 {
 	
 	/**

@@ -74,10 +74,19 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
     public function getDcaAttributes(PickerConfig $config)
     {
         $value = $config->getValue();
+		$attributes = [
+			'fieldType' => $config->getExtra('fieldType'),
+			'filesOnly' => $config->getExtra('filesOnly')
+		];
 
         if ('static' === $config->getContext()) {
-            $attributes = ['fieldType' => $config->getExtra('fieldType'),
-						   'filesOnly' => $config->getExtra('filesOnly')];
+ 			if ($fieldType = $config->getExtra('fieldType')) {
+                $attributes['fieldType'] = $fieldType;
+            }
+			
+			if ($filesOnly = $config->getExtra('filesOnly')) {
+                $attributes['filesOnly'] = $filesOnly;
+            }
 
 			if ($source = $config->getExtra('source')) {
                 $attributes['preserveRecord'] = $source;
@@ -90,9 +99,7 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
             return $attributes;
         }
 
-        $attributes = ['fieldType' => 'radio'];
-
-        return $attributes;
+         return $attributes;
     }
 
 	

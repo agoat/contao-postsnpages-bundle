@@ -74,9 +74,12 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
     public function getDcaAttributes(PickerConfig $config)
     {
         $value = $config->getValue();
-
+		$attributes = ['fieldType' => 'radio'];
+		
         if ('post' === $config->getContext()) {
-            $attributes = ['fieldType' => $config->getExtra('fieldType')];
+ 			if ($fieldType = $config->getExtra('fieldType')) {
+                $attributes['fieldType'] = $fieldType;
+            }
 
 			if ($source = $config->getExtra('source')) {
                 $attributes['preserveRecord'] = $source;
@@ -88,8 +91,6 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
 
             return $attributes;
         }
-
-        $attributes = ['fieldType' => 'radio'];
 
         if ($value && false !== strpos($value, '{{post_url::')) {
             $attributes['value'] = str_replace(['{{post_url::', '}}'], '', $value);
