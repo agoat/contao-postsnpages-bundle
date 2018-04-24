@@ -50,11 +50,6 @@ class LanguageRelationAssembler
 		{
 			return;
 		}
-
-		
-		if (!in_array('AgoatLanguageRelationBundle', array_keys(System::getContainer()->getParameter('kernel.bundles')))) {
-			return;
-		}
 		
 		foreach ($this->constructors as $context=>$constructors) {
 			if ($table == $context) {
