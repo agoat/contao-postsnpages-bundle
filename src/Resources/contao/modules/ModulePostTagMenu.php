@@ -17,7 +17,7 @@ use Patchwork\Utf8;
 /**
  * ModulePostsTagMenu class
  */
-class ModulePostsTagMenu extends \Module
+class ModulePostTagMenu extends \Module
 {
 
 	/**

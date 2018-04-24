@@ -15,20 +15,20 @@ use Patchwork\Utf8;
 
 
 /**
- * ModulePostsTeaser class
+ * ModuleRelatedPostsTeaser class
  */
-class ModulePostsTeaser extends ModulePosts
+class ModuleRelatedPostTeaser extends ModulePost
 {
 
 	/**
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = 'mod_poststeaser';
+	protected $strTemplate = 'mod_postteaser';
 
 
 	/**
-	 * Do not render the module if a post is called directly
+	 * Display a wildcard in the back end
 	 *
 	 * @return string
 	 */
@@ -48,12 +48,18 @@ class ModulePostsTeaser extends ModulePosts
 			return $objTemplate->parse();
 		}
 
-		// Don't show teasers when a post is called directly
-		if ((isset($_GET['posts']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
+		// Set the item from the auto_item parameter
+		if (!isset($_GET['posts']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
 		{
-			return;
+			\Input::setGet('posts', \Input::get('auto_item'));
 		}
-		
+
+		// Overwrite the post id
+		if (null !== $intId)
+		{
+			\Input::setGet('posts', $intId);
+		}
+	
 		return parent::generate();
 	}
 
@@ -63,14 +69,16 @@ class ModulePostsTeaser extends ModulePosts
 	 */
 	protected function compile()
 	{
-		// Get published posts
-		$objPosts = $this->getPosts();
-	
-		if ($objPosts === null)
+		// Get the post alias(id)
+		$strPost = \Input::get('posts');
+
+		if (!strlen($strPost))
 		{
 			return;
 		}
 
+		$objPosts = $this->getRelatedPosts($strPost);
+		
 		// Set custom post template
 		$this->postTemplate = $this->teaserTpl;
 
@@ -85,7 +93,7 @@ class ModulePostsTeaser extends ModulePosts
 			}
 		}
 
-		if ($this->sortPosts == 'random')
+		if ($this->sortRelated == 'random')
 		{
 			shuffle($arrPosts);
 		}

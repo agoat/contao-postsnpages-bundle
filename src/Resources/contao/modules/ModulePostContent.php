@@ -19,7 +19,7 @@ use Patchwork\Utf8;
 /**
  * ModulePostReader class
  */
-class ModulePostsContent extends ModulePosts
+class ModulePostContent extends ModulePost
 {
 
 	/**

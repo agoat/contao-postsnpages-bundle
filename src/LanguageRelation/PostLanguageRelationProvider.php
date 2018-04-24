@@ -16,9 +16,9 @@ use Agoat\LanguageRelationBundle\LanguageRelation\LanguageRelationProviderInterf
 use Agoat\LanguageRelationBundle\LanguageRelation\LanguageRelation;
 use Agoat\PostsnPagesBundle\Contao\Posts;
 use Contao\Backend;
-use Contao\ArchiveModel;
 use Contao\PageModel;
-use Contao\PostsModel as PostModel;
+use Contao\ArchiveModel;
+use Contao\PostModel;
 
 
 
@@ -38,7 +38,7 @@ class PostLanguageRelationProvider extends AbstractLanguageRelationProvider impl
      */	
 	public function getDcaTable()
 	{
-		return 'tl_posts';
+		return 'tl_post';
 	}
 	
 	

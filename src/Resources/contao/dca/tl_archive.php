@@ -27,7 +27,7 @@ $GLOBALS['TL_DCA']['tl_archive'] = array
 	(
 		'dataContainer'               => 'TableExtended',
 		'ptable'                      => 'tl_page',
-		'ctable'                      => array('tl_posts'),
+		'ctable'                      => array('tl_post'),
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
 		'onload_callback' => array
@@ -84,7 +84,7 @@ $GLOBALS['TL_DCA']['tl_archive'] = array
 			'edit' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_archive']['edit'],
-				'href'                => 'table=tl_posts',
+				'href'                => 'table=tl_post',
 				'icon'                => 'edit.svg',
 				'button_callback'     => array('tl_archive', 'editArchiv')
 			),

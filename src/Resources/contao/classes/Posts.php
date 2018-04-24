@@ -39,7 +39,7 @@ class Posts extends \Frontend
 	 */
 	public static function generatePostUrl ($objPost, $blnAlternativeLink=false, $intJumpTo=false, $blnAbsolute=false)
 	{
-		if (!$objPost instanceof \PostsModel)
+		if (!$objPost instanceof \PostModel)
 		{
 			return;
 		}
@@ -90,7 +90,7 @@ class Posts extends \Frontend
 	public static function getPostContent ($objPost)
 	{
 		$arrElements = array();
-		$objCte = \ContentModel::findPublishedByPidAndTable($objPost->id, 'tl_posts');
+		$objCte = \ContentModel::findPublishedByPidAndTable($objPost->id, 'tl_post');
 
 		if ($objCte !== null)
 		{

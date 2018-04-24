@@ -17,14 +17,14 @@ use Patchwork\Utf8;
 /**
  * ModuleTaggedPostsTeaser class
  */
-class ModuleTaggedPostsTeaser extends ModulePosts
+class ModuleTaggedPostTeaser extends ModulePost
 {
 
 	/**
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = 'mod_poststeaser';
+	protected $strTemplate = 'mod_postteaser';
 
 
 	/**

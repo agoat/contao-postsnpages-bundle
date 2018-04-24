@@ -67,16 +67,16 @@ class PostPreviewUrlConvertListener
      *
      * @param Request $request
      *
-     * @return PostsModel|null
+     * @return PostModel|null
      */
-    private function getPostModel(Request $request): ?\PostsModel
+    private function getPostModel(Request $request): ?\PostModel
     {
         if (!$request->query->has('post')) {
             return null;
         }
 
-        /** @var PostsModel $adapter */
-        $adapter = $this->framework->getAdapter(\PostsModel::class);
+        /** @var PostModel $adapter */
+        $adapter = $this->framework->getAdapter(\PostModel::class);
 
         return $adapter->findByPk($request->query->get('post'));
     }

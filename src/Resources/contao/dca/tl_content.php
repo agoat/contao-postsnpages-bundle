@@ -15,7 +15,7 @@
  */
 if (Input::get('do') == 'posts')
 {
-	$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'tl_posts';
+	$GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'tl_post';
 	$GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = array('tl_content', 'checkPermission');
 }
 else if (Input::get('do') == 'pages')

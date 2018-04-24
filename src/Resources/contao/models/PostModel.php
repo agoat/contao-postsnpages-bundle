@@ -15,14 +15,14 @@ namespace Contao;
 /**
  * Reads and writes posts
  */
-class PostsModel extends \Model
+class PostModel extends \Model
 {
 	
 	/**
 	 * Table name
 	 * @var string
 	 */
-	protected static $strTable = 'tl_posts';
+	protected static $strTable = 'tl_post';
 
 
 	/**
@@ -31,7 +31,7 @@ class PostsModel extends \Model
 	 * @param integer $varId     The post id or alias
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return Model\Collection|PostsModel|null A collection of models or null if there are no posts
+	 * @return Model\Collection|PostModel|null A collection of models or null if there are no posts
 	 */
 	public static function findPublishedByIdOrAlias($varId, array $arrOptions=array())
 	{

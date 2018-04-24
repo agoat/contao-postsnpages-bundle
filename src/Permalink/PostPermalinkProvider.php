@@ -30,7 +30,7 @@ class PostPermalinkProvider extends AbstractPermalinkProvider implements Permali
      */	
 	public function getDcaTable()
 	{
-		return 'tl_posts';
+		return 'tl_post';
 	}
 
 	
@@ -39,7 +39,7 @@ class PostPermalinkProvider extends AbstractPermalinkProvider implements Permali
      */	
 	public function generate($context, $source)
 	{
-		$objPost = \PostsModel::findByPk($source);
+		$objPost = \PostModel::findByPk($source);
 
 		if (null === $objPost)
 		{
@@ -84,7 +84,7 @@ class PostPermalinkProvider extends AbstractPermalinkProvider implements Permali
      */	
 	public function getUrl($context, $source)
 	{
-		$objPost = \PostsModel::findByPk($source);
+		$objPost = \PostModel::findByPk($source);
 
 		if (null === $objPost)
 		{
@@ -114,7 +114,7 @@ class PostPermalinkProvider extends AbstractPermalinkProvider implements Permali
 	/**
 	 * Resolve pattern to strings
 	 *
-	 * @param \PostsModel $objPost
+	 * @param PostModel $objPost
 	 *
 	 * @return String
 	 *

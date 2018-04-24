@@ -141,7 +141,7 @@ class PostTree extends \Widget
 			return;
 		}
 
-		$arrPids = $this->Database->prepare("SELECT pid FROM tl_posts WHERE id IN (?)")
+		$arrPids = $this->Database->prepare("SELECT pid FROM tl_post WHERE id IN (?)")
 							      ->execute($varInput)->fetchAssoc();
 
 		return;
@@ -167,7 +167,7 @@ class PostTree extends \Widget
 
 		if (!empty($this->varValue)) // Can be an array
 		{
-			$objPosts = \PostsModel::findMultipleByIds((array)$this->varValue);
+			$objPosts = \PostModel::findMultipleByIds((array)$this->varValue);
 
 			if ($objPosts !== null)
 			{

@@ -46,7 +46,7 @@ class InsertTags extends ContaoController
 			case 'post_latlong':
 			case 'post_category':
 			case 'post_tags':
-				if (($objPost = \PostsModel::findByIdOrAlias($elements[1])) === null)
+				if (($objPost = \PostModel::findByIdOrAlias($elements[1])) === null)
 				{
 					break;
 				}
@@ -118,7 +118,7 @@ class InsertTags extends ContaoController
 				
 			// Insert post
 			case 'insert_post':
-				if (($objPost = \PostsModel::findByIdOrAlias($elements[1])) === null)
+				if (($objPost = \PostModel::findByIdOrAlias($elements[1])) === null)
 				{
 					break;
 				}

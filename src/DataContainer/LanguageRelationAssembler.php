@@ -26,7 +26,7 @@ class LanguageRelationAssembler
 			'Agoat\LanguageRelationBundle\DataContainer\RelationFieldConstructor',
 			'Agoat\LanguageRelationBundle\DataContainer\NoRelationCallbackConstructor'
 		],
-		'tl_posts' => [
+		'tl_post' => [
 			'Agoat\PostsnPagesBundle\DataContainer\PostArchiveViewConstructor',
 			'Agoat\LanguageRelationBundle\DataContainer\RelationFieldConstructor',
 			'Agoat\LanguageRelationBundle\DataContainer\NoRelationCallbackConstructor'

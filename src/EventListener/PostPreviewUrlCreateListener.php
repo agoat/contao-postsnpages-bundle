@@ -57,7 +57,7 @@ class PostPreviewUrlCreateListener
             throw new \RuntimeException('The request stack did not contain a request');
         }
 
-        if (!$request->query->has('table') || 'tl_archive' === $request->query->get('table') || ('tl_posts' === $request->query->get('table') && !$request->query->has('act'))) {
+        if (!$request->query->has('table') || 'tl_archive' === $request->query->get('table') || ('tl_post' === $request->query->get('table') && !$request->query->has('act'))) {
 			if (null !== ($archiveModel = \ArchiveModel::findByPk($event->getId()))) {
 				$event->setQuery('page='.$archiveModel->pid);
 			}
@@ -65,7 +65,7 @@ class PostPreviewUrlCreateListener
 			return;
         }
 
-        if (null === ($postModel = \PostsModel::findByPk($this->getId($event, $request)))) {
+        if (null === ($postModel = \PostModel::findByPk($this->getId($event, $request)))) {
             return;
         }
 

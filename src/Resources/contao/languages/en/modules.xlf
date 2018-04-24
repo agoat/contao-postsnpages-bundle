@@ -6,7 +6,7 @@
         <source>Page/Post content</source>
       </trans-unit>
 
-      <trans-unit id="MOD.tl_posts">
+      <trans-unit id="MOD.tl_post">
         <source>Post articles</source>
       </trans-unit>
 

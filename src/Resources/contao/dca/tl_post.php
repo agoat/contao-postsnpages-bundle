@@ -17,9 +17,9 @@ System::loadLanguageFile('tl_content');
 
 
 /**
- * Table tl_posts
+ * Table tl_post
  */
-$GLOBALS['TL_DCA']['tl_posts'] = array
+$GLOBALS['TL_DCA']['tl_post'] = array
 (
 
 	// Config
@@ -32,19 +32,19 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		'enableVersioning'            => true,
 		'onload_callback' => array
 		(
-			array('tl_posts', 'checkPermission'),
+			array('tl_post', 'checkPermission'),
 		),
 		'onsubmit_callback' => array
 		(
-			array('tl_posts', 'adjustTime'),
+			array('tl_post', 'adjustTime'),
 		),
 		'oncut_callback' => array
 		(
-			array('tl_posts', 'adjustTags'),
+			array('tl_post', 'adjustTags'),
 		),
 		'oncopy_callback' => array
 		(
-			array('tl_posts', 'adjustTags'),
+			array('tl_post', 'adjustTags'),
 		),
 		'sql' => array
 		(
@@ -67,7 +67,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'fields'                  => array('date DESC', 'title', 'author'),
 			'panelLayout'             => 'filter;filter;sort,search,limit',
 			'headerFields'            => array('title', 'protected'),
-			'child_record_callback'   => array('tl_posts', 'renderPost'),
+			'child_record_callback'   => array('tl_post', 'renderPost'),
 		),
 		'label' => array
 		(
@@ -88,59 +88,59 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		(
 			'edit' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['edit'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_post']['edit'],
 				'href'                => 'table=tl_content',
 				'icon'                => 'edit.svg',
-				'button_callback'     => array('tl_posts', 'editPost')
+				'button_callback'     => array('tl_post', 'editPost')
 			),
 			'editheader' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['editheader'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_post']['editheader'],
 				'href'                => 'act=edit',
 				'icon'                => 'header.svg',
-				'button_callback'     => array('tl_posts', 'editHeader')
+				'button_callback'     => array('tl_post', 'editHeader')
 			),
 			'cut' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['cut'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_post']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_posts', 'cutPost')
+				'button_callback'     => array('tl_post', 'cutPost')
 			),
 			'copy' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['copy'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_post']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_posts', 'copyPost')
+				'button_callback'     => array('tl_post', 'copyPost')
 			),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['delete'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_post']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.svg',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_posts', 'deletePost')
+				'button_callback'     => array('tl_post', 'deletePost')
 			),
 			'toggle' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['toggle'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_post']['toggle'],
 				'icon'                => 'visible.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-				'button_callback'     => array('tl_posts', 'toggleIcon')
+				'button_callback'     => array('tl_post', 'toggleIcon')
 			),
 			'feature' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['feature'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_post']['feature'],
 				'icon'                => 'featured.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFeatured(this,%s)"',
-				'button_callback'     => array('tl_posts', 'iconFeatured')		
+				'button_callback'     => array('tl_post', 'iconFeatured')		
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_posts']['show'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_post']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.svg'
 			)
@@ -190,7 +190,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'title' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['title'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['title'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'sorting'                 => true,
@@ -202,20 +202,20 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'alias' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['alias'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['alias'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'search'                  => true,
 			'eval'                    => array('rgxp'=>'alias', 'doNotCopy'=>true, 'maxlength'=>128, 'tl_class'=>'w50 clr'),
 			'save_callback' => array
 			(
-				array('tl_posts', 'generateAlias')
+				array('tl_post', 'generateAlias')
 			),
 			'sql'                     => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
 		),
 		'author' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['author'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['author'],
 			'default'                 => BackendUser::getInstance()->id,
 			'exclude'                 => true,
 			'search'                  => true,
@@ -228,7 +228,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'keywords' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['keywords'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['keywords'],
 			'exclude'                 => true,
 			'inputType'               => 'textarea',
 			'search'                  => true,
@@ -237,7 +237,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'date' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['date'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['date'],
 			'default'                 => time(),
 			'exclude'                 => true,
 			'filter'                  => true,
@@ -246,35 +246,35 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 			'inputType'               => 'text',
 			'load_callback' => array
 			(
-				array('tl_posts', 'loadDate')
+				array('tl_post', 'loadDate')
 			),
 			'save_callback' => array
 			(
-				array('tl_posts', 'resetTime')
+				array('tl_post', 'resetTime')
 			),
 			'eval'                    => array('rgxp'=>'date', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'time' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['time'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['time'],
 			'default'                 => time(),
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'load_callback' => array
 			(
-				array('tl_posts', 'loadTime')
+				array('tl_post', 'loadTime')
 			),
 			'save_callback' => array
 			(
-				array('tl_posts', 'resetTime')
+				array('tl_post', 'resetTime')
 			),
 			'eval'                    => array('rgxp'=>'time', 'doNotCopy'=>true, 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
 		),
 		'location' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['location'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['location'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'filter'                  => true,
@@ -285,7 +285,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'latlong' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['latlong'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['latlong'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -294,7 +294,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'subTitle' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['subTitle'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['subTitle'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -303,7 +303,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'teaser' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['teaser'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['teaser'],
 			'exclude'                 => true,
 			'inputType'               => 'textarea',
 			'search'                  => true,
@@ -312,7 +312,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'addImage' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['addImage'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['addImage'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
@@ -345,32 +345,32 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'category' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['category'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['category'],
 			'exclude'                 => true,
 			'sorting'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'inputselect',
-			'options_callback'        => array('tl_posts', 'getCategories'),
-			'eval'                    => array('includeBlankOption'=>true, 'rgxp'=>'alias', 'maxlength'=>128, 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['choosen_addCategory'], 'tl_class'=>'w50'),
+			'options_callback'        => array('tl_post', 'getCategories'),
+			'eval'                    => array('includeBlankOption'=>true, 'rgxp'=>'alias', 'maxlength'=>128, 'noResult'=>$GLOBALS['TL_LANG']['tl_post']['choosen_addCategory'], 'tl_class'=>'w50'),
 			'sql'                     => "varchar(128) NOT NULL default ''"
 		),
 		'tags' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['tags'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['tags'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'inputselect',
 			'save_callback'           => array
 			(
-				array('tl_posts', 'saveTags')
+				array('tl_post', 'saveTags')
 			),
-			'options_callback'        => array('tl_posts', 'getTags'),
-			'eval'                    => array('multiple'=>true, 'rgxp'=>'alias', 'noResult'=>$GLOBALS['TL_LANG']['tl_posts']['choosen_addTag'], 'tl_class'=>'clr long'),
+			'options_callback'        => array('tl_post', 'getTags'),
+			'eval'                    => array('multiple'=>true, 'rgxp'=>'alias', 'noResult'=>$GLOBALS['TL_LANG']['tl_post']['choosen_addTag'], 'tl_class'=>'clr long'),
 			'sql'                     => "varchar(1022) NOT NULL default ''"
 		),
 		'alternativeLink' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['alternativeLink'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['alternativeLink'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
@@ -406,12 +406,12 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'related' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['related'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['related'],
 			'exclude'                 => true,
 			'inputType'               => 'postTree',
 			'save_callback'           => array
 			(
-				array('tl_posts', 'checkRelated')
+				array('tl_post', 'checkRelated')
 			),
 			'eval'                    => array('multiple'=>	true, 'fieldType'=>'checkbox', 'orderField'=>'orderRelated', 'tl_class'=>'clr'),
 			'sql'                     => "blob NULL"
@@ -422,37 +422,37 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'printable' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['printable'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['printable'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'options'                 => array('print', 'pdf', 'facebook', 'twitter', 'gplus'),
 			'eval'                    => array('multiple'=>true),
-			'reference'               => &$GLOBALS['TL_LANG']['tl_posts'],
+			'reference'               => &$GLOBALS['TL_LANG']['tl_post'],
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
 		'customTpl' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['customTpl'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['customTpl'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_posts', 'getPostTemplates'),
+			'options_callback'        => array('tl_post', 'getPostTemplates'),
 			'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'format' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['format'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['format'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_posts', 'getPostsFormats'),
-			'reference'               => &$GLOBALS['TL_LANG']['tl_posts'],
+			'options_callback'        => array('tl_post', 'getPostsFormats'),
+			'reference'               => &$GLOBALS['TL_LANG']['tl_post'],
 			'eval'                    => array('tl_class'=>'w50 clr'),
 			'sql'                     => "varchar(32) NOT NULL default ''"
 		),
 		'cssID' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['cssID'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['cssID'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('multiple'=>true, 'size'=>2, 'tl_class'=>'w50'),
@@ -460,7 +460,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'featured' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['featured'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['featured'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
@@ -469,7 +469,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'noComments' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['noComments'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['noComments'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
@@ -478,7 +478,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		),
 		'published' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['published'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['published'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
@@ -488,7 +488,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		'start' => array
 		(
 			'exclude'                 => true,
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['start'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['start'],
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "varchar(10) NOT NULL default ''"
@@ -496,7 +496,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 		'stop' => array
 		(
 			'exclude'                 => true,
-			'label'                   => &$GLOBALS['TL_LANG']['tl_posts']['stop'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['stop'],
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "varchar(10) NOT NULL default ''"
@@ -508,7 +508,7 @@ $GLOBALS['TL_DCA']['tl_posts'] = array
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
  */
-class tl_posts extends Backend
+class tl_post extends Backend
 {
 
 	/**
@@ -740,7 +740,7 @@ class tl_posts extends Backend
 		}
 
 		// Readmore
-		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPagesBundle\Contao\Posts::generatePostUrl(\PostsModel::findById($arrRow['id']), true, false, true) . '" target="_blank">Read more</a></p>';
+		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPagesBundle\Contao\Posts::generatePostUrl(\PostModel::findById($arrRow['id']), true, false, true) . '" target="_blank">Read more</a></p>';
 
 		$return .= '</div>';
 		
@@ -751,7 +751,7 @@ class tl_posts extends Backend
 
 			if ($arrRow['category'])
 			{
-				$return .= $GLOBALS['TL_LANG']['tl_posts']['category'][0] . ': ' . $arrRow['category'];
+				$return .= $GLOBALS['TL_LANG']['tl_post']['category'][0] . ': ' . $arrRow['category'];
 			}
 
 			if ($arrRow['category'] && $arrRow['tags'])
@@ -765,7 +765,7 @@ class tl_posts extends Backend
 				
 				if (null !== $objTags)
 				{
-					$return .= $GLOBALS['TL_LANG']['tl_posts']['tags'][0] . ': ' . implode(', ', $objTags->fetchEach('label'));
+					$return .= $GLOBALS['TL_LANG']['tl_post']['tags'][0] . ': ' . implode(', ', $objTags->fetchEach('label'));
 				}
 			}
 			
@@ -805,7 +805,7 @@ class tl_posts extends Backend
 			$varValue = 'article-' . $varValue;
 		}
 		
-		$objAlias = $this->Database->prepare("SELECT id FROM tl_posts WHERE id=? OR alias=?")
+		$objAlias = $this->Database->prepare("SELECT id FROM tl_post WHERE id=? OR alias=?")
 								   ->execute($dc->id, $varValue);
 								   
 		// Check whether the page alias exists
@@ -877,7 +877,7 @@ class tl_posts extends Backend
 		$arrSet['date'] = strtotime(date('Y-m-d', $dc->activeRecord->date) . ' ' . date('H:i:s', $dc->activeRecord->time));
 		$arrSet['time'] = $arrSet['date'];
 		
-		$this->Database->prepare("UPDATE tl_posts %s WHERE id=?")->set($arrSet)->execute($dc->id);
+		$this->Database->prepare("UPDATE tl_post %s WHERE id=?")->set($arrSet)->execute($dc->id);
 	}
 
 
@@ -915,11 +915,11 @@ class tl_posts extends Backend
 		}
 		
 		$arrSet['published'] = 0;
-		$arrSet['archive'] = $this->Database->prepare("SELECT pid FROM tl_posts WHERE id=?")->execute($insertID)->pid;
+		$arrSet['archive'] = $this->Database->prepare("SELECT pid FROM tl_post WHERE id=?")->execute($insertID)->pid;
 		
 		$this->Database->prepare("UPDATE tl_tags %s WHERE pid=?")->set($arrSet)->execute($insertID);
 		
-		$this->Database->prepare("UPDATE tl_posts SET tags=? WHERE id=?")->execute(serialize($this->Database->prepare("SELECT id FROM tl_tags WHERE pid=?")->execute($insertID)->fetchEach('id')), $insertID);
+		$this->Database->prepare("UPDATE tl_post SET tags=? WHERE id=?")->execute(serialize($this->Database->prepare("SELECT id FROM tl_tags WHERE pid=?")->execute($insertID)->fetchEach('id')), $insertID);
 	}
 
 
@@ -934,7 +934,7 @@ class tl_posts extends Backend
 	{
 		$intPid = (null === $dc->activeRecord) ? $dc->id : $dc->activeRecord->pid;
 		
-		$objPosts = \PostsModel::findByPid($intPid);
+		$objPosts = \PostModel::findByPid($intPid);
 
 		if ($objPosts === null)
 		{
@@ -1118,7 +1118,7 @@ class tl_posts extends Backend
 	 */
 	public function editHeader($row, $href, $label, $title, $icon, $attributes)
 	{
-		if (!$this->User->canEditFieldsOf('tl_posts'))
+		if (!$this->User->canEditFieldsOf('tl_post'))
 		{
 			return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 		}
@@ -1216,7 +1216,7 @@ class tl_posts extends Backend
 		}
 
 		// Check permissions AFTER checking the tid, so hacking attempts are logged
-		if (!$this->User->hasAccess('tl_posts::published', 'alexf'))
+		if (!$this->User->hasAccess('tl_post::published', 'alexf'))
 		{
 			return '';
 		}
@@ -1265,9 +1265,9 @@ class tl_posts extends Backend
 		}
 		
 		// Trigger the onload_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_posts']['config']['onload_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_post']['config']['onload_callback']))
 		{
-			foreach ($GLOBALS['TL_DCA']['tl_posts']['config']['onload_callback'] as $callback)
+			foreach ($GLOBALS['TL_DCA']['tl_post']['config']['onload_callback'] as $callback)
 			{
 				if (is_array($callback))
 				{
@@ -1282,7 +1282,7 @@ class tl_posts extends Backend
 		}
 		
 		// Check the field access
-		if (!$this->User->hasAccess('tl_posts::published', 'alexf'))
+		if (!$this->User->hasAccess('tl_post::published', 'alexf'))
 		{
 			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish article ID "' . $intId . '".');
 		}
@@ -1290,7 +1290,7 @@ class tl_posts extends Backend
 		// Set the current record
 		if ($dc)
 		{
-			$objRow = $this->Database->prepare("SELECT * FROM tl_posts WHERE id=?")
+			$objRow = $this->Database->prepare("SELECT * FROM tl_post WHERE id=?")
 									 ->limit(1)
 									 ->execute($intId);
 			if ($objRow->numRows)
@@ -1299,13 +1299,13 @@ class tl_posts extends Backend
 			}
 		}
 		
-		$objVersions = new Versions('tl_posts', $intId);
+		$objVersions = new Versions('tl_post', $intId);
 		$objVersions->initialize();
 		
 		// Trigger the save_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_posts']['fields']['published']['save_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_post']['fields']['published']['save_callback']))
 		{
-			foreach ($GLOBALS['TL_DCA']['tl_posts']['fields']['published']['save_callback'] as $callback)
+			foreach ($GLOBALS['TL_DCA']['tl_post']['fields']['published']['save_callback'] as $callback)
 			{
 				if (is_array($callback))
 				{
@@ -1322,7 +1322,7 @@ class tl_posts extends Backend
 		$time = time();
 		
 		// Update the database
-		$this->Database->prepare("UPDATE tl_posts SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
+		$this->Database->prepare("UPDATE tl_post SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
 					   ->execute($intId);
 					   
 		if ($dc)
@@ -1337,9 +1337,9 @@ class tl_posts extends Backend
 		
 		
 		// Trigger the onsubmit_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_posts']['config']['onsubmit_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_post']['config']['onsubmit_callback']))
 		{
-			foreach ($GLOBALS['TL_DCA']['tl_posts']['config']['onsubmit_callback'] as $callback)
+			foreach ($GLOBALS['TL_DCA']['tl_post']['config']['onsubmit_callback'] as $callback)
 			{
 				if (is_array($callback))
 				{
@@ -1378,7 +1378,7 @@ class tl_posts extends Backend
 		}
 		
 		// Check permissions AFTER checking the fid, so hacking attempts are logged
-		if (!$this->User->hasAccess('tl_posts::featured', 'alexf'))
+		if (!$this->User->hasAccess('tl_post::featured', 'alexf'))
 		{
 			return '';
 		}
@@ -1414,18 +1414,18 @@ class tl_posts extends Backend
 		$this->checkPermission();
 		
 		// Check permissions to feature
-		if (!$this->User->hasAccess('tl_posts::featured', 'alexf'))
+		if (!$this->User->hasAccess('tl_post::featured', 'alexf'))
 		{
 			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to feature/unfeature article ID ' . $intId . '.');
 		}
 		
-		$objVersions = new Versions('tl_posts', $intId);
+		$objVersions = new Versions('tl_post', $intId);
 		$objVersions->initialize();
 		
 		// Trigger the save_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_posts']['fields']['featured']['save_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_post']['fields']['featured']['save_callback']))
 		{
-			foreach ($GLOBALS['TL_DCA']['tl_posts']['fields']['featured']['save_callback'] as $callback)
+			foreach ($GLOBALS['TL_DCA']['tl_post']['fields']['featured']['save_callback'] as $callback)
 			{
 				if (is_array($callback))
 				{
@@ -1440,7 +1440,7 @@ class tl_posts extends Backend
 		}
 		
 		// Update the database
-		$this->Database->prepare("UPDATE tl_posts SET tstamp=". time() .", featured='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
+		$this->Database->prepare("UPDATE tl_post SET tstamp=". time() .", featured='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
 					   ->execute($intId);
 					   
 		$objVersions->create();

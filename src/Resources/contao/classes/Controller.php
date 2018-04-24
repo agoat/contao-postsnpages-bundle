@@ -85,7 +85,7 @@ class Controller extends ContaoController
 						break;
 					}
 
-					$objRecent = \PostsModel::findRecentPublishedByArchive($objArchives->fetchEach('id'));
+					$objRecent = \PostModel::findRecentPublishedByArchive($objArchives->fetchEach('id'));
 
 					if (null === $objRecent)
 					{
@@ -109,7 +109,7 @@ class Controller extends ContaoController
 		}
 
 		// Get published post
-		$objPost = \PostsModel::findPublishedByIdOrAlias($strPost);
+		$objPost = \PostModel::findPublishedByIdOrAlias($strPost);
 
 		if (null === $objPost)
 		{
@@ -122,7 +122,7 @@ class Controller extends ContaoController
 			return '';
 		}
 		
-		$objPostContent = new ModulePostsContent($objPost, $strSection);
+		$objPostContent = new ModulePostContent($objPost, $strSection);
 
 		$strBuffer = $objPostContent->generate();
 
@@ -266,7 +266,7 @@ class Controller extends ContaoController
 	 *
 	 * @return string The article HTML markup or false
 	 */
-	public static function generatePost(\PostsModel $objRow, $blnIsInsertTag=false)
+	public static function generatePost(\PostModel $objRow, $blnIsInsertTag=false)
 	{
 		// Check the visibility (see #6311)
 		if (!static::isVisibleElement($objRow))
@@ -296,9 +296,9 @@ class Controller extends ContaoController
 	 */
 	public function getRootPageId ($strTable, $intId)
 	{
-		if ('tl_posts' == $strTable)
+		if ('tl_post' == $strTable)
 		{
-			$objPost = \PostsModel::findByPk($intId);
+			$objPost = \PostModel::findByPk($intId);
 		
 			if ($objPost === null)
 			{
@@ -365,9 +365,9 @@ class Controller extends ContaoController
 	 */
 	public function getLayoutId ($strTable, $intId)
 	{
-		if ('tl_posts' == $strTable)
+		if ('tl_post' == $strTable)
 		{
-			$objPost = \PostsModel::findByPk($intId);
+			$objPost = \PostModel::findByPk($intId);
 		
 			if ($objPost === null)
 			{
@@ -433,11 +433,11 @@ class Controller extends ContaoController
 	 */
 	public function listPatternComments($arrRow) 
 	{
-		if ($arrRow['source'] == 'tl_posts')
+		if ($arrRow['source'] == 'tl_post')
 		{
 			$db = Database::getInstance();
 			
-			$objParent = $db->prepare("SELECT id, title FROM tl_posts WHERE id=?")
+			$objParent = $db->prepare("SELECT id, title FROM tl_post WHERE id=?")
 						    ->execute($arrRow['parent']);
 			
 			if ($objParent->numRows)

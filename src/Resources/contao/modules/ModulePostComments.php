@@ -17,14 +17,14 @@ use Patchwork\Utf8;
 /**
  * ModulePostsTeaser class
  */
-class ModulePostsComments extends ModulePosts
+class ModulePostComments extends ModulePost
 {
 
 	/**
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = 'mod_postscomments';
+	protected $strTemplate = 'mod_postcomments';
 
 
 	/**
@@ -82,7 +82,7 @@ class ModulePostsComments extends ModulePosts
 		}
 		
 		// Get published post
-		$objPost = \PostsModel::findPublishedByIdOrAlias($strPost);
+		$objPost = \PostModel::findPublishedByIdOrAlias($strPost);
 
 		if (null === $objPost)
 		{
@@ -115,6 +115,6 @@ class ModulePostsComments extends ModulePosts
 		$objConfig->bbcode = $this->com_bbcode;
 		$objConfig->moderate = $this->com_moderate;
 
-		$this->Comments->addCommentsToTemplate($this->Template, $objConfig, 'tl_posts', $objPost->id, $arrNotifies);
+		$this->Comments->addCommentsToTemplate($this->Template, $objConfig, 'tl_post', $objPost->id, $arrNotifies);
 	}
 }

@@ -64,7 +64,7 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
      */
     public function getDcaTable()
     {
-        return 'tl_posts';
+        return 'tl_post';
     }
 
 	

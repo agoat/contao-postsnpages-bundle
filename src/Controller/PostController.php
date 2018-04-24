@@ -30,7 +30,7 @@ class PostController implements ControllerInterface
      */	
 	public function getDcaTable()
 	{
-		return 'tl_posts';
+		return 'tl_post';
 	}
 
 
@@ -43,7 +43,7 @@ class PostController implements ControllerInterface
 	 */
 	public function run($source, Request $request)
 	{
-		$objPost = \PostsModel::findByPk($source);
+		$objPost = \PostModel::findByPk($source);
 
 		// Throw a 404 error if the post could not be found
 		if (null === $objPost)

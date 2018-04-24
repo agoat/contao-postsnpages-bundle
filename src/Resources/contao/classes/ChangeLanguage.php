@@ -21,13 +21,13 @@ class ChangeLanguage
 {
 
 	/**
-	 * Add changelanguage settings to the tl_posts table
+	 * Add changelanguage settings to the tl_post table
 	 *
 	 * @param string $table
 	 */
 	public static function addPostsLanguage($table)
 	{
-		if ('tl_posts' === $table)
+		if ('tl_post' === $table)
 		{
 			$GLOBALS['TL_DCA']['tl_posts']['config']['sql']['keys']['languageMain'] = 'index';
 
@@ -55,7 +55,7 @@ class ChangeLanguage
 	 */
 	function showLanguageMain($dc)
 	{
-		$post = \PostsModel::findById($dc->id);
+		$post = \PostModel::findById($dc->id);
 		
 		if (null === $post) {
             return;
@@ -87,7 +87,7 @@ class ChangeLanguage
             return $value;
         }
 
-		$post = \PostsModel::findById($dc->id);
+		$post = \PostModel::findById($dc->id);
 		
 		if (null === $post) {
             return $value;
@@ -118,7 +118,7 @@ class ChangeLanguage
 	public function onSaveLanguageMain($value, $dc)
 	{
 		if ($value > 0) {
-			$post = \PostsModel::findById($dc->id);
+			$post = \PostModel::findById($dc->id);
 			
 			if (null === $post) {
 				return $value;
@@ -127,7 +127,7 @@ class ChangeLanguage
 			$archive = \ArchiveModel::findById($post->pid);
 			$archives = \ArchiveModel::findByPid($archive->pid)->fetchEach('id');
 
-			$duplicates = \PostsModel::countBy(
+			$duplicates = \PostModel::countBy(
 				['tl_posts.pid IN (' . implode(',', $archives) . ')', 'tl_posts.languageMain=?','tl_posts.id!=?'],
 				[$value, $dc->id]
 			);
@@ -155,7 +155,7 @@ class ChangeLanguage
             return;
         }
 	
-		$currentPost = \PostsModel::findByIdOrAlias($event->getUrlParameterBag()->getUrlAttribute('posts'));
+		$currentPost = \PostModel::findByIdOrAlias($event->getUrlParameterBag()->getUrlAttribute('posts'));
 		
 		$archives = \ArchiveModel::findBy(
 			['tl_archive.pid=?'],
@@ -214,7 +214,7 @@ class ChangeLanguage
      * @param array $values
      * @param array $options
      *
-     * @return \PostsModel|null
+     * @return PostModel|null
      */
     private function findPublishedPost(array $columns, array $values = [], array $options = [])
     {
@@ -224,7 +224,7 @@ class ChangeLanguage
             $columns[] = "(tl_posts.stop='' OR tl_posts.stop>'".($time + 60)."')";
             $columns[] = "tl_posts.published='1'";
         }
-        return \PostsModel::findOneBy($columns, $values, $options);
+        return \PostModel::findOneBy($columns, $values, $options);
     }
 
 

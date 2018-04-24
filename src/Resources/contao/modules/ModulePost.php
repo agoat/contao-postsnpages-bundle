@@ -15,15 +15,15 @@ use Patchwork\Utf8;
 
 
 /**
- * Abstract ModulePosts class
+ * Abstract ModulePost class
  */
-abstract class ModulePosts extends \Module
+abstract class ModulePost extends \Module
 {
 
 	/**
 	 * Return posts in consideration of the selection procedures 
 	 *
-	 * @return Collection|\PostsModel|Null
+	 * @return Collection|PostModel|Null
 	 */
 	protected function getPosts()
 	{
@@ -84,7 +84,7 @@ abstract class ModulePosts extends \Module
 		}
 
 		// Return published articles
-		return \PostsModel::findPublishedByPidsAndFeaturedAndCategory($varPids, $blnFeatured, $strCategory, $arrOptions);
+		return \PostModel::findPublishedByPidsAndFeaturedAndCategory($varPids, $blnFeatured, $strCategory, $arrOptions);
 	}
 	
 	
@@ -93,7 +93,7 @@ abstract class ModulePosts extends \Module
 	 *
 	 * @param string $strTag The tag name
 	 *
-	 * @return Collection|\PostsModel|Null
+	 * @return Collection|PostModel|Null
 	 */
 	protected function getTaggedPosts($strTag)
 	{
@@ -161,7 +161,7 @@ abstract class ModulePosts extends \Module
 		}
 
 		// Return published articles
-		return \PostsModel::findPublishedByIdsAndFeatured($varIds, $blnFeatured, $arrOptions);
+		return \PostModel::findPublishedByIdsAndFeatured($varIds, $blnFeatured, $arrOptions);
 	}
 	
 	
@@ -170,11 +170,11 @@ abstract class ModulePosts extends \Module
 	 *
 	 * @param integer $varId The post id
 	 *
-	 * @return Collection|\PostsModel|Null
+	 * @return Collection|PostModel|Null
 	 */
 	protected function getRelatedPosts($varId)
 	{
-		$objPost = \PostsModel::findPublishedByIdOrAlias($varId);
+		$objPost = \PostModel::findPublishedByIdOrAlias($varId);
 	
 		if (null === $objPost)
 		{
@@ -204,14 +204,14 @@ abstract class ModulePosts extends \Module
 		}
 
 		// Return published articles
-		return \PostsModel::findPublishedByIds($varIds, $arrOptions);
+		return \PostModel::findPublishedByIds($varIds, $arrOptions);
 	}
 	
 	
 	/**
 	 * Renders a post article with teaser and its content
 	 *
-	 * @param \PostsModel $objPost
+	 * @param PostModel   $objPost
 	 * @param boolean     $blnTeaser
 	 * @param boolean     $blnContent
 	 *

@@ -19,7 +19,7 @@ $content = array
 (
 	'posts'	=> array
 	(
-		'tables'		=> array('tl_archive', 'tl_posts', 'tl_content'),
+		'tables'		=> array('tl_archive', 'tl_post', 'tl_content'),
 		'table'			=> array('contao.controller.backend_csv_import', 'importTableWizard'),
 		'list'			=> array('contao.controller.backend_csv_import', 'importListWizard'),
 		'javascript'	=> array
@@ -48,21 +48,17 @@ $GLOBALS['BE_MOD']['content'] = $content + $GLOBALS['BE_MOD']['content'];
 /**
  * Front end modules
  */
-//$arrModules['posts']['postscontent'] 		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsContent';
-//$arrModules['posts']['postreader'] 			= 'Agoat\PostsnPagesBundle\Contao\ModulePostReader';
-
-
-$arrModules['posts']['poststeaser'] 		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTeaser';
+$arrModules['posts']['postteaser'] 		= 'Agoat\PostsnPagesBundle\Contao\ModulePostTeaser';
 if (array_key_exists('ContaoCommentsBundle', $bundles))
 {
-	$arrModules['posts']['postscomments'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsComments';
+	$arrModules['posts']['postcomments'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostComments';
 }
-$arrModules['posts']['relatedpoststeaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleRelatedPostsTeaser';
-$arrModules['posts']['taggedpoststeaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleTaggedPostsTeaser';
+$arrModules['posts']['relatedpostteaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleRelatedPostTeaser';
+$arrModules['posts']['taggedpostteaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleTaggedPostTeaser';
 
 $GLOBALS['FE_MOD'] = $arrModules + $GLOBALS['FE_MOD'];
 
-$GLOBALS['FE_MOD']['navigationMenu']['poststagmenu']		= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTagMenu';
+$GLOBALS['FE_MOD']['navigationMenu']['poststagmenu']		= 'Agoat\PostsnPagesBundle\Contao\ModulePostTagMenu';
 //$GLOBALS['FE_MOD']['navigationMenu']['postscategorymenu'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsArchiveMenu';
 //$GLOBALS['FE_MOD']['navigationMenu']['poststimetablemenu'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTimetableMenu';
 $GLOBALS['FE_MOD']['miscellaneous']['static'] 			= 'Agoat\PostsnPagesBundle\Contao\ModuleStatic';

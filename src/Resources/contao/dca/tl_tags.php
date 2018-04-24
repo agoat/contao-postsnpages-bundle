@@ -19,7 +19,7 @@ $GLOBALS['TL_DCA']['tl_tags'] = array
 	'config' => array
 	(
 		'dataContainer'               => 'Table',
-		'ptable'                      => 'tl_posts',
+		'ptable'                      => 'tl_post',
 
 		'sql' => array
 		(
