@@ -21,15 +21,18 @@ class LanguageRelationAssembler
 	private $constructors = [
 		'tl_archive' => [
 			'Agoat\LanguageRelationBundle\DataContainer\PageNodeViewConstructor',
-			'Agoat\LanguageRelationBundle\DataContainer\RelationFieldConstructor'
+			'Agoat\LanguageRelationBundle\DataContainer\RelationFieldConstructor',
+			'Agoat\LanguageRelationBundle\DataContainer\NoRelationCallbackConstructor'
 		],
 		'tl_posts' => [
 			'Agoat\PostsnPagesBundle\DataContainer\PostArchiveViewConstructor',
-			'Agoat\LanguageRelationBundle\DataContainer\RelationFieldConstructor'
+			'Agoat\LanguageRelationBundle\DataContainer\RelationFieldConstructor',
+			'Agoat\LanguageRelationBundle\DataContainer\NoRelationCallbackConstructor'
 		],
 		'tl_container' => [
 			'Agoat\LanguageRelationBundle\DataContainer\PageNodeViewConstructor',
-			'Agoat\LanguageRelationBundle\DataContainer\RelationFieldConstructor'
+			'Agoat\LanguageRelationBundle\DataContainer\RelationFieldConstructor',
+			'Agoat\LanguageRelationBundle\DataContainer\NoRelationCallbackConstructor'
 		]
 	];
 

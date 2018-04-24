@@ -29,7 +29,7 @@ class PostArchiveViewConstructor extends AbstractConstructor
 			}
 
 			/** @var LanguageRelation */
-			$languageRelation = \System::getContainer()->get('contao.language.relation')->buildFromTableAndId('tl_archive', $dc->id);
+			$languageRelation = \System::getContainer()->get('contao.language.relation')->buildFromDca($dc, true);
 
 			if (null !== $languageRelation && $languageRelation->hasRelations()) {
 				$this->createRelationButton($languageRelation);

@@ -27,7 +27,7 @@ class DataContainer extends ContaoController
 	public static function hideArticles()
 	{
 		// Remove articles from the backend module array
-		unset($GLOBALS['BE_MOD']['content']['article']);
+		//unset($GLOBALS['BE_MOD']['content']['article']);
 
 		// Remove article related modules
 		unset($GLOBALS['FE_MOD']['navigationMenu']['articlenav']);

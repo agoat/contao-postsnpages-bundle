@@ -50,7 +50,7 @@ class ArchiveLanguageRelationProvider extends AbstractLanguageRelationProvider i
 		
 		$this->parentEntity = PageModel::findByPk($this->currentEntity->pid);
 		
-		$this->setRootLanguages($this->parentEntity, $published);
+		$this->setRootLanguages($published, $this->parentEntity);
 
 		return new LanguageRelation(
 			$this, 

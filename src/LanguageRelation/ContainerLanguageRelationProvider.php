@@ -59,7 +59,7 @@ class ContainerLanguageRelationProvider extends AbstractLanguageRelationProvider
 		
 		$this->parentEntity = PageModel::findByPk($this->currentEntity->pid);
 		
-		$this->setRootLanguages($this->parentEntity, $published);
+		$this->setRootLanguages($published, $this->parentEntity);
 
 		return new LanguageRelation(
 			$this, 
@@ -98,16 +98,16 @@ class ContainerLanguageRelationProvider extends AbstractLanguageRelationProvider
 			return $options;
 		}
 	
-		$articles = ContainerModel::findByPid($this->parentRelations[$language]->id, ['order'=>'sorting']);
+		$containers = ContainerModel::findByPid($this->parentRelations[$language]->id, ['order'=>'sorting']);
 		
-		if (null === $articles) {
+		if (null === $containers) {
 			return $options;
 		}
 		
-		foreach ($articles as $article) {
+		foreach ($containers as $container) {
 			$options[] = array(
-				'value' => $article->id,
-				'label' => $article->title
+				'value' => $container->id,
+				'label' => $container->title
 			);
 		}
 	
@@ -123,14 +123,14 @@ class ContainerLanguageRelationProvider extends AbstractLanguageRelationProvider
 			return null;
 		}
 
-		$articles = ContainerModel::findByPid($this->parentRelations[$language]->id, ['order'=>'sorting']);
+		$container = ContainerModel::findByPid($this->parentRelations[$language]->id, ['order'=>'sorting']);
 	
-		if (null === $articles) {
-			$query = 'act=copy&mode=2&id='.$this->currentEntity->id.'&pid='.$this->parentRelations[$language]->id;
-		} else {
-			$query = 'act=copy&mode=1&id='.$this->currentEntity->id.'&pid='.$articles->last()->id;
-		}
+		$query = 'act=copy&id='.$this->currentEntity->id.'&rid='.$this->currentEntity->relation;
 		
+		$query .= (null === $container) ?
+			'&mode=2&pid='.$this->parentRelations[$language]->id :
+			'&mode=1&pid='.$container->last()->id;
+
 		return Backend::addToUrl($query);
 	}
 

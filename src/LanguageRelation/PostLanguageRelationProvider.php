@@ -61,7 +61,7 @@ class PostLanguageRelationProvider extends AbstractLanguageRelationProvider impl
 
 		$this->parentEntity = ArchiveModel::findByPk($this->currentEntity->pid);
 	
-		$this->setRootLanguages(PageModel::findByPk($this->parentEntity->pid), $published);
+		$this->setRootLanguages($published, PageModel::findByPk($this->parentEntity->pid));
 
 		return new LanguageRelation(
 			$this, 
@@ -138,7 +138,7 @@ class PostLanguageRelationProvider extends AbstractLanguageRelationProvider impl
 			return null;
 		}
 		
-		return Backend::addToUrl('act=copy&mode=2&id='.$this->currentEntity->id.'&pid='.$this->parentRelations[$language]->id);
+		return Backend::addToUrl('act=copy&mode=2&id='.$this->currentEntity->id.'&rid='.$this->currentEntity->relation.'&pid='.$this->parentRelations[$language]->id);
 	}
 
 	

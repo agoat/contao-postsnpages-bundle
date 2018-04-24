@@ -20,7 +20,10 @@ $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['icon'] = 'NA';
 $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['folders'] = 'root';
 
 // Set new child tables
-$GLOBALS['TL_DCA']['tl_page']['config']['ctable'] = array('tl_container', 'tl_archive');
+array_push($GLOBALS['TL_DCA']['tl_page']['config']['ctable'], 'tl_container', 'tl_archive');
+
+// Unset the article child table
+//$GLOBALS['TL_DCA']['tl_page']['config']['ctable'] = array_diff($GLOBALS['TL_DCA']['tl_page']['config']['ctable'], ['tl_article']);
 
 
 // Replace the generateArticle callback
@@ -31,7 +34,7 @@ foreach ($GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'] as &$callb
 		$callback = array('tl_page_postsnpages', 'generateContainer');
 	}
 }
-unset ($callback);
+unset($callback);
 
 // Change the articles edit button
 unset($GLOBALS['TL_DCA']['tl_page']['list']['operations']['articles']);
