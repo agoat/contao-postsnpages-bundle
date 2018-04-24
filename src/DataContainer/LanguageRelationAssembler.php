@@ -11,6 +11,8 @@
 
 namespace Agoat\PostsnPagesBundle\DataContainer;
 
+use Contao\System;
+
 
 /**
  * Add language relation configuration to DCA
@@ -49,6 +51,11 @@ class LanguageRelationAssembler
 			return;
 		}
 
+		
+		if (!in_array('AgoatLanguageRelationBundle', array_keys(System::getContainer()->getParameter('kernel.bundles')))) {
+			return;
+		}
+		
 		foreach ($this->constructors as $context=>$constructors) {
 			if ($table == $context) {
 				foreach ($constructors as $constructor) {
