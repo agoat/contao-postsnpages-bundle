@@ -34,9 +34,9 @@ class AgoatPostsnPagesExtension extends Extension
             new FileLocator(__DIR__.'/../Resources/config')
         );
 		
-		if (!$container->hasParameter('contao.posts.formats'))
+		if (!$container->hasParameter('contao.post.formats'))
 		{
-			$container->setParameter('contao.posts.formats', ['standard', 'aside', 'link', 'quote', 'status', 'image', 'gallery', 'video', 'chat']);
+			$container->setParameter('contao.post.formats', ['standard', 'aside', 'link', 'quote', 'status', 'image', 'gallery', 'video', 'chat']);
 		}
 
 		if (!$container->hasParameter('contao.permalink.posts'))

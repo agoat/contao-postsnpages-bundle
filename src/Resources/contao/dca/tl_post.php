@@ -740,7 +740,7 @@ class tl_post extends Backend
 		}
 
 		// Readmore
-		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPagesBundle\Contao\Posts::generatePostUrl(\PostModel::findById($arrRow['id']), true, false, true) . '" target="_blank">Read more</a></p>';
+		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPagesBundle\Contao\Posts::generatePostUrl(\PostModel::findById($arrRow['id']), true, true) . '" target="_blank">Read more</a></p>';
 
 		$return .= '</div>';
 		
@@ -1068,7 +1068,7 @@ class tl_post extends Backend
 	 */
 	public function getPostsFormats(DataContainer $dc)
 	{
-		return \System::getContainer()->getParameter('contao.posts.formats');
+		return \System::getContainer()->getParameter('contao.post.formats');
 	}
 
 	

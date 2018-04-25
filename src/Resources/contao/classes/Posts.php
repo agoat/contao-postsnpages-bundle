@@ -37,7 +37,7 @@ class Posts extends \Frontend
 	 *
 	 * @return string
 	 */
-	public static function generatePostUrl ($objPost, $blnAlternativeLink=false, $intJumpTo=false, $blnAbsolute=false)
+	public static function generatePostUrl ($objPost, $blnAlternativeLink=false, $blnAbsolute=false)
 	{
 		if (!$objPost instanceof \PostModel)
 		{
@@ -62,16 +62,17 @@ class Posts extends \Frontend
 		else
 		{
 			$objArchive = \ArchiveModel::findByPk($objPost->pid);
-			$objPage = \PageModel::findWithDetails($intJumpTo ?: $objArchive->pid);
-		
+			$objPage = \PageModel::findWithDetails($objArchive->pid);
+	
 			if (!$objPage instanceof \PageModel)
 			{
 				self::$arrUrlCache[$strCacheKey] = ampersand(\Environment::get('request'), true);
 			}
 			else
 			{
-				$params = (\Config::get('useAutoItem') ? '/' : '/posts/') . ($objPost->alias ?: $objPost->id);
-		
+			
+			$params = (\Config::get('useAutoItem') ? '/' : '/posts/') . ($objPost->alias ?: $objPost->id);
+	
 				self::$arrUrlCache[$strCacheKey] = ampersand($blnAbsolute ? $objPage->getAbsoluteUrl($params) : $objPage->getFrontendUrl($params));
 			}
 		}

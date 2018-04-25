@@ -58,7 +58,7 @@ $arrModules['posts']['taggedpostteaser'] 	= 'Agoat\PostsnPagesBundle\Contao\Modu
 
 $GLOBALS['FE_MOD'] = $arrModules + $GLOBALS['FE_MOD'];
 
-$GLOBALS['FE_MOD']['navigationMenu']['poststagmenu']		= 'Agoat\PostsnPagesBundle\Contao\ModulePostTagMenu';
+$GLOBALS['FE_MOD']['navigationMenu']['posttagmenu']		= 'Agoat\PostsnPagesBundle\Contao\ModulePostTagMenu';
 //$GLOBALS['FE_MOD']['navigationMenu']['postscategorymenu'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsArchiveMenu';
 //$GLOBALS['FE_MOD']['navigationMenu']['poststimetablemenu'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostsTimetableMenu';
 $GLOBALS['FE_MOD']['miscellaneous']['static'] 			= 'Agoat\PostsnPagesBundle\Contao\ModuleStatic';

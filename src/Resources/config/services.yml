@@ -35,7 +35,7 @@ services:
     contao.picker.article_provider:
         abstract: true
 
-    permalink.controller.post:
+    contao.permalink.controller.post:
         class: Agoat\PostsnPagesBundle\Controller\PostController
         public: false
         arguments:
@@ -43,7 +43,7 @@ services:
         tags:
             - { name: permalink.controller, context: posts }
 
-    permalink.provider.post:
+    contao.permalink.provider.post:
         class: Agoat\PostsnPagesBundle\Permalink\PostPermalinkProvider
         public: false
         arguments:

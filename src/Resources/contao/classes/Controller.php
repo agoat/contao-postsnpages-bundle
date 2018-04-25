@@ -92,7 +92,7 @@ class Controller extends ContaoController
 						break;
 					}
 
-					throw new RedirectResponseException(Posts::generatePostUrl($objRecent, false, false, true));
+					throw new RedirectResponseException(Posts::generatePostUrl($objRecent, false, true));
 					
 				case 'page':
 					if ($objPage->jumpTo && ($objTarget = $objPage->getRelated('jumpTo')) instanceof \PageModel)

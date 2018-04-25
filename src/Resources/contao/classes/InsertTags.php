@@ -63,7 +63,7 @@ class InsertTags extends ContaoController
 					case 'post_link':
 						$return = sprintf(
 							'<a href="%s" title="%s">%s</a>',
-							($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, \in_array('direct', $flags, true), false, \in_array('absolute', $flags, true)),
+							($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, \in_array('direct', $flags, true), \in_array('absolute', $flags, true)),
 							\StringUtil::specialchars($objPost->title),
 							$objPost->title
 						);
@@ -72,13 +72,13 @@ class InsertTags extends ContaoController
 					case 'post_open':
 						$return = sprintf(
 							'<a href="%s" title="%s">',
-							($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, \in_array('direct', $flags, true), false, \in_array('absolute', $flags, true)),
+							($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, \in_array('direct', $flags, true), \in_array('absolute', $flags, true)),
 							\StringUtil::specialchars($objPost->title)
 						);
 						break;
 						
 					case 'post_url':
-						$return = ($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, \in_array('direct', $flags, true), false, \in_array('absolute', $flags, true));
+						$return = ($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, \in_array('direct', $flags, true), \in_array('absolute', $flags, true));
 						break;
 						
 					case 'post_title':

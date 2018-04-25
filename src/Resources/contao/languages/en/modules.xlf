@@ -47,34 +47,34 @@
       <trans-unit id="FMD.containerlist.1">
         <source>Generates a hashtag link list of containers for a section</source>
       </trans-unit>
-      <trans-unit id="FMD.poststeaser.0">
+      <trans-unit id="FMD.postteaser.0">
         <source>Posts teaser</source>
       </trans-unit>
-      <trans-unit id="FMD.poststeaser.1">
+      <trans-unit id="FMD.postteaser.1">
         <source>Renders the teaser of posts.</source>
       </trans-unit>
-      <trans-unit id="FMD.postscomments.0">
+      <trans-unit id="FMD.postcomments.0">
         <source>Post comments</source>
       </trans-unit>
-      <trans-unit id="FMD.postscomments.1">
+      <trans-unit id="FMD.postcomments.1">
         <source>Adds comments to the current post.</source>
       </trans-unit>
-      <trans-unit id="FMD.relatedpoststeaser.0">
+      <trans-unit id="FMD.relatedpostteaser.0">
         <source>Related posts teaser</source>
       </trans-unit>
-      <trans-unit id="FMD.relatedpoststeaser.1">
+      <trans-unit id="FMD.relatedpostteaser.1">
         <source>Adds related posts teaser to the current post.</source>
       </trans-unit>
-      <trans-unit id="FMD.taggedpoststeaser.0">
+      <trans-unit id="FMD.taggedpostteaser.0">
         <source>Tagged posts teaser</source>
       </trans-unit>
-      <trans-unit id="FMD.taggedpoststeaser.1">
+      <trans-unit id="FMD.taggedpostteaser.1">
         <source>Renders the teaser of tagged posts (To be used in conjunction with the 'Post tag menu' module).</source>
       </trans-unit>
-      <trans-unit id="FMD.poststagmenu.0">
+      <trans-unit id="FMD.posttagmenu.0">
         <source>Posts tags</source>
       </trans-unit>
-      <trans-unit id="FMD.poststagmenu.1">
+      <trans-unit id="FMD.posttagmenu.1">
         <source>Creates a tag menu of posts from an archive.</source>
       </trans-unit>
     </body>

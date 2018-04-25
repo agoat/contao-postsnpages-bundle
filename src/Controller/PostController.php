@@ -51,7 +51,7 @@ class PostController implements ControllerInterface
 			throw new PageNotFoundException('Post not found: ' . $request->getUri());
 		}
 
-		// Set the posts id as get attribute
+		// Set the post id as get attribute
 		\Input::setGet('posts', $objPost->id, true);
 
 		$objArchive = \ArchiveModel::FindByPk($objPost->pid);
@@ -63,7 +63,7 @@ class PostController implements ControllerInterface
 			throw new PageNotFoundException('Page not found: ' . $request->getUri());
 		}
 
-		// Render the corresponding page from the calender setting
+		// Render the corresponding page
 		$frontendIndex = new FrontendIndex();
 		return $frontendIndex->renderPage($objPage);
 	}
