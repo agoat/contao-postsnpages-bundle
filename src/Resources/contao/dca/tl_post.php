@@ -307,7 +307,7 @@ $GLOBALS['TL_DCA']['tl_post'] = array
 			'exclude'                 => true,
 			'inputType'               => 'textarea',
 			'search'                  => true,
-			'eval'                    => array('rte'=>'tinyMCE', 'tl_class'=>'clr'),
+			'eval'                    => array('rte'=>'tinyTeaser', 'tl_class'=>'clr'),
 			'sql'                     => "text NULL"
 		),
 		'addImage' => array
