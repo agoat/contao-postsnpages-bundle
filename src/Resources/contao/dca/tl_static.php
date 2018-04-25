@@ -65,8 +65,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_static']['newGroup'],
 				'href'                => '&amp;act=paste&amp;mode=create&amp;type=group',
-				'class'               => 'header_new',
-				'showOnSelect'        => true
+				'class'               => 'header_new'
 			),
 			'toggleNodes' => array
 			(
