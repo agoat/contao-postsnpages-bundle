@@ -100,14 +100,6 @@ $GLOBALS['TL_DCA']['tl_post'] = array
 				'icon'                => 'header.svg',
 				'button_callback'     => array('tl_post', 'editHeader')
 			),
-			'cut' => array
-			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_post']['cut'],
-				'href'                => 'act=paste&amp;mode=cut',
-				'icon'                => 'cut.svg',
-				'attributes'          => 'onclick="Backend.getScrollOffset()"',
-				'button_callback'     => array('tl_post', 'cutPost')
-			),
 			'copy' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_post']['copy'],
@@ -115,6 +107,14 @@ $GLOBALS['TL_DCA']['tl_post'] = array
 				'icon'                => 'copy.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"',
 				'button_callback'     => array('tl_post', 'copyPost')
+			),
+			'cut' => array
+			(
+				'label'               => &$GLOBALS['TL_LANG']['tl_post']['cut'],
+				'href'                => 'act=paste&amp;mode=cut',
+				'icon'                => 'cut.svg',
+				'attributes'          => 'onclick="Backend.getScrollOffset()"',
+				'button_callback'     => array('tl_post', 'cutPost')
 			),
 			'delete' => array
 			(
