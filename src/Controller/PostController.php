@@ -8,13 +8,17 @@
  * @link       https://agoat.xyz
  * @license    LGPL-3.0
  */
- 
+
 namespace Agoat\PostsnPagesBundle\Controller;
 
 use Agoat\PermalinkBundle\Controller\ControllerInterface;
+use Agoat\PostsnPagesBundle\Model\ArchiveModel;
+use Agoat\PostsnPagesBundle\Model\PostModel;
 use Contao\FrontendIndex;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\PageModel;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 
 /**
@@ -27,7 +31,7 @@ class PostController implements ControllerInterface
 
 	/**
      * {@inheritdoc}
-     */	
+     */
 	public function getDcaTable()
 	{
 		return 'tl_post';
@@ -43,7 +47,7 @@ class PostController implements ControllerInterface
 	 */
 	public function run($source, Request $request)
 	{
-		$objPost = \PostModel::findByPk($source);
+		$objPost = PostModel::findByPk($source);
 
 		// Throw a 404 error if the post could not be found
 		if (null === $objPost)
@@ -54,9 +58,9 @@ class PostController implements ControllerInterface
 		// Set the post id as get attribute
 		\Input::setGet('posts', $objPost->id, true);
 
-		$objArchive = \ArchiveModel::FindByPk($objPost->pid);
-		$objPage = \PageModel::findPublishedById($objArchive->pid);
-	
+		$objArchive = ArchiveModel::FindByPk($objPost->pid);
+		$objPage = PageModel::findPublishedById($objArchive->pid);
+
 		// Throw a 404 error if the page is not visible
 		if (null === $objPage)
 		{

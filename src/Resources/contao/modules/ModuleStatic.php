@@ -12,10 +12,16 @@
 namespace Agoat\PostsnPagesBundle\Contao;
 
 
+use Agoat\PostsnPagesBundle\Model\StaticModel;
+use Contao\ContentModel;
+use Contao\Date;
+use Contao\Module;
+use Contao\PageModel;
+
 /**
  * ModuleStatic class
  */
-class ModuleStatic extends \Module
+class ModuleStatic extends Module
 {
 
 	/**
@@ -43,13 +49,13 @@ class ModuleStatic extends \Module
 		$this->type = 'static';
 		$this->blnNoMarkup = $blnNoMarkup;
 
-		$objStatic = \StaticModel::findById($this->staticContent);
-		
+		$objStatic = StaticModel::findOneById((int) $this->staticContent);
+
 		if (null === $objStatic)
 		{
 			return '';
 		}
-	
+
 		// Check the visibility
 		if (!static::isVisibleElement($objStatic))
 		{
@@ -67,7 +73,7 @@ class ModuleStatic extends \Module
 	{
 		/** @var PageModel $objPage */
 		global $objPage;
-		
+
 		$id = 'static-' . $this->id;
 
 		// Generate the CSS ID if it is not set
@@ -80,10 +86,10 @@ class ModuleStatic extends \Module
 
 		// Add the modification date
 		$this->Template->timestamp = $this->tstamp;
-		$this->Template->date = \Date::parse($objPage->datimFormat, $this->tstamp);
+		$this->Template->date = Date::parse($objPage->datimFormat, $this->tstamp);
 
 		$arrElements = array();
-		$objCte = \ContentModel::findPublishedByPidAndTable($this->staticContent, 'tl_static');
+		$objCte = ContentModel::findPublishedByPidAndTable($this->staticContent, 'tl_static');
 
 		if ($objCte !== null)
 		{

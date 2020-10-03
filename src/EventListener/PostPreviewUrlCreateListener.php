@@ -11,8 +11,10 @@
 
 namespace Agoat\PostsnPagesBundle\EventListener;
 
+use Agoat\PostsnPagesBundle\Model\ArchiveModel;
+use Agoat\PostsnPagesBundle\Model\PostModel;
 use Contao\CoreBundle\Event\PreviewUrlCreateEvent;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -24,15 +26,15 @@ class PostPreviewUrlCreateListener
     private $requestStack;
 
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFramework
      */
     private $framework;
 
     /**
-     * @param RequestStack             $requestStack
-     * @param ContaoFrameworkInterface $framework
+     * @param RequestStack    $requestStack
+     * @param ContaoFramework $framework
      */
-    public function __construct(RequestStack $requestStack, ContaoFrameworkInterface $framework)
+    public function __construct(RequestStack $requestStack, ContaoFramework $framework)
     {
         $this->requestStack = $requestStack;
         $this->framework = $framework;
@@ -58,14 +60,14 @@ class PostPreviewUrlCreateListener
         }
 
         if (!$request->query->has('table') || 'tl_archive' === $request->query->get('table') || ('tl_post' === $request->query->get('table') && !$request->query->has('act'))) {
-			if (null !== ($archiveModel = \ArchiveModel::findByPk($event->getId()))) {
+			if (null !== ($archiveModel = ArchiveModel::findByPk($event->getId()))) {
 				$event->setQuery('page='.$archiveModel->pid);
 			}
 
 			return;
         }
 
-        if (null === ($postModel = \PostModel::findByPk($this->getId($event, $request)))) {
+        if (null === ($postModel = PostModel::findByPk($this->getId($event, $request)))) {
             return;
         }
 

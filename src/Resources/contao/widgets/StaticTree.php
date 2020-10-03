@@ -12,10 +12,18 @@
 namespace Agoat\PostsnPagesBundle\Contao;
 
 
+use Agoat\PostsnPagesBundle\Model\StaticModel;
+use Contao\Database;
+use Contao\Image;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\Widget;
+
 /**
  * Provide methods to handle input field "archive tree"
  */
-class StaticTree extends \Widget
+class StaticTree extends Widget
 {
 
 	/**
@@ -42,6 +50,11 @@ class StaticTree extends \Widget
 	 */
 	protected $strOrderName;
 
+    /**
+     * @var Database
+     */
+    private $database;
+
 
 	/**
 	 * Load the database object
@@ -50,21 +63,22 @@ class StaticTree extends \Widget
 	 */
 	public function __construct($arrAttributes=null)
 	{
-		$this->import('Database');
-		parent::__construct($arrAttributes);
+        parent::__construct($arrAttributes);
 
-		// Prepare the order field
+        $this->database = Database::getInstance();
+
+        // Prepare the order field
 		if ($this->orderField != '')
 		{
 			$this->strOrderId = $this->orderField . str_replace($this->strField, '', $this->strId);
 			$this->strOrderName = $this->orderField . str_replace($this->strField, '', $this->strName);
 
 			// Retrieve the order value
-			$objRow = $this->Database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
+			$objRow = $this->database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
 						   ->limit(1)
 						   ->execute($this->activeRecord->id);
 
-			$tmp = \StringUtil::deserialize($objRow->{$this->orderField});
+			$tmp = StringUtil::deserialize($objRow->{$this->orderField});
 			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
 		}
 	}
@@ -90,16 +104,16 @@ class StaticTree extends \Widget
 		if ($this->orderField != '')
 		{
 			$arrNew = array();
-			
-			if ($order = \Input::post($this->strOrderName))
+
+			if ($order = Input::post($this->strOrderName))
 			{
 				$arrNew = explode(',', $order);
 			}
-  
+
 			// Only proceed if the value has changed
 			if ($arrNew !== $this->{$this->orderField})
 			{
-				$this->Database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->orderField}=? WHERE id=?")
+				$this->database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->orderField}=? WHERE id=?")
 							   ->execute(time(), serialize($arrNew), $this->activeRecord->id);
 
 			    $this->objDca->createNewVersion = true; // see #6285
@@ -141,11 +155,9 @@ class StaticTree extends \Widget
 			return;
 		}
 
-		$arrPids = $this->Database->prepare("SELECT pid FROM tl_static WHERE id IN (?)")
-							      ->execute($varInput)->fetchAssoc();
-
-		return;
-		
+		// TODO Check if valid static selection
+//		$arrPids = $this->database->prepare("SELECT pid FROM tl_static WHERE id IN (?)")
+//							      ->execute($varInput)->fetchAssoc();
 	}
 
 
@@ -159,14 +171,14 @@ class StaticTree extends \Widget
 		$arrSet = array();
 		$arrValues = array();
 
-		if (!empty($this->varValue)) // Shoudl not be an array
+		if (! empty($this->varValue) ) // Should be an array with one value or a single value
 		{
-			$objStatic = \StaticModel::findById($this->varValue);
+			$objStatic = StaticModel::findOneById((int) is_array($this->varValue) ? $this->varValue[0] : $this->varValue);
 
 			if (null !== $objStatic)
 			{
 				$arrSet[] = $objStatic->id;
-				$arrValues[$objStatic->id] = \Image::getHtml('articles.svg') . ' ' . $objStatic->title;
+				$arrValues[$objStatic->id] = Image::getHtml('articles.svg') . ' ' . $objStatic->title;
 			}
 		}
 
@@ -179,7 +191,7 @@ class StaticTree extends \Widget
 
 		$return .= '</ul>';
 
-		if (!\System::getContainer()->get('contao.picker.builder')->supportsContext('static'))
+		if (! System::getContainer()->get('contao.picker.builder')->supportsContext('static'))
 		{
 			$return .= '
 	<p><button class="tl_submit" disabled>'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</button></p>';
@@ -194,13 +206,13 @@ class StaticTree extends \Widget
 			);
 
 			$return .= '
-	<p><a href="' . ampersand(\System::getContainer()->get('contao.picker.builder')->getUrl('static', $extras)) . '" class="tl_submit" id="st_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+	<p><a href="' . ampersand(System::getContainer()->get('contao.picker.builder')->getUrl('static', $extras)) . '" class="tl_submit" id="st_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
 	<script>
 	  $("st_' . $this->strName . '").addEvent("click", function(e) {
 		e.preventDefault();
 		Backend.openModalSelector({
 		  "id": "tl_listing",
-		  "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
+		  "title": "' . StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
 		  "url": this.href + document.getElementById("ctrl_'.$this->strId.'").value,
 		  "callback": function(table, value) {
 			new Request.Contao({

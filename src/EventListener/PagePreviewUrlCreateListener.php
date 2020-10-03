@@ -11,8 +11,9 @@
 
 namespace Agoat\PostsnPagesBundle\EventListener;
 
+use Agoat\PostsnPagesBundle\Model\ContainerModel;
 use Contao\CoreBundle\Event\PreviewUrlCreateEvent;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -24,15 +25,15 @@ class PagePreviewUrlCreateListener
     private $requestStack;
 
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFramework
      */
     private $framework;
 
     /**
-     * @param RequestStack             $requestStack
-     * @param ContaoFrameworkInterface $framework
+     * @param RequestStack    $requestStack
+     * @param ContaoFramework $framework
      */
-    public function __construct(RequestStack $requestStack, ContaoFrameworkInterface $framework)
+    public function __construct(RequestStack $requestStack, ContaoFramework $framework)
     {
         $this->requestStack = $requestStack;
         $this->framework = $framework;
@@ -57,7 +58,7 @@ class PagePreviewUrlCreateListener
             throw new \RuntimeException('The request stack did not contain a request');
         }
 
-        if (null === ($containerModel = \ContainerModel::findByPk($this->getId($event, $request)))) {
+        if (null === ($containerModel = ContainerModel::findByPk($this->getId($event, $request)))) {
             return;
         }
 

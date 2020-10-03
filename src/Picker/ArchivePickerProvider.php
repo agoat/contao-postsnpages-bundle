@@ -13,9 +13,13 @@ namespace Agoat\PostsnPagesBundle\Picker;
 
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
-use Contao\CoreBundle\Picker\AbstractPickerProvider;
+use Contao\CoreBundle\Picker\AbstractInsertTagPickerProvider;
 use Contao\CoreBundle\Picker\DcaPickerProviderInterface;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Knp\Menu\FactoryInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**
@@ -23,11 +27,22 @@ use Contao\CoreBundle\Picker\PickerConfig;
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
-class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
+class ArchivePickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
-	
+    /**
+     * @var Security
+     */
+    private $security;
+
+    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, ?TranslatorInterface $translator, Security $security)
+    {
+        parent::__construct($menuFactory, $router, $translator);
+
+        $this->security = $security;
+    }
+
 	/**
      * {@inheritdoc}
      */
@@ -36,16 +51,14 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
         return 'archivePicker';
     }
 
-	
     /**
      * {@inheritdoc}
      */
     public function supportsContext($context)
     {
-        return in_array($context, ['archive'], true) && $this->getUser()->hasAccess('archive', 'modules');
+        return in_array($context, ['archive'], true) && $this->security->isGranted('contao_user.modules', 'archive');
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -58,7 +71,6 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
         return false;
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -67,7 +79,6 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
         return 'tl_archive';
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -93,7 +104,7 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
 				$intval = function ($val) {
                     return (int) $val;
                 };
-				
+
 				$attributes['value'] = array_map('intval', explode(',', $value));
 			}
 
@@ -103,7 +114,6 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
 		return $attributes;
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -112,12 +122,21 @@ class ArchivePickerProvider extends AbstractPickerProvider implements DcaPickerP
         return (int) $value;
     }
 
-	
     /**
      * {@inheritdoc}
      */
     protected function getRouteParameters(PickerConfig $config = null)
     {
         return ['do' => 'posts'];
+    }
+
+    protected function getDataContainer(): string
+    {
+        return 'Table';
+    }
+
+    protected function getDefaultInsertTag(): string
+    {
+        return '{{non_existing_insert_tag::%s}}';
     }
 }

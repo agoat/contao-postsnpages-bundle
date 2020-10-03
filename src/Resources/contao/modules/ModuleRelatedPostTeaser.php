@@ -11,6 +11,9 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
+use Contao\BackendTemplate;
+use Contao\Config;
+use Contao\Input;
 use Patchwork\Utf8;
 
 
@@ -36,8 +39,8 @@ class ModuleRelatedPostTeaser extends ModulePost
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			/** @var BackendTemplate $objTemplate */
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -49,17 +52,17 @@ class ModuleRelatedPostTeaser extends ModulePost
 		}
 
 		// Set the item from the auto_item parameter
-		if (!isset($_GET['posts']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
+		if (!isset($_GET['posts']) && Config::get('useAutoItem') && isset($_GET['auto_item']))
 		{
-			\Input::setGet('posts', \Input::get('auto_item'));
+			Input::setGet('posts', Input::get('auto_item'));
 		}
 
 		// Overwrite the post id
 		if (null !== $intId)
 		{
-			\Input::setGet('posts', $intId);
+			Input::setGet('posts', $intId);
 		}
-	
+
 		return parent::generate();
 	}
 
@@ -70,7 +73,7 @@ class ModuleRelatedPostTeaser extends ModulePost
 	protected function compile()
 	{
 		// Get the post alias(id)
-		$strPost = \Input::get('posts');
+		$strPost = Input::get('posts');
 
 		if (!strlen($strPost))
 		{
@@ -78,12 +81,12 @@ class ModuleRelatedPostTeaser extends ModulePost
 		}
 
 		$objPosts = $this->getRelatedPosts($strPost);
-		
+
 		// Set custom post template
 		$this->postTemplate = $this->teaserTpl;
 
 		$arrPosts = array();
-		
+
 		if ($objPosts !== null)
 		{
 			while ($objPosts->next())

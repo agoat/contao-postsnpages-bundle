@@ -11,17 +11,29 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
-use Patchwork\Utf8;
+use Agoat\PostsnPagesBundle\Model\ArchiveModel;
+use Agoat\PostsnPagesBundle\Model\PostModel;
+use Agoat\PostsnPagesBundle\Model\TagsModel;
+use Contao\CommentsModel;
+use Contao\Date;
+use Contao\FilesModel;
+use Contao\FrontendTemplate;
+use Contao\Model\Collection;
+use Contao\Module;
+use Contao\ModuleModel;
+use Contao\PageModel;
+use Contao\StringUtil;
+use Contao\UserModel;
 
 
 /**
  * Abstract ModulePost class
  */
-abstract class ModulePost extends \Module
+abstract class ModulePost extends Module
 {
 
 	/**
-	 * Return posts in consideration of the selection procedures 
+	 * Return posts in consideration of the selection procedures
 	 *
 	 * @return Collection|PostModel|Null
 	 */
@@ -31,65 +43,56 @@ abstract class ModulePost extends \Module
 		global $objPage;
 
 		// Show the posts from particular archive(s)
-		if (empty($varPids = \StringUtil::deserialize($this->archive)))
-		{
-			$objArchives = \ArchiveModel::findByPid($objPage->id);
-			
-			if (null === $objArchives)
-			{
-				return;
+		if (empty($varPids = StringUtil::deserialize($this->archive))) {
+			$objArchives = ArchiveModel::findByPid($objPage->id);
+
+			if (null === $objArchives) {
+				return null;
 			}
-			
+
 			$varPids = $objArchives->fetchEach('id');
 		}
-		
+
 		// Handle featured articles
-		if ($this->featured == 'featured_posts')
-		{
+		if ($this->featured == 'featured_posts') {
 			$blnFeatured = true;
-		}
-		elseif ($this->featured == 'unfeatured_posts')
-		{
+
+		} elseif ($this->featured == 'unfeatured_posts') {
 			$blnFeatured = false;
-		}
-		else
-		{
+
+		} else {
 			$blnFeatured = null;
 		}
 
 		$arrOptions = array();
 
 		// Handle sorting
-		if ($this->sortPosts != 'random')
-		{
+		if ($this->sortPosts != 'random') {
 			$arrOptions['order'] = $this->sortPosts . ' ' . (($this->sortOrder == 'descending') ? 'DESC' : 'ASC');
 		}
-		
+
 		// Handle category filter
-		if ($this->filterByCategory)
-		{
+		if ($this->filterByCategory) {
 			$strCategory = $this->category;
 		}
-		
+
 		// Maximum number of items
-		if ($this->numberOfItems > 0)
-		{
+		if ($this->numberOfItems > 0) {
 			$arrOptions['limit'] = intval($this->numberOfItems);
 		}
 
 		// Skip items
-		if ($this->skipFirst > 0)
-		{
+		if ($this->skipFirst > 0) {
 			$arrOptions['offset'] = intval($this->skipFirst);
 		}
 
 		// Return published articles
-		return \PostModel::findPublishedByPidsAndFeaturedAndCategory($varPids, $blnFeatured, $strCategory, $arrOptions);
+		return PostModel::findPublishedByIdsAndFeaturedAndCategory($varPids, $blnFeatured, $strCategory, $arrOptions);
 	}
-	
-	
+
+
 	/**
-	 * Return posts with a specific tag label in consideration of the selection procedures 
+	 * Return posts with a specific tag label in consideration of the selection procedures
 	 *
 	 * @param string $strTag The tag name
 	 *
@@ -99,29 +102,29 @@ abstract class ModulePost extends \Module
 	{
 		/** @var PageModel $objPage */
 		global $objPage;
-	
-	
+
+
 		// Get posts tags menu settings (archives)
-		$moduleTagsMenu = \ModuleModel::findById($this->tagmenuModule);
-	
+		$moduleTagsMenu = ModuleModel::findById($this->tagmenuModule);
+
 		// Show the posts from particular archive(s)
-		if (null === $moduleTagsMenu || empty($varPids = \StringUtil::deserialize($moduleTagsMenu->archive)))
+		if (null === $moduleTagsMenu || empty($varPids = StringUtil::deserialize($moduleTagsMenu->archive)))
 		{
-			$objArchives = \ArchiveModel::findByPid($objPage->id);
-			
+			$objArchives = ArchiveModel::findByPid($objPage->id);
+
 			if (null === $objArchives)
 			{
-				return;
+				return null;
 			}
-			
+
 			$varPids = $objArchives->fetchEach('id');
 		}
 
-		$objTags = \TagsModel::findPublishedByLabelAndArchives($strTag, $varPids);
+		$objTags = TagsModel::findPublishedByLabelAndArchives($strTag, $varPids);
 
 		if (null === $objTags)
 		{
-			return;
+			return null;
 		}
 
 		$varIds = $objTags->fetchEach('pid');
@@ -147,7 +150,7 @@ abstract class ModulePost extends \Module
 		{
 			$arrOptions['order'] = $this->sortPosts . ' ' . (($this->sortOrder == 'descending') ? 'DESC' : 'ASC');
 		}
-		
+
 		// Maximum number of items
 		if ($this->numberOfItems > 0)
 		{
@@ -161,12 +164,12 @@ abstract class ModulePost extends \Module
 		}
 
 		// Return published articles
-		return \PostModel::findPublishedByIdsAndFeatured($varIds, $blnFeatured, $arrOptions);
+		return PostModel::findPublishedByIdsAndFeatured($varIds, $blnFeatured, $arrOptions);
 	}
-	
-	
+
+
 	/**
-	 * Return posts related to the given post id in consideration of the selection procedures 
+	 * Return posts related to the given post id in consideration of the selection procedures
 	 *
 	 * @param integer $varId The post id
 	 *
@@ -174,14 +177,14 @@ abstract class ModulePost extends \Module
 	 */
 	protected function getRelatedPosts($varId)
 	{
-		$objPost = \PostModel::findPublishedByIdOrAlias($varId);
-	
+		$objPost = PostModel::findPublishedByIdOrAlias($varId);
+
 		if (null === $objPost)
 		{
-			return;
+			return null;
 		}
 
-		$varIds = \StringUtil::deserialize($objPost->related);
+		$varIds = StringUtil::deserialize($objPost->related);
 
 		$arrOptions = array();
 
@@ -190,7 +193,7 @@ abstract class ModulePost extends \Module
 		{
 			$arrOptions['order'] = $this->sortRelated . ' ' . (($this->sortOrder == 'descending') ? 'DESC' : 'ASC');
 		}
-		
+
 		// Maximum number of items
 		if ($this->numberOfItems > 0)
 		{
@@ -204,10 +207,10 @@ abstract class ModulePost extends \Module
 		}
 
 		// Return published articles
-		return \PostModel::findPublishedByIds($varIds, $arrOptions);
+		return PostModel::findPublishedByIds($varIds, $arrOptions);
 	}
-	
-	
+
+
 	/**
 	 * Renders a post article with teaser and its content
 	 *
@@ -222,9 +225,9 @@ abstract class ModulePost extends \Module
 		/** @var PageModel $objPage */
 		global $objPage;
 
-		list($strId, $strClass) = \StringUtil::deserialize($objPost->cssID, true);
-		list($lat, $long) = \StringUtil::deserialize($objPost->latlong);
-		
+		list($strId, $strClass) = StringUtil::deserialize($objPost->cssID, true);
+		list($lat, $long) = StringUtil::deserialize($objPost->latlong);
+
 		if ($strClass != '')
 		{
 			$strClass = ' ' . $strClass;
@@ -238,7 +241,7 @@ abstract class ModulePost extends \Module
 			$strClass .= ' ' . $objPost->format;
 		}
 
-		$objPostTemplate = new \FrontendTemplate($this->postTemplate);
+		$objPostTemplate = new FrontendTemplate($this->postTemplate);
 		$objPostTemplate->setData($objPost->row());
 
 		// Add html data
@@ -246,39 +249,39 @@ abstract class ModulePost extends \Module
 		$objPostTemplate->cssClass = $strClass;
 		$objPostTemplate->href = Posts::generatePostUrl($objPost, $this->alternativeLink);
 		$objPostTemplate->attributes = ($objPost->alternativeLink && $objPost->target) ? ' target="_blank"' : '';
-		$objPostTemplate->readMore = \StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $objPost->url));
+		$objPostTemplate->readMore = StringUtil::specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['open'], $objPost->url));
 		$objPostTemplate->more = $GLOBALS['TL_LANG']['MSC']['more'];
-		
+
 		// Add teaser
 		if ($blnTeaser)
 		{
 			$objPostTemplate->showTeaser = true;
-			
+
 			// Add meta information
-			$objPostTemplate->date = \Date::parse($objPage->datimFormat, $objPost->date);
+			$objPostTemplate->date = Date::parse($objPage->datimFormat, $objPost->date);
 			$objPostTemplate->timestamp = $objPost->date;
 			$objPostTemplate->datetime = date('Y-m-d\TH:i:sP', $objPost->date);
 			$objPostTemplate->location = $objPost->location;
 			$objPostTemplate->latlong = ($lat !='' && $long != '') ? $lat . ', ' . $long : false;
 
 			// Add teaser data
-			$objPostTemplate->title = \StringUtil::specialchars($objPost->title);
+			$objPostTemplate->title = StringUtil::specialchars($objPost->title);
 			$objPostTemplate->subtitle = $objPost->subTitle;
-			$objPostTemplate->teaser = \StringUtil::toHtml5($objPost->teaser);
+			$objPostTemplate->teaser = StringUtil::toHtml5($objPost->teaser);
 
 			// Add author
-			if (($objAuthor = $objPost->getRelated('author')) instanceof \UserModel)
+			if (($objAuthor = $objPost->getRelated('author')) instanceof UserModel)
 			{
 				$objPostTemplate->author = $objAuthor->name;
 			}
-		
+
 			// Add image
 			$objPostTemplate->addImage = false;
-		
+
 			if ($objPost->addImage && $objPost->singleSRC != '')
 			{
-				$objModel = \FilesModel::findByUuid($objPost->singleSRC);
-								
+				$objModel = FilesModel::findByUuid($objPost->singleSRC);
+
 				if ($objModel !== null && is_file(TL_ROOT . '/' . $objModel->path))
 				{
 					$this->addImageToTemplate($objPostTemplate, array(
@@ -290,17 +293,17 @@ abstract class ModulePost extends \Module
 					));
 				}
 			}
-			
+
 			if (!$blnContent)
 			{
 				// Add comments information
-				$intCCount = \CommentsModel::countPublishedBySourceAndParent('tl_posts', $objPost->id);
-				
+				$intCCount = CommentsModel::countPublishedBySourceAndParent('tl_posts', $objPost->id);
+
 				$objPostTemplate->ccount = $intCCount;
 				$objPostTemplate->comments = ($intCCount > 0) ? sprintf($GLOBALS['TL_LANG']['MSC']['commentCount'], $intCCount) : $GLOBALS['TL_LANG']['MSC']['noComments'];
 			}
 		}
-		
+
 		// Add post content
 		if ($blnContent)
 		{

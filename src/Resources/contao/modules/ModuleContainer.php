@@ -12,10 +12,14 @@
 namespace Agoat\PostsnPagesBundle\Contao;
 
 
+use Contao\ContentModel;
+use Contao\Module;
+use Contao\PageModel;
+
 /**
  * ModuleContainer class
  */
-class ModuleContainer extends \Module
+class ModuleContainer extends Module
 {
 
 	/**

@@ -11,6 +11,8 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
+use Contao\BackendTemplate;
+use Contao\Config;
 use Patchwork\Utf8;
 
 
@@ -36,8 +38,8 @@ class ModulePostTeaser extends ModulePost
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			/** @var BackendTemplate $objTemplate */
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -49,11 +51,11 @@ class ModulePostTeaser extends ModulePost
 		}
 
 		// Don't show teasers when a post is called directly
-		if ((isset($_GET['posts']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
+		if ((isset($_GET['posts']) || (Config::get('useAutoItem') && isset($_GET['auto_item']))))
 		{
-			return;
+			return '';
 		}
-		
+
 		return parent::generate();
 	}
 
@@ -65,7 +67,7 @@ class ModulePostTeaser extends ModulePost
 	{
 		// Get published posts
 		$objPosts = $this->getPosts();
-	
+
 		if ($objPosts === null)
 		{
 			return;
@@ -75,7 +77,7 @@ class ModulePostTeaser extends ModulePost
 		$this->postTemplate = $this->teaserTpl;
 
 		$arrPosts = array();
-		
+
 		if ($objPosts !== null)
 		{
 			while ($objPosts->next())

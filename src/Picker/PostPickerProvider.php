@@ -13,9 +13,14 @@ namespace Agoat\PostsnPagesBundle\Picker;
 
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Picker\AbstractInsertTagPickerProvider;
 use Contao\CoreBundle\Picker\AbstractPickerProvider;
 use Contao\CoreBundle\Picker\DcaPickerProviderInterface;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Knp\Menu\FactoryInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**
@@ -23,12 +28,23 @@ use Contao\CoreBundle\Picker\PickerConfig;
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
-class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
+class PostPickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
-	
-	/**
+    /**
+     * @var Security
+     */
+    private $security;
+
+    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, ?TranslatorInterface $translator, Security $security)
+    {
+        parent::__construct($menuFactory, $router, $translator);
+
+        $this->security = $security;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
@@ -36,16 +52,14 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return 'postPicker';
     }
 
-	
     /**
      * {@inheritdoc}
      */
     public function supportsContext($context)
     {
-        return in_array($context, ['post', 'link'], true) && $this->getUser()->hasAccess('post', 'modules');
+        return in_array($context, ['post', 'link'], true) && $this->security->isGranted('contao_user.modules', 'post');
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -58,7 +72,6 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return false !== strpos($config->getValue(), '{{post_url::');
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -67,7 +80,6 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return 'tl_post';
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -75,7 +87,7 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
     {
         $value = $config->getValue();
 		$attributes = ['fieldType' => 'radio'];
-		
+
         if ('post' === $config->getContext()) {
  			if ($fieldType = $config->getExtra('fieldType')) {
                 $attributes['fieldType'] = $fieldType;
@@ -99,7 +111,6 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return $attributes;
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -112,12 +123,16 @@ class PostPickerProvider extends AbstractPickerProvider implements DcaPickerProv
         return '{{post_url::'.$value.'}}';
     }
 
-	
     /**
      * {@inheritdoc}
      */
     protected function getRouteParameters(PickerConfig $config = null)
     {
         return ['do' => 'posts'];
+    }
+
+    protected function getDefaultInsertTag(): string
+    {
+        return '{{post_url::%s}}';
     }
 }

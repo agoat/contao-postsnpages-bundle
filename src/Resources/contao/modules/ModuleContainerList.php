@@ -12,10 +12,18 @@
 namespace Agoat\PostsnPagesBundle\Contao;
 
 
+use Agoat\PostsnPagesBundle\Model\ContainerModel;
+use Contao\BackendTemplate;
+use Contao\Environment;
+use Contao\Module;
+use Contao\PageModel;
+use Contao\StringUtil;
+use Patchwork\Utf8;
+
 /**
  * ModuleContainer class
  */
-class ModuleContainerList extends \Module
+class ModuleContainerList extends Module
 {
 
 	/**
@@ -43,7 +51,7 @@ class ModuleContainerList extends \Module
 		if (TL_MODE == 'BE')
 		{
 			/** @var BackendTemplate|object $objTemplate */
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -55,7 +63,7 @@ class ModuleContainerList extends \Module
 		}
 
 		$strBuffer = parent::generate();
-		
+
 		return !empty($this->Template->containers) ? $strBuffer : '';
 	}
 
@@ -78,12 +86,12 @@ class ModuleContainerList extends \Module
 		$id = $objPage->id;
 		$objTarget = null;
 
-		$this->Template->request = \Environment::get('request');
+		$this->Template->request = Environment::get('request');
 
 		// Show the container of a different page
 		if ($this->defineRoot && $this->rootPage > 0)
 		{
-			if (($objTarget = $this->objModel->getRelated('rootPage')) instanceof \PageModel)
+			if (($objTarget = $this->objModel->getRelated('rootPage')) instanceof PageModel)
 			{
 				$id = $objTarget->id;
 
@@ -93,7 +101,7 @@ class ModuleContainerList extends \Module
 		}
 
 		// Get published container
-		$objContainer = \ContainerModel::findPublishedByPidAndSection($id, $this->section);
+		$objContainer = ContainerModel::findPublishedByPidAndSection($id, $this->section);
 
 		if (null !== $objContainer)
 		{
@@ -105,7 +113,7 @@ class ModuleContainerList extends \Module
 					continue;
 				}
 
-				$cssID = \StringUtil::deserialize($objContainer->cssID, true);
+				$cssID = StringUtil::deserialize($objContainer->cssID, true);
 
 				$containers[] = array
 				(

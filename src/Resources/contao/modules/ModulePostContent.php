@@ -11,9 +11,10 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
-use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Exception\RedirectResponseException;
-use Patchwork\Utf8;
+use Contao\Input;
+use Contao\PageModel;
+use Contao\StringUtil;
 
 
 /**
@@ -38,11 +39,11 @@ class ModulePostContent extends ModulePost
 		global $objPage;
 
 		// Check protection (TODO)
-		
+
 		// Increase the popularity counter (TODO: check the session)
 		$this->objModel->popular = ++$this->objModel->popular;
 		$this->objModel->save();
-		
+
 		// Redirect to link target if setGet
 		if ($this->alternativeLink)
 		{
@@ -53,22 +54,22 @@ class ModulePostContent extends ModulePost
 		}
 
 		// Get post alias
-		$strPost = \Input::get('posts');
-		
+		$strPost = Input::get('posts');
+
 		// Overwrite the page title
 		if ($strPost != '' && ($strPost == $this->id || $strPost == $this->alias) && $this->title != '')
 		{
-			$objPage->pageTitle = strip_tags(\StringUtil::stripInsertTags($this->title));
-			
+			$objPage->pageTitle = strip_tags(StringUtil::stripInsertTags($this->title));
+
 			if ($this->teaser != '')
 			{
 				$objPage->description = $this->prepareMetaDescription($this->teaser);
 			}
-		}		
-	
+		}
+
 		// Set custom post template
 		$this->postTemplate = $objPage->postTpl;
-		
+
 		// Set teaser image size
 		$this->imgSize = $objPage->imgSize;
 
@@ -77,6 +78,6 @@ class ModulePostContent extends ModulePost
 
 		// Back link
 		$this->Template->backlink = 'javascript:history.go(-1)'; // see #6955
-		$this->Template->back = \StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['goBack']);
+		$this->Template->back = StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['goBack']);
 	}
 }

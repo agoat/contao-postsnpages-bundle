@@ -431,7 +431,7 @@ class tl_archive extends Backend
 	public function editArchiv($row, $href, $label, $title, $icon, $attributes)
 	{
 		$objPage = \PageModel::findById($row['pid']);
-								  
+
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 

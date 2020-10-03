@@ -9,6 +9,8 @@
  * @license    LGPL-3.0
  */
 
+use Agoat\PostsnPagesBundle\Model\ContainerModel;
+
 
 /**
  * Load tl_page data container
@@ -530,11 +532,11 @@ class tl_container extends Backend
 		{
 			$insertID = \Input::get('id');
 		}
-		
+
 		if (\Input::get('mode') == '1')
 		{
-			$objParent = \ContainerModel::findById(\Input::get('pid'));
-			
+			$objParent = ContainerModel::findById(\Input::get('pid'));
+
 			if (null !== $objParent)
 			{
 				$objInsertStmt = $this->Database->prepare("UPDATE tl_container SET section=? WHERE id=?")
@@ -741,7 +743,7 @@ class tl_container extends Backend
 		if ($table == $GLOBALS['TL_DCA'][$dc->table]['config']['ptable'])
 		{
 			if (
-				!in_array($row['type'], array('regular', 'error_403', 'error_404')) || 
+				!in_array($row['type'], array('regular', 'error_403', 'error_404')) ||
 				!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $row) ||
 				$cr
 			)
@@ -755,13 +757,13 @@ class tl_container extends Backend
 		}
 
 		$objPage = \PageModel::findById($row['pid']);
-		
-		//$objContainer = \ContainerModel::findById($arrClipboard['id']);
+
+		//$objContainer = ContainerModel::findById($arrClipboard['id']);
 
 		if (
 			($arrClipboard['mode'] == 'cut' && $arrClipboard['id'] == $row['id']) ||
-			($arrClipboard['mode'] == 'cutAll' && in_array($row['id'], $arrClipboard['id'])) || 
-			!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) || 
+			($arrClipboard['mode'] == 'cutAll' && in_array($row['id'], $arrClipboard['id'])) ||
+			!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) ||
 			$cr
 		)
 		{

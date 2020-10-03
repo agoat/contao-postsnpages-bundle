@@ -11,13 +11,22 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
+use Agoat\PostsnPagesBundle\Model\ArchiveModel;
+use Agoat\PostsnPagesBundle\Model\TagsModel;
+use Contao\BackendTemplate;
+use Contao\Config;
+use Contao\FrontendTemplate;
+use Contao\Module;
+use Contao\PageModel;
+use Contao\StringUtil;
+use Contao\System;
 use Patchwork\Utf8;
 
 
 /**
  * ModulePostsTagMenu class
  */
-class ModulePostTagMenu extends \Module
+class ModulePostTagMenu extends Module
 {
 
 	/**
@@ -36,8 +45,8 @@ class ModulePostTagMenu extends \Module
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			/** @var BackendTemplate $objTemplate */
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -47,7 +56,7 @@ class ModulePostTagMenu extends \Module
 
 			return $objTemplate->parse();
 		}
-	
+
 		return parent::generate();
 	}
 
@@ -61,33 +70,33 @@ class ModulePostTagMenu extends \Module
 		global $objPage;
 
 		// Show tags from particular archive(s)
-		if (empty($varPids = \StringUtil::deserialize($this->archive)))
+		if (empty($varPids = StringUtil::deserialize($this->archive)))
 		{
-			$objArchives = \ArchiveModel::findByPid($pageId);
-			
+			$objArchives = ArchiveModel::findByPid($pageId);
+
 			if (null === $objArchives)
 			{
 				return;
 			}
-			
+
 			$varPids = $objArchives->fetchEach('id');
 		}
 
 		$arrOptions = array();
-	
+
 		// Handle sorting
 		if ($this->sortTags != 'random')
 		{
 			$arrOptions['order'] = $this->sortTags . ' ' . (($this->sortOrder == 'descending') ? 'DESC' : 'ASC');
 		}
-		
+
 		// Maximum number of items
 		if ($this->numberOfItems > 0)
 		{
 			$arrOptions['limit'] = intval($this->numberOfItems);
 		}
 		// Get tags
-		$objTags = \TagsModel::findAndCountPublishedByArchives($varPids, $arrOptions);
+		$objTags = TagsModel::findAndCountPublishedByArchives($varPids, $arrOptions);
 
 		if ($objTags === null)
 		{
@@ -95,14 +104,14 @@ class ModulePostTagMenu extends \Module
 		}
 
 		// Prepare link
-		if (!$this->jumpTo || !($objTarget = $this->objModel->getRelated('jumpTo')) instanceof \PageModel)
+		if (!$this->jumpTo || !($objTarget = $this->objModel->getRelated('jumpTo')) instanceof PageModel)
 		{
 			$objTarget = $objPage;
 		}
-		
-		$bundles = \System::getContainer()->getParameter('kernel.bundles');
+
+		$bundles = System::getContainer()->getParameter('kernel.bundles');
 		$arrTags = array();
-		
+
 		while ($objTags->next())
 		{
 			// Prepare tags array
@@ -110,7 +119,7 @@ class ModulePostTagMenu extends \Module
 			(
 				'label'		=> $objTags->label,
 				'count'		=> $objTags->count,
-				'href'		=> $objTarget->getFrontendUrl((\Config::get('useAutoItem') || isset($bundles['AgoatPermalinkBundle']) ? '/' : '/tags/') . strtolower($objTags->label))
+				'href'		=> $objTarget->getFrontendUrl((Config::get('useAutoItem') || isset($bundles['AgoatPermalinkBundle']) ? '/' : '/tags/') . strtolower($objTags->label))
 			);
 		}
 
@@ -121,10 +130,10 @@ class ModulePostTagMenu extends \Module
 
 		if (!empty($arrTags))
 		{
-			/** @var FrontendTemplate|object $objTemplate */
-			$objTemplate = new \FrontendTemplate($this->tagsTpl);
-			
-			$objTemplate->pid = $pid;
+			/** @var FrontendTemplate $objTemplate */
+			$objTemplate = new FrontendTemplate($this->tagsTpl);
+
+			$objTemplate->pid = $this->pid;
 			$objTemplate->type = get_class($this);
 			$objTemplate->cssID = $this->cssID; // see #4897
 			$objTemplate->tags = $arrTags;

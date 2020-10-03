@@ -13,9 +13,13 @@ namespace Agoat\PostsnPagesBundle\Picker;
 
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
-use Contao\CoreBundle\Picker\AbstractPickerProvider;
+use Contao\CoreBundle\Picker\AbstractInsertTagPickerProvider;
 use Contao\CoreBundle\Picker\DcaPickerProviderInterface;
 use Contao\CoreBundle\Picker\PickerConfig;
+use Knp\Menu\FactoryInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**
@@ -23,12 +27,23 @@ use Contao\CoreBundle\Picker\PickerConfig;
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
-class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
+class StaticPickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
-	
-	/**
+    /**
+     * @var Security
+     */
+    private $security;
+
+    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, ?TranslatorInterface $translator, Security $security)
+    {
+        parent::__construct($menuFactory, $router, $translator);
+
+        $this->security = $security;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
@@ -36,16 +51,14 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
         return 'staticPicker';
     }
 
-	
     /**
      * {@inheritdoc}
      */
     public function supportsContext($context)
     {
-		return in_array($context, ['static'], true) && $this->getUser()->hasAccess('static', 'modules');
+		return in_array($context, ['static'], true) && $this->security->isGranted('contao_user.modules', 'static');
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -58,7 +71,6 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
         return false;
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -67,7 +79,6 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
         return 'tl_static';
     }
 
-	
     /**
      * {@inheritdoc}
      */
@@ -83,7 +94,7 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
  			if ($fieldType = $config->getExtra('fieldType')) {
                 $attributes['fieldType'] = $fieldType;
             }
-			
+
 			if ($filesOnly = $config->getExtra('filesOnly')) {
                 $attributes['filesOnly'] = $filesOnly;
             }
@@ -102,21 +113,28 @@ class StaticPickerProvider extends AbstractPickerProvider implements DcaPickerPr
          return $attributes;
     }
 
-	
     /**
      * {@inheritdoc}
      */
     public function convertDcaValue(PickerConfig $config, $value)
     {
-        return (int) $value;
+        if ('static' === $config->getContext()) {
+            return (int) $value;
+        }
+
+        return '{{insert_static::'.$value.'}}';
     }
 
-	
     /**
      * {@inheritdoc}
      */
     protected function getRouteParameters(PickerConfig $config = null)
     {
         return ['do' => 'static'];
+    }
+
+    protected function getDefaultInsertTag(): string
+    {
+        return '{{insert_static::%s}}';
     }
 }

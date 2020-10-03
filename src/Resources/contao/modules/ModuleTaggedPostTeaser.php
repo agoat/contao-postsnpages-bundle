@@ -11,6 +11,11 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
+use Contao\BackendTemplate;
+use Contao\Config;
+use Contao\Input;
+use Contao\PageModel;
+use Contao\System;
 use Patchwork\Utf8;
 
 
@@ -36,8 +41,8 @@ class ModuleTaggedPostTeaser extends ModulePost
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			/** @var BackendTemplate $objTemplate */
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -49,19 +54,19 @@ class ModuleTaggedPostTeaser extends ModulePost
 		}
 
 		// Set the item from the auto_item parameter
-		if (!isset($_GET['tags']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
+		if (!isset($_GET['tags']) && Config::get('useAutoItem') && isset($_GET['auto_item']))
 		{
-			\Input::setGet('tags', \Input::get('auto_item'));
+			Input::setGet('tags', Input::get('auto_item'));
 		}
-		
+
 		// Set the tags input from the permalink bundle fragment handling
-		$bundles = \System::getContainer()->getParameter('kernel.bundles');
-		
+		$bundles = System::getContainer()->getParameter('kernel.bundles');
+
 		if (isset($bundles['AgoatPermalinkBundle']) && isset($_GET[0]))
 		{
-			\Input::setGet('tags', \Input::get(0));
+			Input::setGet('tags', Input::get(0));
 		}
-		
+
 		return parent::generate();
 	}
 
@@ -75,11 +80,11 @@ class ModuleTaggedPostTeaser extends ModulePost
 		global $objPage;
 
 		// Get section and article alias
-		$strTag = \Input::get('tags');
+		$strTag = Input::get('tags');
 
 		if (!strlen($strTag))
 		{
-			\Input::setUnusedGet('tags', $strTag);
+			Input::setUnusedGet('tags', $strTag);
 			return;
 		}
 
@@ -88,15 +93,15 @@ class ModuleTaggedPostTeaser extends ModulePost
 
 		if ($objPosts === null)
 		{
-			\Input::setUnusedGet('tags', $strTag);
+			Input::setUnusedGet('tags', $strTag);
 			return;
 		}
-		
+
 		// Set custom post template
 		$this->postTemplate = $this->teaserTpl;
-		
+
 		$arrPosts = array();
-		
+
 		if ($objPosts !== null)
 		{
 			while ($objPosts->next())

@@ -12,8 +12,9 @@
 namespace Agoat\PostsnPagesBundle\EventListener;
 
 use Agoat\PostsnPagesBundle\Contao\Posts;
+use Agoat\PostsnPagesBundle\Model\PostModel;
 use Contao\CoreBundle\Event\PreviewUrlConvertEvent;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -25,15 +26,15 @@ class PostPreviewUrlConvertListener
     private $requestStack;
 
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFramework
      */
     private $framework;
 
     /**
-     * @param RequestStack             $requestStack
-     * @param ContaoFrameworkInterface $framework
+     * @param RequestStack    $requestStack
+     * @param ContaoFramework $framework
      */
-    public function __construct(RequestStack $requestStack, ContaoFrameworkInterface $framework)
+    public function __construct(RequestStack $requestStack, ContaoFramework $framework)
     {
         $this->requestStack = $requestStack;
         $this->framework = $framework;
@@ -56,7 +57,7 @@ class PostPreviewUrlConvertListener
             return;
         }
 
-        /** @var Post $postAdapter */
+        /** @var Posts $postAdapter */
         $postAdapter = $this->framework->getAdapter(Posts::class);
 
         $event->setUrl($request->getSchemeAndHttpHost().'/'.$postAdapter->generatePostUrl($postModel));
@@ -69,14 +70,14 @@ class PostPreviewUrlConvertListener
      *
      * @return PostModel|null
      */
-    private function getPostModel(Request $request): ?\PostModel
+    private function getPostModel(Request $request): ?PostModel
     {
         if (!$request->query->has('post')) {
             return null;
         }
 
         /** @var PostModel $adapter */
-        $adapter = $this->framework->getAdapter(\PostModel::class);
+        $adapter = $this->framework->getAdapter(PostModel::class);
 
         return $adapter->findByPk($request->query->get('post'));
     }

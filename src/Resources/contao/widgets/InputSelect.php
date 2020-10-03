@@ -12,10 +12,13 @@
 namespace Agoat\PostsnPagesBundle\Contao;
 
 
+use Contao\StringUtil;
+use Contao\Widget;
+
 /**
  * Provide methods to handle select menu with input.
  */
-class InputSelect extends \Contao\Widget
+class InputSelect extends Widget
 {
 
 	/**
@@ -68,7 +71,7 @@ class InputSelect extends \Contao\Widget
 				break;
 
 			case 'options':
-				$this->arrOptions = \StringUtil::deserialize($varValue);
+				$this->arrOptions = StringUtil::deserialize($varValue);
 				break;
 
 			default:
@@ -104,7 +107,7 @@ class InputSelect extends \Contao\Widget
 		}
 
 		// Add an empty option if there are none
-		if (empty($this->arrOptions) || !is_array($this->arrOptions))
+		if (empty($this->arrOptions) || ! is_array($this->arrOptions))
 		{
 			$this->arrOptions = array(array('value'=>'', 'label'=>'-'));
 		}
@@ -114,7 +117,7 @@ class InputSelect extends \Contao\Widget
 			if (isset($arrOption['value']))
 			{
 				$arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
-										 \StringUtil::specialchars($arrOption['value']),
+										 StringUtil::specialchars($arrOption['value']),
 										 $this->isSelected($arrOption),
 										 $arrOption['label']);
 			}
@@ -125,12 +128,12 @@ class InputSelect extends \Contao\Widget
 				foreach ($arrOption as $arrOptgroup)
 				{
 					$arrOptgroups[] = sprintf('<option value="%s"%s>%s</option>',
-											   \StringUtil::specialchars($arrOptgroup['value']),
+											   StringUtil::specialchars($arrOptgroup['value']),
 											   $this->isSelected($arrOptgroup),
 											   $arrOptgroup['label']);
 				}
 
-				$arrOptions[] = sprintf('<optgroup label="&nbsp;%s">%s</optgroup>', \StringUtil::specialchars($strKey), implode('', $arrOptgroups));
+				$arrOptions[] = sprintf('<optgroup label="&nbsp;%s">%s</optgroup>', StringUtil::specialchars($strKey), implode('', $arrOptgroups));
 			}
 		}
 

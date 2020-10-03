@@ -8,7 +8,7 @@
  * @link       https://agoat.xyz
  * @license    LGPL-3.0
  */
- 
+
 namespace Agoat\PostsnPagesBundle\DataContainer;
 
 use Agoat\LanguageRelationBundle\DataContainer\AbstractConstructor;
@@ -20,7 +20,6 @@ use Agoat\LanguageRelationBundle\DataContainer\AbstractConstructor;
  */
 class PostArchiveViewConstructor extends AbstractConstructor
 {
-
 	public function buildDca ()
 	{
 		$GLOBALS['TL_DCA'][$this->table]['config']['onload_callback'][] = function(\DataContainer $dc) {

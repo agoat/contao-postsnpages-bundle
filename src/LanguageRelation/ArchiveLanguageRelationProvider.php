@@ -14,53 +14,53 @@ namespace Agoat\PostsnPagesBundle\LanguageRelation;
 use Agoat\LanguageRelationBundle\LanguageRelation\AbstractLanguageRelationProvider;
 use Agoat\LanguageRelationBundle\LanguageRelation\LanguageRelationProviderInterface;
 use Agoat\LanguageRelationBundle\LanguageRelation\LanguageRelation;
+use Agoat\PostsnPagesBundle\Model\ArchiveModel;
 use Contao\Backend;
-use Contao\ArchiveModel;
 use Contao\PageModel;
 
 
 
 class ArchiveLanguageRelationProvider extends AbstractLanguageRelationProvider implements LanguageRelationProviderInterface
 {
-	
+
 	/**
      * {@inheritdoc}
-     */	
+     */
 	public function getContext()
 	{
 		return 'archive';
 	}
-	
+
 	/**
      * {@inheritdoc}
-     */	
+     */
 	public function getDcaTable()
 	{
 		return 'tl_archive';
 	}
-	
-	
+
+
 	public function build($id, $published)
 	{
 		$this->currentEntity = ArchiveModel::findByPk($id);
 
 		if (null === $this->currentEntity) {
 			return null;
-		} 
-		
+		}
+
 		$this->parentEntity = PageModel::findByPk($this->currentEntity->pid);
-		
+
 		$this->setRootLanguages($published, $this->parentEntity);
 
 		return new LanguageRelation(
-			$this, 
+			$this,
 			$this->currentLanguage,
-			array_keys($this->rootPages), 
+			array_keys($this->rootPages),
 			$this->getRelations($published)
 		);
 	}
 
-	
+
 	public function getFrontendUrl($related)
 	{
 		return null;
@@ -83,30 +83,30 @@ class ArchiveLanguageRelationProvider extends AbstractLanguageRelationProvider i
 	{
 		return Backend::addToUrl('id='.$related->id);
 	}
-	
-	
+
+
 	public function getViewUrl($related)
 	{
 		return Backend::addToUrl('id='.$related->id);
 	}
-	
-	
+
+
 	public function supportsPicker()
 	{
 		return true;
 	}
 
-	
+
 	public function getPickerUrl($language)
 	{
 		$options = [
 			'rootNodes' => $this->rootPages[$language]->id
 		];
-		
+
 		return \System::getContainer()->get('contao.picker.builder')->getUrl('archive', $options);
 	}
-	
-	
+
+
 	public function getCreateUrl($language)
 	{
 		return false; // Post archives shouldn't be copied to another language (?)
@@ -117,9 +117,9 @@ class ArchiveLanguageRelationProvider extends AbstractLanguageRelationProvider i
 	{
 		if (!isset($this->parentRelations)) {
 			$this->parentRelations = array();
-			
+
 			$relation = $this->getRelations($published, $this->parentEntity);
-		
+
 			if (null !== $relation) {
 				foreach ($relation as $model) {
 					$this->parentRelations[$model->language] = $model;

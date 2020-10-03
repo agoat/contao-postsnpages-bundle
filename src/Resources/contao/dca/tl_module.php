@@ -14,7 +14,7 @@
  * Palettes
  */
 $bundles = \System::getContainer()->getParameter('kernel.bundles');
- 
+
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postcontent']  = '{title_legend},name,headline,type;{config_legend},featured,numberOfItems,skipFirst,perPage,showTeaser;{archive_legend},archive;{sort_legend},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postreader']  = '{title_legend},name,headline,type;{config_legend},showTeaser;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{related_legend},addRelated;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},addComments;' : '') . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
@@ -302,10 +302,10 @@ class tl_module_posts extends Backend
 				$GLOBALS['TL_DCA']['tl_module']['fields']['archive']['eval']['mandatory'] = true;
 				break;
 		}
-		
+
 		return $value;
 	}
-	
+
 
 	/**
 	 * Get all post reader modules and return them as array
@@ -316,12 +316,12 @@ class tl_module_posts extends Backend
 	{
 		$arrModules = array();
 		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='postreader' ORDER BY t.name, m.name");
-		
+
 		while ($objModules->next())
 		{
 			$arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
 		}
-		
+
 		return $arrModules;
 	}
 
@@ -335,12 +335,12 @@ class tl_module_posts extends Backend
 	{
 		$arrModules = array();
 		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='relatedpoststeaser' ORDER BY t.name, m.name");
-		
+
 		while ($objModules->next())
 		{
 			$arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
 		}
-		
+
 		return $arrModules;
 	}
 
@@ -353,13 +353,13 @@ class tl_module_posts extends Backend
 	public function getTagMenuModules ()
 	{
 		$arrModules = array();
-		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='poststagmenu' ORDER BY t.name, m.name");
-		
+		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='posttagmenu' ORDER BY t.name, m.name");
+
 		while ($objModules->next())
 		{
 			$arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
 		}
-		
+
 		return $arrModules;
 	}
 
@@ -376,7 +376,7 @@ class tl_module_posts extends Backend
 		return ($dc->value < 1) ? '' : ' <a href="contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $dc->value . '&amp;popup=1&amp;nb=1&amp;rt=' . REQUEST_TOKEN . '" title="' . \StringUtil::specialchars($GLOBALS['TL_LANG']['tl_module']['edit_module']) . '" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_LANG']['tl_module']['edit_module'])) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.svg', $GLOBALS['TL_LANG']['tl_module']['edit_module']) . '</a>';
 	}
 
-	
+
 	/**
 	 * Return the sorting order depending on the module type
 	 *
@@ -395,7 +395,7 @@ class tl_module_posts extends Backend
 		return $value;
 	}
 
-	
+
 	/**
 	 * Return the posts categories
 	 *
@@ -408,7 +408,7 @@ class tl_module_posts extends Backend
 		$objPosts = \PostModel::findAll();
 
 		$arrCat = array();
-		
+
 		if ($objPosts !== null)
 		{
 			foreach ($objPosts as $objPost)

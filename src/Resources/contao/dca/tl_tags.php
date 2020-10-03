@@ -9,7 +9,7 @@
  * @license    LGPL-3.0
  */
 
- 
+
 /**
  * Table tl_tags
  */
@@ -49,7 +49,7 @@ $GLOBALS['TL_DCA']['tl_tags'] = array
 		),
 		'label' => array
 		(
-			'sql'	=> "varchar(128) NOT NULL default ''"
+			'sql'	=> "varchar(256) NOT NULL default ''"
 		),
 		'archive' => array
 		(

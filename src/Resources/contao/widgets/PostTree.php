@@ -12,10 +12,19 @@
 namespace Agoat\PostsnPagesBundle\Contao;
 
 
+use Agoat\PostsnPagesBundle\Model\PostModel;
+use Contao\Config;
+use Contao\Database;
+use Contao\Image;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\Widget;
+
 /**
  * Provide methods to handle input field "post tree"
  */
-class PostTree extends \Widget
+class PostTree extends Widget
 {
 
 	/**
@@ -42,15 +51,21 @@ class PostTree extends \Widget
 	 */
 	protected $strOrderName;
 
+    /**
+     * @var Database
+     */
+    private $database;
 
-	/**
+
+    /**
 	 * Load the database object
 	 *
 	 * @param array $arrAttributes
 	 */
 	public function __construct($arrAttributes=null)
 	{
-		$this->import('Database');
+	    $this->database = Database::getInstance();
+
 		parent::__construct($arrAttributes);
 
 		// Prepare the order field
@@ -60,11 +75,11 @@ class PostTree extends \Widget
 			$this->strOrderName = $this->orderField . str_replace($this->strField, '', $this->strName);
 
 			// Retrieve the order value
-			$objRow = $this->Database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
+			$objRow = $this->database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
 						   ->limit(1)
 						   ->execute($this->activeRecord->id);
 
-			$tmp = \StringUtil::deserialize($objRow->{$this->orderField});
+			$tmp = StringUtil::deserialize($objRow->{$this->orderField});
 			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
 		}
 	}
@@ -90,16 +105,16 @@ class PostTree extends \Widget
 		if ($this->orderField != '')
 		{
 			$arrNew = array();
-			
-			if ($order = \Input::post($this->strOrderName))
+
+			if ($order = Input::post($this->strOrderName))
 			{
 				$arrNew = explode(',', $order);
 			}
-  
+
 			// Only proceed if the value has changed
 			if ($arrNew !== $this->{$this->orderField})
 			{
-				$this->Database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->orderField}=? WHERE id=?")
+				$this->database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->orderField}=? WHERE id=?")
 							   ->execute(time(), serialize($arrNew), $this->activeRecord->id);
 
 			    $this->objDca->createNewVersion = true; // see #6285
@@ -136,22 +151,20 @@ class PostTree extends \Widget
 	 */
 	protected function checkValue($varInput)
 	{
-		if ($varInput == '' || !is_array($this->rootNodes))
+		if ($varInput == '' || ! is_array($this->rootNodes))
 		{
 			return;
 		}
 
-		$arrPids = $this->Database->prepare("SELECT pid FROM tl_post WHERE id IN (?)")
-							      ->execute($varInput)->fetchAssoc();
-
-		return;
-		
 		// TODO: Add check vor valid post selection
-        if (count(array_diff($arrPids, array_merge($this->rootNodes, $this->Database->getChildRecords($this->rootNodes, 'tl_page')))) > 0)
-		{
-			$this->addError($GLOBALS['TL_LANG']['ERR']['invalidArticles']);
-		}
-	}
+//		$arrPids = $this->database->prepare("SELECT pid FROM tl_post WHERE id IN (?)")
+//                    ->execute($varInput)->fetchAssoc();
+
+//        if (count(array_diff($arrPids, array_merge($this->rootNodes, $this->Database->getChildRecords($this->rootNodes, 'tl_page')))) > 0)
+//		{
+//			$this->addError($GLOBALS['TL_LANG']['ERR']['invalidArticles']);
+//		}
+    }
 
 
 	/**
@@ -165,16 +178,16 @@ class PostTree extends \Widget
 		$arrValues = array();
 		$blnHasOrder = ($this->orderField != '' && is_array($this->{$this->orderField}));
 
-		if (!empty($this->varValue)) // Can be an array
+		if (! empty($this->varValue)) // Can be an array
 		{
-			$objPosts = \PostModel::findMultipleByIds((array)$this->varValue);
+			$objPosts = PostModel::findMultipleByIds((array)$this->varValue);
 
 			if ($objPosts !== null)
 			{
 				while ($objPosts->next())
 				{
 					$arrSet[] = $objPosts->id;
-					$arrValues[$objPosts->id] = \Image::getHtml('bundles/agoatpostsnpages/posts' . ((!$objPosts->published || ($objPosts->start != '' && $objPosts->start > time()) || ($objPosts->stop != '' && $objPosts->stop < time())) ? '_' : '') . '.svg') . ' ' . $objPosts->title . ' (' . $objPosts->alias . \Config::get('urlSuffix') . ')';
+					$arrValues[$objPosts->id] = Image::getHtml('bundles/agoatpostsnpages/posts' . ((!$objPosts->published || ($objPosts->start != '' && $objPosts->start > time()) || ($objPosts->stop != '' && $objPosts->stop < time())) ? '_' : '') . '.svg') . ' ' . $objPosts->title . ' (' . $objPosts->alias . Config::get('urlSuffix') . ')';
 				}
 			}
 
@@ -218,7 +231,7 @@ class PostTree extends \Widget
 
 		$return .= '</ul>';
 
-		if (!\System::getContainer()->get('contao.picker.builder')->supportsContext('post'))
+		if (! System::getContainer()->get('contao.picker.builder')->supportsContext('post'))
 		{
 			$return .= '
 	<p><button class="tl_submit" disabled>'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</button></p>';
@@ -237,13 +250,13 @@ class PostTree extends \Widget
 			}
 
 			$return .= '
-	<p><a href="' . ampersand(\System::getContainer()->get('contao.picker.builder')->getUrl('post', $extras)) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+	<p><a href="' . ampersand(System::getContainer()->get('contao.picker.builder')->getUrl('post', $extras)) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
 	<script>
 	  $("pt_' . $this->strName . '").addEvent("click", function(e) {
 		e.preventDefault();
 		Backend.openModalSelector({
 		  "id": "tl_listing",
-		  "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
+		  "title": "' . StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
 		  "url": this.href + document.getElementById("ctrl_'.$this->strId.'").value,
 		  "callback": function(table, value) {
 			new Request.Contao({

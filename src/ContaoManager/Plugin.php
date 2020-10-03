@@ -8,7 +8,7 @@
  * @link       https://agoat.xyz
  * @license    LGPL-3.0
  */
- 
+
 namespace Agoat\PostsnPagesBundle\ContaoManager;
 
 use Agoat\PostsnPagesBundle\AgoatPostsnPagesBundle;
@@ -16,6 +16,7 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
+use Contao\ManagerPlugin\Dependency\DependentPluginInterface;
 
 
 /**
@@ -30,8 +31,10 @@ class Plugin implements BundlePluginInterface
 	{
 		return [
 			BundleConfig::create(AgoatPostsnPagesBundle::class)
-				->setLoadAfter([ContaoCoreBundle::class])
-				->setReplace(['postsnpages']),
+				->setLoadAfter([
+				    ContaoCoreBundle::class,
+                    'Agoat\LanguageRelationBundle\AgoatLanguageRelationBundle'
+                ])
 		];
 	}
 }

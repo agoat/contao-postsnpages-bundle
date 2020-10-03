@@ -12,10 +12,18 @@
 namespace Agoat\PostsnPagesBundle\Contao;
 
 
+use Agoat\PostsnPagesBundle\Model\ArchiveModel;
+use Contao\Database;
+use Contao\Image;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\Widget;
+
 /**
  * Provide methods to handle input field "archive tree".
  */
-class ArchiveTree extends \Widget
+class ArchiveTree extends Widget
 {
 
 	/**
@@ -42,6 +50,11 @@ class ArchiveTree extends \Widget
 	 */
 	protected $strOrderName;
 
+    /**
+     * @var Database
+     */
+    private $database;
+
 
 	/**
 	 * Load the database object
@@ -50,8 +63,9 @@ class ArchiveTree extends \Widget
 	 */
 	public function __construct($arrAttributes=null)
 	{
-		$this->import('Database');
-		parent::__construct($arrAttributes);
+        parent::__construct($arrAttributes);
+
+        $this->database = Database::getInstance();
 
 		// Prepare the order field
 		if ($this->orderField != '')
@@ -60,11 +74,11 @@ class ArchiveTree extends \Widget
 			$this->strOrderName = $this->orderField . str_replace($this->strField, '', $this->strName);
 
 			// Retrieve the order value
-			$objRow = $this->Database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
+			$objRow = $this->database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
 						   ->limit(1)
 						   ->execute($this->activeRecord->id);
 
-			$tmp = \StringUtil::deserialize($objRow->{$this->orderField});
+			$tmp = StringUtil::deserialize($objRow->{$this->orderField});
 			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
 		}
 	}
@@ -90,16 +104,16 @@ class ArchiveTree extends \Widget
 		if ($this->orderField != '')
 		{
 			$arrNew = array();
-			
-			if ($order = \Input::post($this->strOrderName))
+
+			if ($order = Input::post($this->strOrderName))
 			{
 				$arrNew = explode(',', $order);
 			}
-  
+
 			// Only proceed if the value has changed
 			if ($arrNew !== $this->{$this->orderField})
 			{
-				$this->Database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->orderField}=? WHERE id=?")
+				$this->database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->orderField}=? WHERE id=?")
 							   ->execute(time(), serialize($arrNew), $this->activeRecord->id);
 
 			    $this->objDca->createNewVersion = true; // see #6285
@@ -136,21 +150,19 @@ class ArchiveTree extends \Widget
 	 */
 	protected function checkValue($varInput)
 	{
-		if ($varInput == '' || !is_array($this->rootNodes))
+		if ($varInput == '' || ! is_array($this->rootNodes))
 		{
 			return;
 		}
 
-		$arrPids = $this->Database->prepare("SELECT pid FROM tl_archive WHERE id IN (?)")
-							      ->execute($varInput)->fetchAssoc();
-
-		return;
-		
-		// TODO: Add check vor valid archive selection
-        if (count(array_diff($arrPids, array_merge($this->rootNodes, $this->Database->getChildRecords($this->rootNodes, 'tl_page')))) > 0)
-		{
-			$this->addError($GLOBALS['TL_LANG']['ERR']['invalidArticles']);
-		}
+        // TODO: Add check vor valid archive selection
+//        $arrPids = $this->Database->prepare("SELECT pid FROM tl_archive WHERE id IN (?)")
+//							      ->execute($varInput)->fetchAssoc();
+//
+//        if (count(array_diff($arrPids, array_merge($this->rootNodes, $this->Database->getChildRecords($this->rootNodes, 'tl_page')))) > 0)
+//		{
+//			$this->addError($GLOBALS['TL_LANG']['ERR']['invalidArticles']);
+//		}
 	}
 
 
@@ -166,14 +178,14 @@ class ArchiveTree extends \Widget
 
 		if (!empty($this->varValue)) // Can be an array
 		{
-			$objArchive = \ArchiveModel::findMultipleByIds((array)$this->varValue, array('order'=>'title'));
+			$objArchive = ArchiveModel::findMultipleByIds((array)$this->varValue, array('order'=>'title'));
 
 			if ($objArchive !== null)
 			{
 				while ($objArchive->next())
 				{
 					$arrSet[] = $objArchive->id;
-					$arrValues[$objArchive->id] = \Image::getHtml('iconPLAIN.svg') . ' ' . $objArchive->title;
+					$arrValues[$objArchive->id] = Image::getHtml('iconPLAIN.svg') . ' ' . $objArchive->title;
 				}
 			}
 		}
@@ -187,7 +199,7 @@ class ArchiveTree extends \Widget
 
 		$return .= '</ul>';
 
-		if (!\System::getContainer()->get('contao.picker.builder')->supportsContext('archive'))
+		if (! System::getContainer()->get('contao.picker.builder')->supportsContext('archive'))
 		{
 			$return .= '
 	<p><button class="tl_submit" disabled>'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</button></p>';
@@ -206,13 +218,13 @@ class ArchiveTree extends \Widget
 			}
 
 			$return .= '
-	<p><a href="' . ampersand(\System::getContainer()->get('contao.picker.builder')->getUrl('archive', $extras)) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+	<p><a href="' . ampersand(System::getContainer()->get('contao.picker.builder')->getUrl('archive', $extras)) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
 	<script>
 	  $("pt_' . $this->strName . '").addEvent("click", function(e) {
 		e.preventDefault();
 		Backend.openModalSelector({
 		  "id": "tl_listing",
-		  "title": "' . \StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
+		  "title": "' . StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
 		  "url": this.href + document.getElementById("ctrl_'.$this->strId.'").value,
 		  "callback": function(table, value) {
 			new Request.Contao({

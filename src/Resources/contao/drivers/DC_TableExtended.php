@@ -66,7 +66,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			if (!is_array($session[$node]) || empty($session[$node]) || current($session[$node]) != 1)
 			{
 				$session[$node] = array();
-				$objNodes = $this->Database->execute("SELECT DISTINCT id FROM " . $table);
+				$objNodes = $this->Database->execute("SELECT DISTINCT id FROM " . $table); 
 
 				while ($objNodes->next())
 				{
@@ -165,7 +165,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 		}
 
 		$strPFilter = '';
-		
+
 		if (!empty($filter = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['pfilter']) && is_array($filter) && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6)
 		{
 			$objPFilter = $this->Database->prepare("SELECT DISTINCT id FROM ". $table . " WHERE " . $filter[0])
@@ -174,7 +174,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			if ($objPFilter->numRows)
 			{
 				$arrPFilter = array();
-			
+
 				while ($objPFilter->next())
 				{
 					$arrPFilter = array_merge($arrPFilter, $this->Database->getParentRecords($objPFilter->id, $table));
@@ -193,17 +193,17 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			while ($objRoots->next())
 			{
 				$tree .= $this->generateXTree(
-					$table, 
-					$objRoots->id, 
-					$objRoots->row(), 
-					array('p'=>$this->root[($count-1)], 'n'=>$arrIds[($count+1)]), 
-					$blnHasSorting, 
-					0, 
-					($blnClipboard ? $arrClipboard : false), 
-					($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && $objRoots->id == $arrClipboard['id']), 
-					false, 
-					false, 
-					$strFound, 
+					$table,
+					$objRoots->id,
+					$objRoots->row(),
+					array('p'=>$this->root[($count-1)], 'n'=>$arrIds[($count+1)]),
+					$blnHasSorting,
+					0,
+					($blnClipboard ? $arrClipboard : false),
+					($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && $blnClipboard && $objRoots->id == $arrClipboard['id']),
+					false,
+					false,
+					$strFound,
 					$strPFilter
 				);
 				$count++;
@@ -402,7 +402,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 		$intCount = 0;
 
 		$strPFilter = '';
-		
+
 		if (!empty($filter = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['pfilter']) && is_array($filter) && $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6)
 		{
 			$objPFilter = $this->Database->prepare("SELECT DISTINCT id FROM ". $table . " WHERE " . $filter[0])
@@ -411,7 +411,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			if ($objPFilter->numRows)
 			{
 				$arrPFilter = array();
-			
+
 				while ($objPFilter->next())
 				{
 					$arrPFilter = array_merge($arrPFilter, $this->Database->getParentRecords($objPFilter->id, $table));
@@ -423,17 +423,17 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 		}
 
 		$return .= ' ' . trim($this->generateXTree(
-			$table, 
-			$id, 
-			false, 
-			array('p'=>$childs[($count-1)], 'n'=>$childs[($count+1)]), 
-			$hasSorting, 
-			$level, 
-			($blnClipboard ? $arrClipboard : false), 
-			($id == $arrClipboard ['id'] || (is_array($arrClipboard ['id']) && in_array($id, $arrClipboard ['id'])) || (!$blnPtable && !is_array($arrClipboard['id']) && in_array($id, $this->Database->getChildRecords($arrClipboard['id'], $table)))), 
-			$blnProtected, 
-			false, 
-			'', 
+			$table,
+			$id,
+			false,
+			array('p'=>$childs[($count-1)], 'n'=>$childs[($count+1)]),
+			$hasSorting,
+			$level,
+			($blnClipboard ? $arrClipboard : false),
+			($id == $arrClipboard ['id'] || (is_array($arrClipboard ['id']) && in_array($id, $arrClipboard ['id'])) || (!$blnPtable && !is_array($arrClipboard['id']) && in_array($id, $this->Database->getChildRecords($arrClipboard['id'], $table)))),
+			$blnProtected,
+			false,
+			'',
 			$strPFilter
 		));
 
@@ -468,7 +468,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 
 		$session = $objSessionBag->all();
 		$node = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6) ? $this->strTable.'_'.$table.'_tree' : $this->strTable.'_tree';
-	
+
 		// Toggle nodes
 		if (\Input::get('ptg'))
 		{
@@ -476,7 +476,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			$objSessionBag->replace($session);
 			$this->redirect(preg_replace('/(&(amp;)?|\?)ptg=[^& ]*/i', '', \Environment::get('request')));
 		}
-		
+
 		$return = '';
 		$intSpacing = 20;
 		$blnIsOpen = (!empty($arrFound) || $session[$node][$id] == 1);
@@ -498,12 +498,12 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			{
 				$query = "SELECT * FROM " . $table . " WHERE pid=?";
 				$varValues = array($id);
-				
+
 				if (!empty($strFound))
 				{
 					$query .= " AND id IN(" . $strFound . ")";
 				}
-			
+
 				if (!empty($strPFilter))
 				{
 					$query .= " AND id IN (" . $strPFilter . " )";
@@ -516,7 +516,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 
 				$objChilds = $this->Database->prepare($query)
 											->execute($varValues);
-													
+
 				if ($objChilds->numRows)
 				{
 					$childs = $objChilds->fetchEach('id');
@@ -539,14 +539,14 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 				{
 					$arrOrder = array();
 				}
-				
+
 				if (strlen($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['group']))
 				{
 					$groupField = $GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['group'];
 					$flag = !empty($GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag']) ? $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'] : 11;
 					array_unshift($arrOrder, $groupField . (($flag % 2) == 0 ? ' DESC' : ''));
 				}
-	
+
 				// Also apply the filter settings to the child table (see #716)
 				if ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 6 && !empty($this->procedure))
 				{
@@ -561,7 +561,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 					$objSubChilds = $this->Database->prepare("SELECT * FROM " . $this->strTable . " WHERE pid=?" . (!empty($arrOrder) ? " ORDER BY " . implode(',', $arrOrder) : ''))
 												   ->execute($id);
 				}
-		
+
 				if ($objSubChilds->numRows)
 				{
 					$subChilds = $objSubChilds->fetchEach('id');
@@ -584,7 +584,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 			$session[$node][$id] = (is_int($session[$node][$id])) ? $session[$node][$id] : 0;
 			$mouseover = ($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 || ($table == $this->strTable && is_numeric($id))) ? ' toggle_select hover-div' : '';
 
-			
+
 			$return .= "\n  " . '<li class="'.(($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['mode'] == 5 && (!empty($GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['folders']) && in_array($arrRow['type'], (array)$GLOBALS['TL_DCA'][$this->strTable]['list']['sorting']['folders'])) || $table != $this->strTable) ? 'tl_folder' : 'tl_file').' click2edit'.$mouseover.' cf"><div class="tl_left" style="padding-left:'.($level * $intSpacing).'px">';
 
 			// Calculate label and add a toggle button
@@ -724,25 +724,25 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 						{
 							$_buttons .= '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$id.(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.\StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$this->strTable]['pasteinto'][1], $id)).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ';
 						}
-						
-						
+
+
 					}
 				}
 			}
 
 			$return .= ($_buttons ?: '&nbsp;') . '</div></li>';
 		}
-		
+
 		// Begin a new submenu
 		if (!$blnNoRecursion)
 		{
 			$subReturn = '';
-		
+
 			// Add the records of the parent table
 			if ($blnIsOpen && $objChilds->numRows)
 			{
 				$count = 0;
-				
+
 				// Call a recursive function that builds the tree
 				while ($objChilds->next())
 				{
@@ -750,13 +750,13 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 					$count++;
 				}
 			}
-			
+
 			// Add the records of the table itself
 			if ($table != $this->strTable && $blnIsOpen && $objSubChilds->numRows)
 			{
 				$count = 0;
 				$group = false;
-			
+
 				// Call a recursive function that builds the tree
 				while ($objSubChilds->next())
 				{
@@ -768,7 +768,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 						{
 							$subReturn .= '</ul></li>';
 						}
-						
+
 						$group = $objSubChilds->$groupField;
 
 						$sortingMode  = $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'] ? $GLOBALS['TL_DCA'][$this->strTable]['fields'][$groupField]['flag'] : 11;
@@ -781,10 +781,10 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 					}
 
 					$subReturn .= $this->generateXTree($this->strTable, $objSubChilds->id,  $objSubChilds->row(), array('pp'=>$subChilds[($count-1)], 'nn'=>$subChilds[($count+1)]), $blnHasSorting, ($level+(($groupField) ? 3 : 2)), $arrClipboard, false, ($count<(count($subChilds)-1) || !empty($subChilds)), $blnNoRecursion, $strFound, $strPFilter);
-			
+
 					$count++;
 				}
-				
+
 				// Close the group
 				if ($group)
 				{
@@ -800,23 +800,23 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 		}
 
 		$objSessionBag->replace($session);
-		
+
 		return $return;
 	}
-	
-	
+
+
 	/**
 	 * {@inheritdoc}
 	 */
 	public function initPicker(PickerInterface $picker)
 	{
 		$attributes = parent::initPicker($picker);
-	
+
 		if (isset($attributes['filesOnly']))
 		{
 			$this->blnFilesOnly = $attributes['filesOnly'];
 		}
-		
+
 		if ($picker->getCurrentProvider() instanceof DcaPickerProviderInterface)
 		{
 			$rootNodes = $picker->getConfig()->getExtra('rootNodes');
@@ -833,7 +833,7 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 				$this->import('BackendUser', 'User');
 				$this->root = $this->User->pagemounts;
 			}
-			
+
 			$arrRoot = $this->eliminateNestedPages((array) $rootNodes);
 
 			// Calculate the intersection of the root nodes with the mounted nodes (see #1001)
@@ -853,3 +853,5 @@ class DC_TableExtended extends \DC_Table implements \listable, \editable
 		return $attributes;
 	}
 }
+
+class_alias(DC_TableExtended::class, 'DC_TableExtended');

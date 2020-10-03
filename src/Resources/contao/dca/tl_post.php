@@ -9,7 +9,10 @@
  * @license    LGPL-3.0
  */
 
- 
+use Agoat\PostsnPagesBundle\Model\ArchiveModel;
+use Agoat\PostsnPagesBundle\Model\PostModel;
+use Agoat\PostsnPagesBundle\Model\TagsModel;
+
  /**
  * Load tl_content language file
  */
@@ -136,7 +139,7 @@ $GLOBALS['TL_DCA']['tl_post'] = array
 				'label'               => &$GLOBALS['TL_LANG']['tl_post']['feature'],
 				'icon'                => 'featured.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleFeatured(this,%s)"',
-				'button_callback'     => array('tl_post', 'iconFeatured')		
+				'button_callback'     => array('tl_post', 'iconFeatured')
 			),
 			'show' => array
 			(
@@ -385,13 +388,13 @@ $GLOBALS['TL_DCA']['tl_post'] = array
 			'inputType'               => 'text',
 			'eval'                    => array
 			(
-				'mandatory'			=> true, 
-				'rgxp'				=> 'url', 
-				'decodeEntities'	=> true, 
-				'maxlength'			=> 255, 
+				'mandatory'			=> true,
+				'rgxp'				=> 'url',
+				'decodeEntities'	=> true,
+				'maxlength'			=> 255,
 				'dcaPicker'			=> true,
-				'fieldType'			=> 'radio', 
-				'filesOnly'			=> true, 
+				'fieldType'			=> 'radio',
+				'filesOnly'			=> true,
 				'tl_class'			=> 'w50 wizard'
 			),
 			'sql'                     => "varchar(255) NOT NULL default ''"
@@ -685,17 +688,17 @@ class tl_post extends Backend
 	{
 		$time = \Date::floorToMinute();
 		$unpublished = !$arrRow['published'] || $arrRow['start'] != '' && $arrRow['start'] > $time || $arrRow['stop'] != '' && $arrRow['stop'] < $time;
-	
+
 		$return = '<div class="tl_content_left cte_type tl_post' . ($arrRow['published'] ? ' published' : ' unpublished') . '">';
-		
+
 		// Title
 		$return .= '<h2>' . $arrRow['title'] . '</h2>';
-		
+
 		// Date | Location | LatLong | Author
 		$return .= '<div class="tl_gray">';
-		
+
 		$return .= date(\Config::get('dateFormat'), $arrRow['date']);
-		
+
 		if ($arrRow['location'])
 		{
 			$return .= ' | ' . $arrRow['location'];
@@ -705,12 +708,12 @@ class tl_post extends Backend
 		{
 			$return .= ' | ' . implode(', ', $arrLatLong );
 		}
-		
+
 		if (($objUser = \UserModel::findById($arrRow['author'])))
 		{
 			$return .= ' | ' . $objUser->name;
 		}
-		
+
 		$return .= '</div>';
 
 		// Image | Subtitle + Teaser
@@ -720,12 +723,12 @@ class tl_post extends Backend
 		{
 
 			$objFile = \FilesModel::findByUuid($arrRow['singleSRC']);
-						
+
 			if (null !== $objFile)
 			{
 				$image = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFile->path, array(180, 120, 'crop'))->getUrl(TL_ROOT);
 			}
-		
+
 			$return .= '<figure><img src="' . $image . '"></figure>';
 		}
 
@@ -733,17 +736,17 @@ class tl_post extends Backend
 		{
 			$return .= '<h3>' . $arrRow['subTitle'] . '</h3>';
 		}
-		
+
 		if ($arrRow['teaser'])
 		{
 			$return .= $arrRow['teaser'];
 		}
 
 		// Readmore
-		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPagesBundle\Contao\Posts::generatePostUrl(\PostModel::findById($arrRow['id']), true, true) . '" target="_blank">Read more</a></p>';
+		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPagesBundle\Contao\Posts::generatePostUrl(PostModel::findById($arrRow['id']), true, true) . '" target="_blank">Read more</a></p>';
 
 		$return .= '</div>';
-		
+
 		// Category | Tags
 		if ($arrRow['category'] || $arrRow['tags'])
 		{
@@ -758,26 +761,26 @@ class tl_post extends Backend
 			{
 				$return .= ' | ';
 			}
-			
+
 			if ($arrRow['tags'])
 			{
-				$objTags = \TagsModel::findMultipleByIds(\StringUtil::deserialize($arrRow['tags']));
-				
+				$objTags = TagsModel::findMultipleByIds(\StringUtil::deserialize($arrRow['tags']));
+
 				if (null !== $objTags)
 				{
 					$return .= $GLOBALS['TL_LANG']['tl_post']['tags'][0] . ': ' . implode(', ', $objTags->fetchEach('label'));
 				}
 			}
-			
+
 			$return .= '</div>';
 		}
-		
+
 		$return .= '</div>';
 
 		return $return;
 	}
 
-	
+
 	/**
 	 * Auto-generate an post alias if it has not been set yet
 	 *
@@ -791,23 +794,23 @@ class tl_post extends Backend
 	public function generateAlias($varValue, DataContainer $dc)
 	{
 		$autoAlias = false;
-		
+
 		// Generate an alias if there is none
 		if ($varValue == '')
 		{
 			$autoAlias = true;
 			$varValue = StringUtil::generateAlias($dc->activeRecord->title);
 		}
-		
+
 		// Add a prefix to reserved names (see #6066)
 		if (in_array($varValue, array('top', 'wrapper', 'header', 'container', 'main', 'left', 'right', 'footer')))
 		{
 			$varValue = 'article-' . $varValue;
 		}
-		
+
 		$objAlias = $this->Database->prepare("SELECT id FROM tl_post WHERE id=? OR alias=?")
 								   ->execute($dc->id, $varValue);
-								   
+
 		// Check whether the page alias exists
 		if ($objAlias->numRows > 1)
 		{
@@ -817,7 +820,7 @@ class tl_post extends Backend
 			}
 			$varValue .= '-' . $dc->id;
 		}
-		
+
 		return $varValue;
 	}
 
@@ -833,8 +836,8 @@ class tl_post extends Backend
 	{
 		return strtotime(date('Y-m-d', $value) . ' 00:00:00');
 	}
-	
-	
+
+
 	/**
 	 * Set the timestamp to 1970-01-01
 	 *
@@ -846,8 +849,8 @@ class tl_post extends Backend
 	{
 		return strtotime('1970-01-01 ' . date('H:i:s', $value));
 	}
-	
-	
+
+
 	/**
 	 * Reset the date and/or time to the current time if empty
 	 *
@@ -873,10 +876,10 @@ class tl_post extends Backend
 		{
 			return;
 		}
-		
+
 		$arrSet['date'] = strtotime(date('Y-m-d', $dc->activeRecord->date) . ' ' . date('H:i:s', $dc->activeRecord->time));
 		$arrSet['time'] = $arrSet['date'];
-		
+
 		$this->Database->prepare("UPDATE tl_post %s WHERE id=?")->set($arrSet)->execute($dc->id);
 	}
 
@@ -894,7 +897,7 @@ class tl_post extends Backend
 		{
 			throw new Exception($GLOBALS['TL_LANG']['ERR']['circularReference']);
 		}
-	
+
 		return $value;
 	}
 
@@ -913,12 +916,12 @@ class tl_post extends Backend
 			$dc = $insertID;
 			$insertID = $dc->id;
 		}
-		
+
 		$arrSet['published'] = 0;
 		$arrSet['archive'] = $this->Database->prepare("SELECT pid FROM tl_post WHERE id=?")->execute($insertID)->pid;
-		
+
 		$this->Database->prepare("UPDATE tl_tags %s WHERE pid=?")->set($arrSet)->execute($insertID);
-		
+
 		$this->Database->prepare("UPDATE tl_post SET tags=? WHERE id=?")->execute(serialize($this->Database->prepare("SELECT id FROM tl_tags WHERE pid=?")->execute($insertID)->fetchEach('id')), $insertID);
 	}
 
@@ -933,8 +936,8 @@ class tl_post extends Backend
 	public function getCategories(DataContainer $dc)
 	{
 		$intPid = (null === $dc->activeRecord) ? $dc->id : $dc->activeRecord->pid;
-		
-		$objPosts = \PostModel::findByPid($intPid);
+
+		$objPosts = PostModel::findByPid($intPid);
 
 		if ($objPosts === null)
 		{
@@ -945,8 +948,8 @@ class tl_post extends Backend
 
 		return array_combine($arrCategories, $arrCategories);
 	}
-	
-	
+
+
 	/**
 	 * Return the article categories
 	 *
@@ -958,18 +961,18 @@ class tl_post extends Backend
 	{
 		$intPid = (null === $dc->activeRecord) ? $dc->id : $dc->activeRecord->pid;
 
-		$objTags = \TagsModel::findByArchive($intPid);
+		$objTags = TagsModel::findByArchive($intPid);
 
 		if (null === $objTags)
 		{
 			return array();
 		}
-			
+
 		$arrTags = array_unique($objTags->fetchEach('label'));
 
 		if (null !== $dc->activeRecord)
 		{
-			$objTags = \TagsModel::findByPid($dc->activeRecord->id);
+			$objTags = TagsModel::findByPid($dc->activeRecord->id);
 
 			if (null !== $objTags)
 			{
@@ -980,8 +983,8 @@ class tl_post extends Backend
 		return $arrTags;
 	}
 
-	
-	
+
+
 	/**
 	 * Return the article categories
 	 *
@@ -993,35 +996,35 @@ class tl_post extends Backend
 	{
 		$blnChanged = false;
 		$tags = (array) \StringUtil::deserialize($value);
-	
+
 		$tagIds = array_filter($tags, 'is_numeric');
 		$newTags = (is_array($tagIds)) ? array_diff_key($tags, $tagIds) : array();
 
-		$objTags = \TagsModel::findByPid($dc->activeRecord->id);
-	
+		$objTags = TagsModel::findByPid($dc->activeRecord->id);
+
 		$removedTags = (null !== $objTags) ? array_diff($objTags->fetchEach('id'), $tagIds) : array();
 		$selectedTags = (null !== $objTags) ? array_diff($tagIds, $objTags->fetchEach('id')) : $tagIds;
-	
+
 		if (!empty($removedTags))
 		{
 			$this->Database->query("DELETE FROM tl_tags WHERE id IN ('" . implode("','", $removedTags) . "')");
 		}
-	
+
 		if (!empty($newTags))
 		{
 			foreach ($newTags as $k=>$v)
 			{
 				if (!empty($v))
 				{
-					$tag = new \TagsModel();
+					$tag = new TagsModel();
 					$tag->tstamp = time();
 					$tag->label = $v;
 					$tag->pid = $dc->activeRecord->id;
 					$tag->archive = $dc->activeRecord->pid;
 					$tag->published = $dc->activeRecord->published;
-					
+
 					$tag->save();
-					
+
 					$tags[$k] = $tag->id;
 					$blnChanged = true;
 				}
@@ -1031,24 +1034,24 @@ class tl_post extends Backend
 				}
 			}
 		}
-		
+
 		if (!empty($selectedTags))
 		{
 			foreach ($selectedTags as $k=>$v)
 			{
-				$objValue = \TagsModel::findById($v);
-			
+				$objValue = TagsModel::findById($v);
+
 				if (null !== $objValue)
 				{
-					$tag = new \TagsModel();
+					$tag = new TagsModel();
 					$tag->tstamp = time();
 					$tag->label = $objValue->label;
 					$tag->pid = $dc->activeRecord->id;
 					$tag->archive = $dc->activeRecord->pid;
 					$tag->published = $dc->activeRecord->published;
-					
+
 					$tag->save();
-					
+
 					$tags[$k] = $tag->id;
 					$blnChanged = true;
 				}
@@ -1057,8 +1060,8 @@ class tl_post extends Backend
 
 		return ($blnChanged) ? serialize($tags) : $value;
 	}
-	
-	
+
+
 	/**
 	 * Return the posts formats
 	 *
@@ -1071,7 +1074,7 @@ class tl_post extends Backend
 		return \System::getContainer()->getParameter('contao.post.formats');
 	}
 
-	
+
 	/**
 	 * Return all post templates as array
 	 *
@@ -1082,7 +1085,7 @@ class tl_post extends Backend
 		return $this->getTemplateGroup('post_');
 	}
 
-	
+
 	/**
 	 * Return the edit post button
 	 *
@@ -1098,7 +1101,7 @@ class tl_post extends Backend
 	public function editPost($row, $href, $label, $title, $icon, $attributes)
 	{
 		//$objPage = \PageModel::findById($row['pid']);
-		$objArchive = \ArchiveModel::findById($row['pid']);
+		$objArchive = ArchiveModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objArchive->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -1123,7 +1126,7 @@ class tl_post extends Backend
 			return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 		}
 
-		$objArchive = \ArchiveModel::findById($row['pid']);
+		$objArchive = ArchiveModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objArchive->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -1149,7 +1152,7 @@ class tl_post extends Backend
 			return '';
 		}
 
-		$objArchive = \ArchiveModel::findById($row['pid']);
+		$objArchive = ArchiveModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objArchive->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -1169,8 +1172,8 @@ class tl_post extends Backend
 	 */
 	public function cutPost($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objArchive = \ArchiveModel::findById($row['pid']);
-		
+		$objArchive = ArchiveModel::findById($row['pid']);
+
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objArchive->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
@@ -1189,12 +1192,12 @@ class tl_post extends Backend
 	 */
 	public function deletePost($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objArchive = \ArchiveModel::findById($row['pid']);
+		$objArchive = ArchiveModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_DELETE_ARTICLES, $objArchive->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
-	
+
 	/**
 	 * Return the "toggle visibility" button
 	 *
@@ -1228,7 +1231,7 @@ class tl_post extends Backend
 			$icon = 'invisible.svg';
 		}
 
-		$objArchive = \ArchiveModel::findById($row['pid']);
+		$objArchive = ArchiveModel::findById($row['pid']);
 
 		if (!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objArchive->row()))
 		{
@@ -1243,7 +1246,7 @@ class tl_post extends Backend
 		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"').'</a> ';
 	}
 
-	
+
 	/**
 	 * Disable/enable a user group
 	 *
@@ -1258,12 +1261,12 @@ class tl_post extends Backend
 		// Set the ID and action
 		Input::setGet('id', $intId);
 		Input::setGet('act', 'toggle');
-		
+
 		if ($dc)
 		{
 			$dc->id = $intId; // see #8043
 		}
-		
+
 		// Trigger the onload_callback
 		if (is_array($GLOBALS['TL_DCA']['tl_post']['config']['onload_callback']))
 		{
@@ -1280,13 +1283,13 @@ class tl_post extends Backend
 				}
 			}
 		}
-		
+
 		// Check the field access
 		if (!$this->User->hasAccess('tl_post::published', 'alexf'))
 		{
 			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish article ID "' . $intId . '".');
 		}
-		
+
 		// Set the current record
 		if ($dc)
 		{
@@ -1298,10 +1301,10 @@ class tl_post extends Backend
 				$dc->activeRecord = $objRow;
 			}
 		}
-		
+
 		$objVersions = new Versions('tl_post', $intId);
 		$objVersions->initialize();
-		
+
 		// Trigger the save_callback
 		if (is_array($GLOBALS['TL_DCA']['tl_post']['fields']['published']['save_callback']))
 		{
@@ -1318,24 +1321,24 @@ class tl_post extends Backend
 				}
 			}
 		}
-		
+
 		$time = time();
-		
+
 		// Update the database
 		$this->Database->prepare("UPDATE tl_post SET tstamp=$time, published='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
 					   ->execute($intId);
-					   
+
 		if ($dc)
 		{
 			$dc->activeRecord->tstamp = $time;
 			$dc->activeRecord->published = ($blnVisible ? '1' : '');
 		}
-		
+
 		// Change the publish state in the tl_tags table
 		$this->Database->prepare("UPDATE tl_tags SET published='" . ($blnVisible ? '1' : '') . "' WHERE pid=?")
 					   ->execute($intId);
-		
-		
+
+
 		// Trigger the onsubmit_callback
 		if (is_array($GLOBALS['TL_DCA']['tl_post']['config']['onsubmit_callback']))
 		{
@@ -1352,11 +1355,11 @@ class tl_post extends Backend
 				}
 			}
 		}
-		
+
 		$objVersions->create();
 	}
-	
-	
+
+
 	/**
 	 * Return the "feature/unfeature element" button
 	 *
@@ -1376,24 +1379,24 @@ class tl_post extends Backend
 			$this->toggleFeatured(Input::get('fid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
 			$this->redirect($this->getReferer());
 		}
-		
+
 		// Check permissions AFTER checking the fid, so hacking attempts are logged
 		if (!$this->User->hasAccess('tl_post::featured', 'alexf'))
 		{
 			return '';
 		}
-		
+
 		$href .= '&amp;fid='.$row['id'].'&amp;state='.($row['featured'] ? '' : 1);
-		
+
 		if (!$row['featured'])
 		{
 			$icon = 'featured_.svg';
 		}
-		
+
 		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['featured'] ? 1 : 0) . '"').'</a> ';
 	}
 
-	
+
 	/**
 	 * Feature/unfeature a post
 	 *
@@ -1412,16 +1415,16 @@ class tl_post extends Backend
 		Input::setGet('act', 'feature');
 
 		$this->checkPermission();
-		
+
 		// Check permissions to feature
 		if (!$this->User->hasAccess('tl_post::featured', 'alexf'))
 		{
 			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to feature/unfeature article ID ' . $intId . '.');
 		}
-		
+
 		$objVersions = new Versions('tl_post', $intId);
 		$objVersions->initialize();
-		
+
 		// Trigger the save_callback
 		if (is_array($GLOBALS['TL_DCA']['tl_post']['fields']['featured']['save_callback']))
 		{
@@ -1438,11 +1441,11 @@ class tl_post extends Backend
 				}
 			}
 		}
-		
+
 		// Update the database
 		$this->Database->prepare("UPDATE tl_post SET tstamp=". time() .", featured='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
 					   ->execute($intId);
-					   
+
 		$objVersions->create();
 	}
 }

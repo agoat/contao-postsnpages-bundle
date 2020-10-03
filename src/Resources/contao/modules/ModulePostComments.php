@@ -11,6 +11,12 @@
 
 namespace Agoat\PostsnPagesBundle\Contao;
 
+use Agoat\PostsnPagesBundle\Model\PostModel;
+use Contao\BackendTemplate;
+use Contao\Config;
+use Contao\Input;
+use Contao\System;
+use Contao\UserModel;
 use Patchwork\Utf8;
 
 
@@ -36,8 +42,8 @@ class ModulePostComments extends ModulePost
 	{
 		if (TL_MODE == 'BE')
 		{
-			/** @var BackendTemplate|object $objTemplate */
-			$objTemplate = new \BackendTemplate('be_wildcard');
+			/** @var BackendTemplate $objTemplate */
+			$objTemplate = new BackendTemplate('be_wildcard');
 
 			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
 			$objTemplate->title = $this->headline;
@@ -49,17 +55,17 @@ class ModulePostComments extends ModulePost
 		}
 
 		// Add comments (if comments bundle installed)
-		$bundles = \System::getContainer()->getParameter('kernel.bundles');
+		$bundles = System::getContainer()->getParameter('kernel.bundles');
 
 		if (!isset($bundles['ContaoCommentsBundle']))
 		{
-			return;
+			return '';
 		}
-		
+
 		// Set the item from the auto_item parameter
-		if (!isset($_GET['posts']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
+		if (!isset($_GET['posts']) && Config::get('useAutoItem') && isset($_GET['auto_item']))
 		{
-			\Input::setGet('posts', \Input::get('auto_item'));
+			Input::setGet('posts', Input::get('auto_item'));
 		}
 
 		return parent::generate();
@@ -74,24 +80,24 @@ class ModulePostComments extends ModulePost
 		global $objPage;
 
 		// Get section and article alias
-		$strPost = \Input::get('posts');
+		$strPost = Input::get('posts');
 
 		if (!strlen($strPost))
 		{
 			return;
 		}
-		
+
 		// Get published post
-		$objPost = \PostModel::findPublishedByIdOrAlias($strPost);
+		$objPost = PostModel::findPublishedByIdOrAlias($strPost);
 
 		if (null === $objPost)
 		{
 			return;
 		}
-	
+
 		$this->Template->addComments = true;
 		$this->Template->noComments = ($objPost->noComments) ? true : false;
-		
+
 		// Adjust the comments headline level
 		$intHl = min(intval(str_replace('h', '', $this->hl)), 5);
 		$this->Template->hlc = 'h' . ($intHl + 1);
@@ -99,7 +105,7 @@ class ModulePostComments extends ModulePost
 		$arrNotifies = array();
 
 		// Notify the author
-		if (($objAuthor = $objPost->getRelated('author')) instanceof \UserModel && $objAuthor->email != '')
+		if (($objAuthor = $objPost->getRelated('author')) instanceof UserModel && $objAuthor->email != '')
 		{
 			$arrNotifies[] = $objAuthor->email;
 		}

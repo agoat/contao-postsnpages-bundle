@@ -9,6 +9,8 @@
  * @license    LGPL-3.0
  */
 
+use Agoat\PostsnPagesBundle\Model\StaticModel;
+
 
 /**
  * Table tl_static
@@ -441,7 +443,7 @@ class tl_static extends Backend
 		{
 			return '<a>'.Image::getHtml('iconPLAIN.svg', '', $imageAttribute).'</a> '.$label;
 		}
-		
+
 		return '<a>'.Image::getHtml('articles.svg', '', $imageAttribute).'</a> '.$label;
 	}
 
@@ -454,8 +456,8 @@ class tl_static extends Backend
 	 */
 	public function addGroup($strTable, $insertID)
 	{
-		$objStatic = \StaticModel::findById($insertID);
-		
+		$objStatic = StaticModel::findById($insertID);
+
 		if (\Input::get('type') == 'group')
 		{
 			$objStatic->type = 'group';
@@ -472,19 +474,19 @@ class tl_static extends Backend
 	public function getPageLayouts()
 	{
 		$objLayout = $this->Database->execute("SELECT l.id, l.name, t.name AS theme FROM tl_layout l LEFT JOIN tl_theme t ON l.pid=t.id ORDER BY t.name, l.name");
-		
+
 		if ($objLayout->numRows < 1)
 		{
 			return array();
 		}
-		
+
 		$return = array();
-		
+
 		while ($objLayout->next())
 		{
 			$return[$objLayout->theme][$objLayout->id] = $objLayout->name;
 		}
-		
+
 		return $return;
 	}
 
@@ -668,7 +670,7 @@ class tl_static extends Backend
 	public function deleteStatic($row, $href, $label, $title, $icon, $attributes)
 	{
 		$root = func_get_arg(7);
-		
+
 		return ($this->User->hasAccess($row['type'], 'alpty') && $this->User->isAllowed(BackendUser::CAN_DELETE_PAGE, $row) && ($this->User->isAdmin || !in_array($row['id'], $root))) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
 
@@ -703,23 +705,23 @@ class tl_static extends Backend
 		{
 			return '';
 		}
-		
+
 		$href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
-		
+
 		if (!$row['published'])
 		{
 			$icon = 'invisible.svg';
 		}
-		
+
 		$objPage = $this->Database->prepare("SELECT * FROM tl_static WHERE id=?")
 								  ->limit(1)
 								  ->execute($row['id']);
-								  
+
 		if (!$this->User->hasAccess($row['type'], 'alpty') || !$this->User->isAllowed(BackendUser::CAN_EDIT_PAGE, $objPage->row()))
 		{
 			return Image::getHtml($icon) . ' ';
 		}
-		
+
 		return '<a href="'.$this->addToUrl($href).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label, 'data-state="' . ($row['published'] ? 1 : 0) . '"').'</a> ';
 	}
 
