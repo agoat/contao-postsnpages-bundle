@@ -410,19 +410,14 @@ class tl_module_posts extends Backend
 	{
 		$objPosts = PostModel::findAll();
 
+		$archiveIds = StringUtil::deserialize($dc->activeRecord->archive);
 		$arrCat = array();
 
-		if ($objPosts !== null)
-		{
-			foreach ($objPosts as $objPost)
-			{
-				if (is_array($category = \StringUtil::deserialize($objPost->category)))
-				{
-					foreach ($category as $val)
-					{
-						$arrCat[$val] = $val;
-					}
-				}
+		if ($objPosts !== null) {
+			foreach ($objPosts as $objPost) {
+			    if (in_array($objPost->pid, $archiveIds)) {
+                     $arrCat[$objPost->category] = $objPost->category;
+                }
 			}
 		}
 
