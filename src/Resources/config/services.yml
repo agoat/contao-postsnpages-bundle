@@ -12,55 +12,31 @@ services:
     contao.picker.post_provider:
         class: Agoat\PostsnPagesBundle\Picker\PostPickerProvider
         public: false
-#        arguments:
-#            - "@knp_menu.factory"
-#            - "@router"
-#        calls:
-#            - [setTokenStorage, ["@security.token_storage"]]
         tags:
             - { name: contao.picker_provider, priority: 128 }
 
     contao.picker.archive_provider:
         class: Agoat\PostsnPagesBundle\Picker\ArchivePickerProvider
         public: false
-#        arguments:
-#            - "@knp_menu.factory"
-#            - "@router"
-#        calls:
-#            - [setTokenStorage, ["@security.token_storage"]]
         tags:
             - { name: contao.picker_provider, priority: 64 }
 
     contao.picker.static_provider:
         class: Agoat\PostsnPagesBundle\Picker\StaticPickerProvider
         public: false
-#        arguments:
-#            - "@knp_menu.factory"
-#            - "@router"
-#        calls:
-#            - [setTokenStorage, ["@security.token_storage"]]
         tags:
             - { name: contao.picker_provider, priority: 32 }
 
     contao.picker.article_provider:
         abstract: true
 
-    contao.permalink.controller.post:
-        class: Agoat\PostsnPagesBundle\Controller\PostController
-        public: false
-        arguments:
-            - "@router"
-        tags:
-            - { name: permalink.controller, context: posts }
 
-    contao.permalink.provider.post:
-        class: Agoat\PostsnPagesBundle\Permalink\PostPermalinkProvider
+    Agoat\PostsnPagesBundle\Permalink\PostPermalinkHandler:
         public: false
-        arguments:
-            - "@request_stack"
-            - "%contao.url_suffix%"
-        tags:
-            - { name: permalink.provider, context: posts }
+        bind:
+            $requestStack: "@request_stack"
+            $suffix: "%contao.url_suffix%"
+        tags: [ 'permalink.handler' ]
 
 #    contao.listener.add_posts_to_search_index:
 #        class: Agoat\PostsnPagesBundle\EventListener\AddToSearchIndexListener

@@ -11,36 +11,63 @@
 
 namespace Agoat\PostsnPagesBundle\Permalink;
 
-use Agoat\PermalinkBundle\Permalink\AbstractPermalinkProvider;
-use Agoat\PermalinkBundle\Permalink\PermalinkProviderInterface;
+use Agoat\PermalinkBundle\Model\PermalinkModel;
+use Agoat\PermalinkBundle\Permalink\AbstractPermalinkHandler;
+use Agoat\PermalinkBundle\Permalink\PermalinkHandlerInterface;
 use Agoat\PermalinkBundle\Permalink\PermalinkUrl;
 use Agoat\PostsnPagesBundle\Model\ArchiveModel;
 use Agoat\PostsnPagesBundle\Model\PostModel;
 use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\Input;
 use Contao\PageModel;
+use Symfony\Component\HttpFoundation\Request;
 
 
 /**
- * Permalink provider for Posts
+ * Permalink handler for Posts
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
-class PostPermalinkProvider extends AbstractPermalinkProvider implements PermalinkProviderInterface
+class PostPermalinkHandler extends AbstractPermalinkHandler implements PermalinkHandlerInterface
 {
+    protected const CONTEXT = 'posts';
 
-	/**
+    /**
      * {@inheritdoc}
      */
-	public function getDcaTable()
+	public static function getDcaTable(): string
 	{
 		return 'tl_post';
 	}
 
+    public static function getDefault(): string
+    {
+        return '{{year}}/{{alias}}';
+    }
 
-	/**
+    public function findPage(int $id, Request $request)
+    {
+        $objPost = PostModel::findByPk($id);
+
+        // Throw a 404 error if the post could not be found
+        if (null === $objPost)
+        {
+            throw new PageNotFoundException('Post not found: ' . $request->getUri());
+        }
+
+        // Set the post id as get attribute
+        Input::setGet('posts', $objPost->id, true);
+
+        $objArchive = ArchiveModel::FindByPk($objPost->pid);
+
+        return PageModel::findPublishedById($objArchive->pid);
+    }
+
+    /**
      * {@inheritdoc}
      */
-	public function generate($context, $source)
+	public function generate($source)
 	{
 		$objPost = PostModel::findByPk($source);
 
@@ -69,23 +96,23 @@ class PostPermalinkProvider extends AbstractPermalinkProvider implements Permali
 				  ->setPath($this->validatePath($this->resolvePattern($objPost)))
 				  ->setSuffix($this->suffix);
 
-		$this->registerPermalink($permalink, $context, $source);
+		$this->registerPermalink($permalink, self::CONTEXT, $source);
 	}
 
 
-	/**
+    /**
      * {@inheritdoc}
      */
-	public function remove($context, $source)
+	public function remove($source)
 	{
-		return $this->unregisterPermalink($context, $source);
+		return $this->unregisterPermalink(self::CONTEXT, $source);
 	}
 
 
 	/**
      * {@inheritdoc}
      */
-	public function getUrl($context, $source)
+	public function getUrl($source)
 	{
 		$objPost = PostModel::findByPk($source);
 
@@ -102,7 +129,7 @@ class PostPermalinkProvider extends AbstractPermalinkProvider implements Permali
 			// Todo: throw fatal error;
 		}
 
-		$objPermalink = \PermalinkModel::findByContextAndSource($context, $source);
+		$objPermalink = PermalinkModel::findByContextAndSource(self::CONTEXT, $source);
 
 		$permalink = new PermalinkUrl();
 

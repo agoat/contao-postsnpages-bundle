@@ -2,82 +2,82 @@
 <xliff version="1.1">
 	<file datatype="php" original="src/Resources/contao/languages/en/explanation.php" source-language="en">
 		<body>
-			<trans-unit id="XPL.posts.0.0">
+			<trans-unit id="XPL.tl_post.0.0">
 				<source>colspan</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.0.1">
+			<trans-unit id="XPL.tl_post.0.1">
 				<source>&lt;p&gt;The &lt;strong&gt;permalink&lt;/strong&gt; is an unique url for this post (Sometimes called guid or uuid). The permalink is generated automatically from insert tag pattern by default (See default post pattern in the settings). But it's also possible to enter any path manually.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;There are some restrictions for valid urls (see &lt;a href="http://www.ietf.org/rfc/rfc3986.txt"&gt;RFC 3986&lt;/a&gt;)!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Allowed characters for a valid url are &lt;strong&gt;Alphanumeric characters as well as the special characters $-_.+!*()/&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;These &lt;strong&gt;insert tags&lt;/strong&gt; can be used to insert post attributes into the permalink automatically:&lt;/p&gt;</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.1.0">
+			<trans-unit id="XPL.tl_post.1.0">
 				<source>{{alias}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.1.1">
+			<trans-unit id="XPL.tl_post.1.1">
 				<source>Will be replaced with the post name</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.2.0">
+			<trans-unit id="XPL.tl_post.2.0">
 				<source>{{author}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.2.1">
+			<trans-unit id="XPL.tl_post.2.1">
 				<source>Will be replaced with the author of the post</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.3.0">
+			<trans-unit id="XPL.tl_post.3.0">
 				<source>{{parent}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.3.1">
+			<trans-unit id="XPL.tl_post.3.1">
 				<source>Will be replaced with the path from the page under which the archive is located</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.4.0">
+			<trans-unit id="XPL.tl_post.4.0">
 				<source>{{date}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.4.1">
+			<trans-unit id="XPL.tl_post.4.1">
 				<source>Will be replaced with the date (The date format from the root page or the settings will be used)</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.5.0">
+			<trans-unit id="XPL.tl_post.5.0">
 				<source>{{year}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.5.1">
+			<trans-unit id="XPL.tl_post.5.1">
 				<source>Will be replaced with the year of the date</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.6.0">
+			<trans-unit id="XPL.tl_post.6.0">
 				<source>{{month}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.6.1">
+			<trans-unit id="XPL.tl_post.6.1">
 				<source>Will be replaced with the month of the date</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.7.0">
+			<trans-unit id="XPL.tl_post.7.0">
 				<source>{{day}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.7.1">
+			<trans-unit id="XPL.tl_post.7.1">
 				<source>Will be replaced with the day of the date</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.8.0">
+			<trans-unit id="XPL.tl_post.8.0">
 				<source>{{time}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.8.1">
+			<trans-unit id="XPL.tl_post.8.1">
 				<source>Will be replaced with the time (The time format from the root page or the settings will be used)</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.9.0">
+			<trans-unit id="XPL.tl_post.9.0">
 				<source>{{location}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.9.1">
+			<trans-unit id="XPL.tl_post.9.1">
 				<source>Will be replaced with the location</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.10.0">
+			<trans-unit id="XPL.tl_post.10.0">
 				<source>{{latlong}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.10.1">
+			<trans-unit id="XPL.tl_post.10.1">
 				<source>Will be replaced with the latitude and longitude</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.11.0">
+			<trans-unit id="XPL.tl_post.11.0">
 				<source>{{category}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.11.1">
+			<trans-unit id="XPL.tl_post.11.1">
 				<source>Will be replaced with the category</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.12.0">
+			<trans-unit id="XPL.tl_post.12.0">
 				<source>{{language}}</source>
 			</trans-unit>
-			<trans-unit id="XPL.posts.12.1">
+			<trans-unit id="XPL.tl_post.12.1">
 				<source>Will be replaced with the root language</source>
 			</trans-unit>
 		</body>

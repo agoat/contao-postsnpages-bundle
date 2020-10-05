@@ -8,7 +8,7 @@
  * @link       https://agoat.xyz
  * @license    LGPL-3.0
  */
- 
+
 namespace Agoat\PostsnPagesBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -33,17 +33,12 @@ class AgoatPostsnPagesExtension extends Extension
             $container,
             new FileLocator(__DIR__.'/../Resources/config')
         );
-		
+
 		if (!$container->hasParameter('contao.post.formats'))
 		{
 			$container->setParameter('contao.post.formats', ['standard', 'aside', 'link', 'quote', 'status', 'image', 'gallery', 'video', 'chat']);
 		}
 
-		if (!$container->hasParameter('contao.permalink.posts'))
-		{
-			$container->setParameter('contao.permalink.posts', '{{year}}/{{alias}}');
-		}
-
-        $loader->load('services.yml');	
+        $loader->load('services.yml');
     }
 }
