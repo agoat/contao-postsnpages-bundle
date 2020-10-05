@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+	<file datatype="php" original="src/Resources/contao/languages/de/explanation.php" source-language="de">
+		<body>
+			<trans-unit id="XPL.tl_post.0.0">
+				<source>colspan</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.0.1">
+				<source>&lt;p&gt;Der  &lt;strong&gt;Permalink&lt;/strong&gt; ist eine eindeutige Url für diesen Artikel (manchmal als guid oder uuid bezeichnet). Der Permalink wird standardmäßig automatisch aus dem Insert-Tag-Muster erzeugt (siehe Standard-Post-Muster in den Einstellungen). Es ist aber auch möglich, einen beliebigen Pfad manuell einzugeben.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Es gibt einige Einschränkungen für gültige URLs (siehe &lt;a href="http://www.ietf.org/rfc/rfc3986.txt"&gt;RFC 3986&lt;/a&gt;)!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Erlaubte Zeichen für eine gültige Url sind &lt;strong&gt;Alphanumerische Zeichen sowie die Sonderzeichen $-_.+!*()/&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Folgende &lt;strong&gt;Insert-Tags&lt;/strong&gt; können verwendet werden, um Post-Attribute automatisch in den Permalink einzufügen:&lt;/p&gt;</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.1.0">
+				<source>{{alias}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.1.1">
+				<source>Wird durch den Namen des Artikels ersetzt</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.2.0">
+				<source>{{author}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.2.1">
+				<source>Wird durch den Autor des Beitrags ersetzt</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.3.0">
+				<source>{{parent}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.3.1">
+				<source>Wird durch den Pfad von der Seite ersetzt, unter der sich das Archiv befindet</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.4.0">
+				<source>{{date}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.4.1">
+				<source>Wird durch das Datum ersetzt (Es wird das Datumsformat des Startpunktes der Webseite oder den Einstellungen verwendet)</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.5.0">
+				<source>{{year}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.5.1">
+				<source>Wird durch das Jahr des Datums ersetzt</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.6.0">
+				<source>{{month}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.6.1">
+				<source>Wird ersetzt durch den Monat des Datums</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.7.0">
+				<source>{{day}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.7.1">
+				<source>Wird ersetzt durch den Tag des Datums</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.8.0">
+				<source>{{time}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.8.1">
+				<source>Wird durch die Zeit ersetzt (Es wird das Zeitformat des Startpunktes der Webseite oder den Einstellungen verwendet)</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.9.0">
+				<source>{{location}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.9.1">
+				<source>Wird durch den Standort ersetzt</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.10.0">
+				<source>{{latlong}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.10.1">
+				<source>Wird durch den Längen- und Breitengrad ersetzt</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.11.0">
+				<source>{{category}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.11.1">
+				<source>Wird ersetzt durch die Kategorie</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.12.0">
+				<source>{{language}}</source>
+			</trans-unit>
+			<trans-unit id="XPL.tl_post.12.1">
+				<source>Wird durch die Sprache des Startpunktes der Webseite ersetzt</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
