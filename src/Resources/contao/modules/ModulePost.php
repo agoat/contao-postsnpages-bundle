@@ -67,7 +67,7 @@ abstract class ModulePost extends Module
 		$arrOptions = array();
 
 		// Handle sorting
-		if ($this->sortPosts != 'random') {
+		if ($this->sortPosts !== 'random') {
 			$arrOptions['order'] = $this->sortPosts . ' ' . (($this->sortOrder == 'descending') ? 'DESC' : 'ASC');
 		}
 

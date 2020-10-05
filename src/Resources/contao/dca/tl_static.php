@@ -10,11 +10,18 @@
  */
 
 use Agoat\PostsnPagesBundle\Model\StaticModel;
+use Contao\Backend;
+use Contao\BackendUser;
+use Contao\Config;
+use Contao\DataContainer;
+use Contao\Image;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\Versions;
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-
-/**
- * Table tl_static
- */
 $GLOBALS['TL_DCA']['tl_static'] = array
 (
 
@@ -246,7 +253,7 @@ class tl_static extends Backend
 	/**
 	 * Check permissions to edit table tl_archive
 	 *
-	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+	 * @throws AccessDeniedException
 	 */
 	public function checkPermission()
 	{
@@ -255,7 +262,7 @@ class tl_static extends Backend
 			return;
 		}
 
-		/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
+		/** @var SessionInterface $objSession */
 		$objSession = System::getContainer()->get('session');
 
 		$session = $objSession->all();
@@ -383,7 +390,7 @@ class tl_static extends Backend
 
 					if ($objParent->numRows && $objParent->type == 'root')
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Attempt to insert an article into website root page ID ' . Input::get('pid') . '.');
+						throw new AccessDeniedException('Attempt to insert an article into website root page ID ' . Input::get('pid') . '.');
 					}
 					break;
 
@@ -411,7 +418,7 @@ class tl_static extends Backend
 				{
 					if (!in_array($id, $pagemounts))
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Page ID ' . $id . ' is not mounted.');
+						throw new AccessDeniedException('Page ID ' . $id . ' is not mounted.');
 					}
 
 					$objPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
@@ -421,7 +428,7 @@ class tl_static extends Backend
 					// Check whether the current user has permission for the current page
 					if ($objPage->numRows && !$this->User->isAllowed($permission, $objPage->row()))
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'article ID ' . Input::get('id') : ' articles') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
+						throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'article ID ' . Input::get('id') : ' articles') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
 					}
 				}
 			}
@@ -458,7 +465,7 @@ class tl_static extends Backend
 	{
 		$objStatic = StaticModel::findById($insertID);
 
-		if (\Input::get('type') == 'group')
+		if (Input::get('type') == 'group')
 		{
 			$objStatic->type = 'group';
 			$objStatic->save();
@@ -733,7 +740,7 @@ class tl_static extends Backend
 	 * @param boolean       $blnVisible
 	 * @param DataContainer $dc
 	 *
-	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+	 * @throws AccessDeniedException
 	 */
 	public function toggleVisibility($intId, $blnVisible, DataContainer $dc=null)
 	{
@@ -766,7 +773,7 @@ class tl_static extends Backend
 		// Check the field access
 		if (!$this->User->hasAccess('tl_static::published', 'alexf'))
 		{
-			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish article ID "' . $intId . '".');
+			throw new AccessDeniedException('Not enough permissions to publish/unpublish article ID "' . $intId . '".');
 		}
 
 		// Set the current record

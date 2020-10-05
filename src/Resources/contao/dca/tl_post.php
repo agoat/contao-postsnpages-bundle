@@ -9,19 +9,27 @@
  * @license    LGPL-3.0
  */
 
+use Agoat\PostsnPagesBundle\Contao\Posts;
 use Agoat\PostsnPagesBundle\Model\ArchiveModel;
 use Agoat\PostsnPagesBundle\Model\PostModel;
 use Agoat\PostsnPagesBundle\Model\TagsModel;
+use Contao\Backend;
+use Contao\BackendUser;
+use Contao\Config;
+use Contao\DataContainer;
+use Contao\Date;
+use Contao\FilesModel;
+use Contao\Image;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\UserModel;
+use Contao\Versions;
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
- /**
- * Load tl_content language file
- */
 System::loadLanguageFile('tl_content');
 
-
-/**
- * Table tl_post
- */
 $GLOBALS['TL_DCA']['tl_post'] = array
 (
 
@@ -527,7 +535,7 @@ class tl_post extends Backend
 	/**
 	 * Check permissions to edit table tl_page
 	 *
-	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+	 * @throws AccessDeniedException
 	 */
 	public function checkPermission()
 	{
@@ -536,7 +544,7 @@ class tl_post extends Backend
 			return;
 		}
 
-		/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
+		/** @var SessionInterface $objSession */
 		$objSession = System::getContainer()->get('session');
 
 		$session = $objSession->all();
@@ -659,7 +667,7 @@ class tl_post extends Backend
 				{
 					if (!in_array($id, $pagemounts))
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Page ID ' . $id . ' is not mounted.');
+						throw new AccessDeniedException('Page ID ' . $id . ' is not mounted.');
 					}
 
 					$objPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
@@ -669,7 +677,7 @@ class tl_post extends Backend
 					// Check whether the current user has permission for the current page
 					if ($objPage->numRows && !$this->User->isAllowed($permission, $objPage->row()))
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'post ID ' . Input::get('id') : ' posts') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
+						throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'post ID ' . Input::get('id') : ' posts') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
 					}
 				}
 			}
@@ -686,7 +694,7 @@ class tl_post extends Backend
 	 */
 	public function renderPost($arrRow)
 	{
-		$time = \Date::floorToMinute();
+		$time = Date::floorToMinute();
 		$unpublished = !$arrRow['published'] || $arrRow['start'] != '' && $arrRow['start'] > $time || $arrRow['stop'] != '' && $arrRow['stop'] < $time;
 
 		$return = '<div class="tl_content_left cte_type tl_post' . ($arrRow['published'] ? ' published' : ' unpublished') . '">';
@@ -697,19 +705,19 @@ class tl_post extends Backend
 		// Date | Location | LatLong | Author
 		$return .= '<div class="tl_gray">';
 
-		$return .= date(\Config::get('dateFormat'), $arrRow['date']);
+		$return .= date(Config::get('dateFormat'), $arrRow['date']);
 
 		if ($arrRow['location'])
 		{
 			$return .= ' | ' . $arrRow['location'];
 		}
 
-		if (($arrLatLong = \StringUtil::deserialize($arrRow['latlong']))[0])
+		if (($arrLatLong = StringUtil::deserialize($arrRow['latlong']))[0])
 		{
 			$return .= ' | ' . implode(', ', $arrLatLong );
 		}
 
-		if (($objUser = \UserModel::findById($arrRow['author'])))
+		if (($objUser = UserModel::findById($arrRow['author'])))
 		{
 			$return .= ' | ' . $objUser->name;
 		}
@@ -722,11 +730,11 @@ class tl_post extends Backend
 		if ($arrRow['addImage'])
 		{
 
-			$objFile = \FilesModel::findByUuid($arrRow['singleSRC']);
+			$objFile = FilesModel::findByUuid($arrRow['singleSRC']);
 
 			if (null !== $objFile)
 			{
-				$image = \System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFile->path, array(180, 120, 'crop'))->getUrl(TL_ROOT);
+				$image = System::getContainer()->get('contao.image.image_factory')->create(TL_ROOT . '/' . $objFile->path, array(180, 120, 'crop'))->getUrl(TL_ROOT);
 			}
 
 			$return .= '<figure><img src="' . $image . '"></figure>';
@@ -743,7 +751,7 @@ class tl_post extends Backend
 		}
 
 		// Readmore
-		$return .= '<p class="post_readmore"><a href="' . \Agoat\PostsnPagesBundle\Contao\Posts::generatePostUrl(PostModel::findById($arrRow['id']), true, true) . '" target="_blank">Read more</a></p>';
+		$return .= '<p class="post_readmore"><a href="' . Posts::generatePostUrl(PostModel::findById($arrRow['id']), true, true) . '" target="_blank">Read more</a></p>';
 
 		$return .= '</div>';
 
@@ -764,7 +772,7 @@ class tl_post extends Backend
 
 			if ($arrRow['tags'])
 			{
-				$objTags = TagsModel::findMultipleByIds(\StringUtil::deserialize($arrRow['tags']));
+				$objTags = TagsModel::findMultipleByIds(StringUtil::deserialize($arrRow['tags']));
 
 				if (null !== $objTags)
 				{
@@ -893,7 +901,7 @@ class tl_post extends Backend
 	 */
 	public function checkRelated($value, DataContainer $dc)
 	{
-		if (is_array($related = deserialize($value)) && in_array($dc->id, $related))
+		if (is_array($related = StringUtil::deserialize($value)) && in_array($dc->id, $related))
 		{
 			throw new Exception($GLOBALS['TL_LANG']['ERR']['circularReference']);
 		}

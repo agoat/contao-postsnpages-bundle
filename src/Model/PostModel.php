@@ -3,6 +3,7 @@
 namespace Agoat\PostsnPagesBundle\Model;
 
 
+use Contao\Date;
 use Contao\Model;
 use Contao\Model\Collection;
 
@@ -31,7 +32,7 @@ class PostModel extends Model
         $arrValues = array($idOrAlias);
 
         if (isset($arrOptions['ignoreFePreview']) || !BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time = Date::floorToMinute();
             $arrColumns[] = "($table.start='' OR $table.start<='$time') AND ($table.stop='' OR $table.stop>'" . ($time + 60) . "') AND $table.published='1'";
         }
 
@@ -61,7 +62,7 @@ class PostModel extends Model
         }
 
         if (isset($arrOptions['ignoreFePreview']) || ! BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time = Date::floorToMinute();
             $arrColumns[] = "($table.start='' OR $table.start<='$time') AND ($table.stop='' OR $table.stop>'" . ($time + 60) . "') AND $table.published='1'";
         }
 
@@ -91,7 +92,7 @@ class PostModel extends Model
         }
 
         if (isset($arrOptions['ignoreFePreview']) || ! BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time = Date::floorToMinute();
             $arrColumns[] = "($table.start='' OR $table.start<='$time') AND ($table.stop='' OR $table.stop>'" . ($time + 60) . "') AND $table.published='1'";
         }
 
@@ -135,7 +136,7 @@ class PostModel extends Model
         }
 
         if (isset($arrOptions['ignoreFePreview']) || ! BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time = Date::floorToMinute();
             $arrColumns[] = "($table.start='' OR $table.start<='$time') AND ($table.stop='' OR $table.stop>'" . ($time + 60) . "') AND $table.published='1'";
         }
 
@@ -147,13 +148,13 @@ class PostModel extends Model
      * Find published posts by their ids, featured status and category
      *
      * @param integer|array $ids      The post id(s)
-     * @param boolean       $featured True for featured posts
-     * @param string        $category The category
+     * @param boolean|null  $featured True for featured posts
+     * @param string|null   $category The category
      * @param array         $arrOptions  An optional options array
      *
      * @return Collection|PostModel|null A collection of models or null if there are no articles in the given column
      */
-    public static function findPublishedByIdsAndFeaturedAndCategory($ids, bool $featured, string $category, array $arrOptions = [])
+    public static function findPublishedByIdsAndFeaturedAndCategory($ids, ?bool $featured, ?string $category, array $arrOptions = [])
     {
         $table = static::$strTable;
 
@@ -171,7 +172,7 @@ class PostModel extends Model
         }
 
         if (isset($arrOptions['ignoreFePreview']) || ! BE_USER_LOGGED_IN) {
-            $time = \Date::floorToMinute();
+            $time = Date::floorToMinute();
             $arrColumns[] = "($table.start='' OR $table.start<='$time') AND ($table.stop='' OR $table.stop>'" . ($time + 60) . "') AND $table.published='1'";
         }
 

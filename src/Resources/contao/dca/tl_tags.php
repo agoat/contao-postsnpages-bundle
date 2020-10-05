@@ -10,9 +10,6 @@
  */
 
 
-/**
- * Table tl_tags
- */
 $GLOBALS['TL_DCA']['tl_tags'] = array
 (
 	// Config

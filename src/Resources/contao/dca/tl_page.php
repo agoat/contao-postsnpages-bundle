@@ -9,9 +9,15 @@
  * @license    LGPL-3.0
  */
 
-/**
- * Change page dca configuration
- */
+use Contao\Backend;
+use Contao\BackendUser;
+use Contao\DataContainer;
+use Contao\Image;
+use Contao\StringUtil;
+use Contao\System;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+
+
 // Set new driver
 $GLOBALS['TL_DCA']['tl_page']['config']['dataContainer'] = 'TableExtended';
 
@@ -47,15 +53,9 @@ $GLOBALS['TL_DCA']['tl_page']['list']['operations']['content'] = array
 );
 
 
-/**
- * Load tl_content language file
- */
 System::loadLanguageFile('tl_content');
 
 
-/**
- * Palettes
- */
 $bundles = \System::getContainer()->getParameter('kernel.bundles');
 
 $GLOBALS['TL_DCA']['tl_page']['palettes']['post'] = '{title_legend},title,alias,type;{meta_legend},pageTitle,robots,description;{posts_legend},showTeaser;{empty_legend},emptyPost;{template_legend:hide},postTpl;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},;' : '') . '{layout_legend:hide},includeLayout;{cache_legend:hide},includeCache;{chmod_legend:hide},includeChmod;{search_legend},noSearch;{expert_legend:hide},cssClass,sitemap,hide;{publish_legend},published,start,stop';
@@ -142,7 +142,7 @@ class tl_page_postsnpages extends Backend
 			return;
 		}
 
-		/** @var Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $objSessionBag */
+		/** @var AttributeBagInterface $objSessionBag */
 		$objSessionBag = System::getContainer()->get('session')->getBag('contao_backend');
 
 		$new_records = $objSessionBag->get('new_records');
@@ -172,8 +172,8 @@ class tl_page_postsnpages extends Backend
 
 		$this->Database->prepare("INSERT INTO tl_container %s")->set($arrSet)->execute();
 	}
-	
-	
+
+
 	/**
 	 * Generate an "edit content" button and return it as string
 	 *
@@ -191,16 +191,16 @@ class tl_page_postsnpages extends Backend
 		{
 			case 'post':
 				return '<a href="' . $this->addToUrl('do=posts&amp;pn='.$row['id']) . '" title="'.StringUtil::specialchars($title).'">'.Image::getHtml('bundles/agoatpostsnpages/archive.svg', $label).'</a> ';
-				
+
 				break;
-				
+
 			case 'regular':
 			case 'error_403':
 			case 'error_404':
 				return '<a href="' . $this->addToUrl('do=pages&amp;pn='.$row['id']) . '" title="'.StringUtil::specialchars($title).'">'.Image::getHtml($icon, $label).'</a> ';
-			
+
 				break;
-				
+
 			default:
 				return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 		}

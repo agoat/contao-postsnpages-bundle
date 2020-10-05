@@ -10,20 +10,25 @@
  */
 
 use Agoat\PostsnPagesBundle\Model\ContainerModel;
+use Contao\Backend;
+use Contao\BackendUser;
+use Contao\Config;
+use Contao\DataContainer;
+use Contao\Date;
+use Contao\Image;
+use Contao\Input;
+use Contao\LayoutModel;
+use Contao\PageModel;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\Versions;
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-
-/**
- * Load tl_page data container
- */
 $this->loadDataContainer('tl_page');
 
-
-/**
- * Table tl_container
- */
 $GLOBALS['TL_DCA']['tl_container'] = array
 (
-
 	// Config
 	'config' => array
 	(
@@ -296,10 +301,11 @@ $GLOBALS['TL_DCA']['tl_container'] = array
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
+ *
+ * @author Arne Stappen (alias aGoat) <https://agoat.xyz>
  */
 class tl_container extends Backend
 {
-
 	/**
 	 * Import the back end user object
 	 */
@@ -313,7 +319,7 @@ class tl_container extends Backend
 	/**
 	 * Check permissions to edit table tl_page
 	 *
-	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+	 * @throws AccessDeniedException
 	 */
 	public function checkPermission()
 	{
@@ -322,7 +328,7 @@ class tl_container extends Backend
 			return;
 		}
 
-		/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
+		/** @var SessionInterface $objSession */
 		$objSession = System::getContainer()->get('session');
 
 		$session = $objSession->all();
@@ -450,7 +456,7 @@ class tl_container extends Backend
 
 					if ($objParent->numRows && $objParent->type == 'root')
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Attempt to insert an article into website root page ID ' . Input::get('pid') . '.');
+						throw new AccessDeniedException('Attempt to insert an article into website root page ID ' . Input::get('pid') . '.');
 					}
 					break;
 
@@ -478,7 +484,7 @@ class tl_container extends Backend
 				{
 					if (!in_array($id, $pagemounts))
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Page ID ' . $id . ' is not mounted.');
+						throw new AccessDeniedException('Page ID ' . $id . ' is not mounted.');
 					}
 
 					$objPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
@@ -488,7 +494,7 @@ class tl_container extends Backend
 					// Check whether the current user has permission for the current page
 					if ($objPage->numRows && !$this->User->isAllowed($permission, $objPage->row()))
 					{
-						throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'article ID ' . Input::get('id') : ' articles') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
+						throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'article ID ' . Input::get('id') : ' articles') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
 					}
 				}
 			}
@@ -507,7 +513,7 @@ class tl_container extends Backend
 	public function addIcon($row, $label)
 	{
 		$image = 'articles';
-		$time = \Date::floorToMinute();
+		$time = Date::floorToMinute();
 
 		$unpublished = $row['start'] != '' && $row['start'] > $time || $row['stop'] != '' && $row['stop'] < $time;
 
@@ -530,12 +536,12 @@ class tl_container extends Backend
 	{
 		if (null === $insertID)
 		{
-			$insertID = \Input::get('id');
+			$insertID = Input::get('id');
 		}
 
-		if (\Input::get('mode') == '1')
+		if (Input::get('mode') == '1')
 		{
-			$objParent = ContainerModel::findById(\Input::get('pid'));
+			$objParent = ContainerModel::findById(Input::get('pid'));
 
 			if (null !== $objParent)
 			{
@@ -559,7 +565,7 @@ class tl_container extends Backend
 		if ($dc->activeRecord->pid)
 		{
 			$arrSections = array();
-			$objPage = \PageModel::findWithDetails($dc->activeRecord->pid);
+			$objPage = PageModel::findWithDetails($dc->activeRecord->pid);
 
 			// Get the layout sections
 			foreach (array('layout', 'mobileLayout') as $key)
@@ -569,7 +575,7 @@ class tl_container extends Backend
 					continue;
 				}
 
-				$objLayout = \LayoutModel::findByPk($objPage->$key);
+				$objLayout = LayoutModel::findByPk($objPage->$key);
 
 				if ($objLayout === null)
 				{
@@ -647,7 +653,7 @@ class tl_container extends Backend
 	 */
 	public function editContainer($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -672,7 +678,7 @@ class tl_container extends Backend
 			return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 		}
 
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -698,7 +704,7 @@ class tl_container extends Backend
 			return '';
 		}
 
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -718,7 +724,7 @@ class tl_container extends Backend
 	 */
 	public function cutContainer($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -756,7 +762,7 @@ class tl_container extends Backend
 			}
 		}
 
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		//$objContainer = ContainerModel::findById($arrClipboard['id']);
 
@@ -829,7 +835,7 @@ class tl_container extends Backend
 			$icon = 'invisible.svg';
 		}
 
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		if (!$this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()))
 		{
@@ -852,7 +858,7 @@ class tl_container extends Backend
 	 * @param boolean       $blnVisible
 	 * @param DataContainer $dc
 	 *
-	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
+	 * @throws AccessDeniedException
 	 */
 	public function toggleVisibility($intId, $blnVisible, DataContainer $dc=null)
 	{
@@ -885,7 +891,7 @@ class tl_container extends Backend
 		// Check the field access
 		if (!$this->User->hasAccess('tl_container::published', 'alexf'))
 		{
-			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish article ID "' . $intId . '".');
+			throw new AccessDeniedException('Not enough permissions to publish/unpublish article ID "' . $intId . '".');
 		}
 
 		// Set the current record

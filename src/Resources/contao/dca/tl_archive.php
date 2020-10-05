@@ -10,18 +10,20 @@
  */
 
 
-/**
- * Load tl_page data container
- */
+use Contao\Backend;
+use Contao\BackendUser;
+use Contao\Config;
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\Image;
+use Contao\Input;
+use Contao\PageModel;
+use Contao\StringUtil;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 $this->loadDataContainer('tl_page');
 
-
-/**
- * Table tl_archive
- */
 $GLOBALS['TL_DCA']['tl_archive'] = array
 (
-
 	// Config
 	'config' => array
 	(
@@ -195,10 +197,11 @@ $GLOBALS['TL_DCA']['tl_archive'] = array
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
+ *
+ * @author Arne Stappen (alias aGoat) <https://agoat.xyz>
  */
 class tl_archive extends Backend
 {
-
 	/**
 	 * Import the back end user object
 	 */
@@ -221,7 +224,7 @@ class tl_archive extends Backend
 			return;
 		}
 
-		/** @var Symfony\Component\HttpFoundation\Session\SessionInterface $objSession */
+		/** @var SessionInterface $objSession */
 		$objSession = System::getContainer()->get('session');
 
 		$session = $objSession->all();
@@ -349,7 +352,7 @@ class tl_archive extends Backend
 
 					if ($objParent->numRows && $objParent->type == 'root')
 					{
-						throw new \Contao\CoreBundle\Exception\AccessDeniedException('Attempt to insert an article into website root page ID ' . Input::get('pid') . '.');
+						throw new AccessDeniedException('Attempt to insert an article into website root page ID ' . Input::get('pid') . '.');
 					}
 					break;
 
@@ -377,7 +380,7 @@ class tl_archive extends Backend
 				{
 					if (!in_array($id, $pagemounts))
 					{
-						throw new \Contao\CoreBundle\Exception\AccessDeniedException('Page ID ' . $id . ' is not mounted.');
+						throw new AccessDeniedException('Page ID ' . $id . ' is not mounted.');
 					}
 
 					$objPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")
@@ -387,7 +390,7 @@ class tl_archive extends Backend
 					// Check whether the current user has permission for the current page
 					if ($objPage->numRows && !$this->User->isAllowed($permission, $objPage->row()))
 					{
-						throw new \Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'article ID ' . Input::get('id') : ' articles') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
+						throw new AccessDeniedException('Not enough permissions to ' . Input::get('act') . ' ' . (strlen(Input::get('id')) ? 'article ID ' . Input::get('id') : ' articles') . ' on page ID ' . $id . ' or to paste it/them into page ID ' . $id . '.');
 					}
 				}
 			}
@@ -412,7 +415,7 @@ class tl_archive extends Backend
 			$image = 'archive_4.svg';
 		}
 
-		return '<a>'.Image::getHtml('bundles/agoatpostsnpages/' . $image, '', '').'</a> '.$label;
+		return '<a>'. Image::getHtml('bundles/agoatpostsnpages/' . $image, '', '').'</a> '.$label;
 	}
 
 
@@ -430,7 +433,7 @@ class tl_archive extends Backend
 	 */
 	public function editArchiv($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -455,7 +458,7 @@ class tl_archive extends Backend
 			return Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 		}
 
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLES, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -481,7 +484,7 @@ class tl_archive extends Backend
 			return '';
 		}
 
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -501,7 +504,7 @@ class tl_archive extends Backend
 	 */
 	public function cutArchiv($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_EDIT_ARTICLE_HIERARCHY, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}
@@ -553,7 +556,7 @@ class tl_archive extends Backend
 	 */
 	public function deleteArchiv($row, $href, $label, $title, $icon, $attributes)
 	{
-		$objPage = \PageModel::findById($row['pid']);
+		$objPage = PageModel::findById($row['pid']);
 
 		return $this->User->isAllowed(BackendUser::CAN_DELETE_ARTICLES, $objPage->row()) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.StringUtil::specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
 	}

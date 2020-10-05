@@ -87,9 +87,9 @@ class ModulePostTeaser extends ModulePost
 			}
 		}
 
-		if ($this->sortPosts == 'random')
+		if ($this->sortPosts === 'random')
 		{
-			shuffle($arrPosts);
+            shuffle($arrPosts);
 		}
 
 		$this->Template->posts = $arrPosts;

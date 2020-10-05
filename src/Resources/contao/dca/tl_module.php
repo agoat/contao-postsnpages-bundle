@@ -9,11 +9,15 @@
  * @license    LGPL-3.0
  */
 
+use Agoat\PostsnPagesBundle\Model\PostModel;
+use Contao\Backend;
+use Contao\DataContainer;
+use Contao\Image;
+use Contao\StringUtil;
+use Contao\System;
 
-/**
- * Palettes
- */
-$bundles = \System::getContainer()->getParameter('kernel.bundles');
+
+$bundles = System::getContainer()->getParameter('kernel.bundles');
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postcontent']  = '{title_legend},name,headline,type;{config_legend},featured,numberOfItems,skipFirst,perPage,showTeaser;{archive_legend},archive;{sort_legend},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postreader']  = '{title_legend},name,headline,type;{config_legend},showTeaser;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{related_legend},addRelated;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},addComments;' : '') . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
@@ -36,9 +40,6 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['filterByCategory'] = 'category';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['addRelated'] = 'relatedModule';
 
 
-/**
- * Fields
- */
 $GLOBALS['TL_DCA']['tl_module']['fields']['readerModule'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['readerModule'],
@@ -174,7 +175,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['archive'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['archive'],
 	'exclude'                 => true,
 	'inputType'               => 'archiveTree',
-	'eval'                    => array('multiple'=>	true, 'fieldType'=>'checkbox', 'tl_class'=>'clr'),
+	'eval'                    => array('multiple' => true, 'fieldType'=>'checkbox', 'tl_class'=>'clr'),
 	'sql'                     => "blob NULL"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['sortPosts'] = array
@@ -275,6 +276,8 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['numberOfItems']['default'] = 10;
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
+ *
+ * @author Arne Stappen (alias aGoat) <https://agoat.xyz>
  */
 class tl_module_posts extends Backend
 {
@@ -405,7 +408,7 @@ class tl_module_posts extends Backend
 	 */
 	public function getPostsCategories (DataContainer $dc)
 	{
-		$objPosts = \PostModel::findAll();
+		$objPosts = PostModel::findAll();
 
 		$arrCat = array();
 

@@ -9,7 +9,8 @@
  * @license    LGPL-3.0
  */
 
- 
+use Contao\Input;
+
 /**
  * Dynamically set the parent tabel and onload_callback
  */
