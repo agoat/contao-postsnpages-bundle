@@ -32,10 +32,9 @@ services:
 
 
     Agoat\PostsnPagesBundle\Permalink\PostPermalinkHandler:
-        public: false
-        bind:
-            $requestStack: "@request_stack"
-            $suffix: "%contao.url_suffix%"
+        arguments:
+            - "@request_stack"
+            - "%contao.url_suffix%"
         tags: [ 'permalink.handler' ]
 
 #    contao.listener.add_posts_to_search_index:
