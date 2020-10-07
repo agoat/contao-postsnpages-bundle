@@ -55,8 +55,7 @@ $bundles = \System::getContainer()->getParameter('kernel.bundles');
  * Front end modules
  */
 $arrModules['posts']['postteaser'] 		= 'Agoat\PostsnPagesBundle\Contao\ModulePostTeaser';
-if (array_key_exists('ContaoCommentsBundle', $bundles))
-{
+if (array_key_exists('ContaoCommentsBundle', $bundles)) {
 	$arrModules['posts']['postcomments'] 	= 'Agoat\PostsnPagesBundle\Contao\ModulePostComments';
 }
 $arrModules['posts']['relatedpostteaser'] 	= 'Agoat\PostsnPagesBundle\Contao\ModuleRelatedPostTeaser';

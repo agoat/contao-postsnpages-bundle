@@ -23,9 +23,12 @@ class GetLayoutIdListener
      *
      * @return integer The theme ID
      */
-    public function __invoke(string $table, int $id)
+    public function __invoke(string $table, ?int $id)
     {
-//        dump('getLayoutId called');
+        if ($id === null) {
+            return null;
+        }
+
         if ('tl_post' == $table)
         {
             $objPost = PostModel::findByPk($id);
