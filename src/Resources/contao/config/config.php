@@ -83,15 +83,18 @@ $GLOBALS['TL_PTY'] = array_merge(
 /**
  * Pattern types (CustomContentElements extension)
  */
-$GLOBALS['TL_CTP']['input'] = array_merge(
-    array_slice($GLOBALS['TL_CTP']['input'], 0, $insertPos = (array_flip(array_keys($GLOBALS['TL_CTP']['input']))['pagetree'] + 1), true),
-    ['posttree' => [
-        'class'     => 'Agoat\PostsnPagesBundle\Contao\PatternPostTree',
-        'data'      => true,
-        'output'    => true,
-    ]],
-    array_slice($GLOBALS['TL_CTP']['input'], $insertPos, null, true)
-);
+if (isset($GLOBALS['TL_CTP'])) {
+    $GLOBALS['TL_CTP']['input'] = array_merge(
+        array_slice($GLOBALS['TL_CTP']['input'], 0, $insertPos = (array_flip(array_keys($GLOBALS['TL_CTP']['input']))['pagetree'] + 1), true),
+        ['posttree' => [
+            'class'     => 'Agoat\PostsnPagesBundle\Contao\PatternPostTree',
+            'data'      => true,
+            'output'    => true,
+        ]],
+        array_slice($GLOBALS['TL_CTP']['input'], $insertPos, null, true)
+    );
+}
+
 
 /**
  * Back end form fields (widgets)
