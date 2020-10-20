@@ -68,6 +68,13 @@
       <trans-unit id="tl_settings.postsPermalink.1">
          <source>Here you can set a default pattern, which will be used for the post permalinks.</source>
       </trans-unit>
+
+      <trans-unit id="CTP.posttree.0">
+         <source>Post selection</source>
+      </trans-unit>
+      <trans-unit id="CTP.posttree.1">
+         <source>Insert a post select input field.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

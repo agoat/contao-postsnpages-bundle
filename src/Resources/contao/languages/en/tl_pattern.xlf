@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+	<file datatype="php" original="src/Resources/contao/languages/en/tl_pattern.php" source-language="en">
+		<body>
+			<trans-unit id="tl_pattern.post_legend">
+				<source>Post selection settings</source>
+			</trans-unit>
+			<trans-unit id="tl_pattern.multiPost.0">
+				<source>Multiple post selection</source>
+			</trans-unit>
+			<trans-unit id="tl_pattern.multiPost.1">
+				<source>Allow to select more than one post.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

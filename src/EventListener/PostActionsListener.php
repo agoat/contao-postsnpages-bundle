@@ -96,13 +96,10 @@ class PostActionsListener
                 {
                     foreach ($GLOBALS['TL_DCA'][$dc->table]['fields'][$strField]['load_callback'] as $callback)
                     {
-                        if (\is_array($callback))
-                        {
-                            $this->import($callback[0]);
-                            $varValue = $this->{$callback[0]}->{$callback[1]}($varValue, $dc);
-                        }
-                        elseif (\is_callable($callback))
-                        {
+                        if (\is_array($callback)) {
+                            $class = new $callback[0];
+                            $varValue = $class->{$callback[1]}($varValue, $dc);
+                        } elseif (\is_callable($callback)) {
                             $varValue = $callback($varValue, $dc);
                         }
                     }

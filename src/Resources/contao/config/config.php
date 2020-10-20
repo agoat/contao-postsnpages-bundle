@@ -74,11 +74,24 @@ $GLOBALS['FE_MOD']['miscellaneous']['containerlist'] 	= 'Agoat\PostsnPagesBundle
  * Page types
  */
 $GLOBALS['TL_PTY'] = array_merge(
-	array_slice($GLOBALS['TL_PTY'], 0, 1, true),
-	array('post' => 'PageRegular'),
-	array_slice($GLOBALS['TL_PTY'], 1, null, true)
+    array_slice($GLOBALS['TL_PTY'], 0, 1, true),
+    ['post' => 'PageRegular'],
+    array_slice($GLOBALS['TL_PTY'], 1, null, true)
 );
 
+
+/**
+ * Pattern types (CustomContentElements extension)
+ */
+$GLOBALS['TL_CTP']['input'] = array_merge(
+    array_slice($GLOBALS['TL_CTP']['input'], 0, $insertPos = (array_flip(array_keys($GLOBALS['TL_CTP']['input']))['pagetree'] + 1), true),
+    ['posttree' => [
+        'class'     => 'Agoat\PostsnPagesBundle\Contao\PatternPostTree',
+        'data'      => true,
+        'output'    => true,
+    ]],
+    array_slice($GLOBALS['TL_CTP']['input'], $insertPos, null, true)
+);
 
 /**
  * Back end form fields (widgets)

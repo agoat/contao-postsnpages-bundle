@@ -74,13 +74,16 @@ class PostTree extends Widget
 			$this->strOrderId = $this->orderField . str_replace($this->strField, '', $this->strId);
 			$this->strOrderName = $this->orderField . str_replace($this->strField, '', $this->strName);
 
-			// Retrieve the order value
-			$objRow = $this->database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
-						   ->limit(1)
-						   ->execute($this->activeRecord->id);
+            // Don't try to load virtual pattern fields from database
+            if ($this->database->fieldExists($this->orderField, $this->strTable)) {
+                // Retrieve the order value
+                $objRow = $this->database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
+                    ->limit(1)
+                    ->execute($this->activeRecord->id);
 
-			$tmp = StringUtil::deserialize($objRow->{$this->orderField});
-			$this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
+                $tmp = StringUtil::deserialize($objRow->{$this->orderField});
+                $this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
+            }
 		}
 	}
 
@@ -114,8 +117,12 @@ class PostTree extends Widget
 			// Only proceed if the value has changed
 			if ($arrNew !== $this->{$this->orderField})
 			{
-				$this->database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->orderField}=? WHERE id=?")
-							   ->execute(time(), serialize($arrNew), $this->activeRecord->id);
+                // Don't try to load virtual pattern fields from database
+                if ($this->database->fieldExists($this->orderField, $this->strTable))
+                {
+                    $this->database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->orderField}=? WHERE id=?")
+                                   ->execute(time(), serialize($arrNew), $this->activeRecord->id);
+                }
 
 			    $this->objDca->createNewVersion = true; // see #6285
 			}
@@ -133,7 +140,7 @@ class PostTree extends Widget
 		}
 		elseif (strpos($varInput, ',') === false)
 		{
-			return $this->multiple ? array(intval($varInput)) : intval($varInput);
+			return $this->multiple ? array((int) $varInput) : (int) $varInput;
 		}
 		else
 		{

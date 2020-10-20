@@ -12,6 +12,7 @@
 namespace Agoat\PostsnPagesBundle\ContaoManager;
 
 use Agoat\PostsnPagesBundle\AgoatPostsnPagesBundle;
+use Agoat\CustomContentElementsBundle\AgoatCustomContentElementsBundle;
 use Agoat\LanguageRelationBundle\AgoatLanguageRelationBundle;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
@@ -34,6 +35,7 @@ class Plugin implements BundlePluginInterface
 			BundleConfig::create(AgoatPostsnPagesBundle::class)
 				->setLoadAfter([
 				    ContaoCoreBundle::class,
+                    AgoatCustomContentElementsBundle::class,
                     AgoatLanguageRelationBundle::class
                 ])
 		];
