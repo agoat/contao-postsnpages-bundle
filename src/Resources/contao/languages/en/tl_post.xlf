@@ -44,6 +44,9 @@
       <trans-unit id="tl_post.related_legend">
         <source>Related settings</source>
       </trans-unit>
+      <trans-unit id="tl_post.enclosure_legend">
+        <source>Enclosures</source>
+      </trans-unit>
       <trans-unit id="tl_post.language_legend">
         <source>Language &amp; Translation</source>
       </trans-unit>
@@ -289,6 +292,18 @@
       </trans-unit>
       <trans-unit id="tl_post.related.1">
         <source>Here you can select related Posts.</source>
+      </trans-unit>
+      <trans-unit id="tl_post.addEnclosure.0">
+        <source>Add enclosures</source>
+      </trans-unit>
+      <trans-unit id="tl_post.addEnclosure.1">
+        <source>Add one or more downloadable files to the news item.</source>
+      </trans-unit>
+      <trans-unit id="tl_post.enclosure.0">
+        <source>Enclosures</source>
+      </trans-unit>
+      <trans-unit id="tl_post.enclosure.1">
+        <source>Please choose the files you want to attach.</source>
       </trans-unit>
       <trans-unit id="tl_post.format.0">
         <source>Post format</source>

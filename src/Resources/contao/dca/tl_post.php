@@ -161,14 +161,15 @@ $GLOBALS['TL_DCA']['tl_post'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'__selector__'                => array('addImage', 'alternativeLink'),
-		'default'                     => '{title_legend},title,alias,author;{meta_legend},keywords;{date_legend},date,time;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category,tags;{readmore_legend},alternativeLink;{related_legend},related;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
+		'__selector__'                => array('addImage', 'addEnclosure', 'alternativeLink'),
+		'default'                     => '{title_legend},title,alias,author;{meta_legend},keywords;{date_legend},date,time;{location_legend},location,latlong;{teaser_legend},subTitle,teaser;{image_legend},addImage;{category_legend},category,tags;{readmore_legend},alternativeLink;{related_legend},related;{enclosure_legend:hide},addEnclosure;{syndication_legend},printable;{template_legend:hide},customTpl;{expert_legend:hide},noComments,featured,format,cssID;{publish_legend},published,start,stop'
 	),
 
 	// Subpalettes
 	'subpalettes' => array
 	(
 		'addImage'					=> 'singleSRC,alt,caption',
+        'addEnclosure'              => 'enclosure',
 		'alternativeLink'			=> 'url,target'
 	),
 
@@ -431,6 +432,20 @@ $GLOBALS['TL_DCA']['tl_post'] = array
 		(
 			'sql'                     => "blob NULL"
 		),
+        'addEnclosure' => array
+        (
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('submitOnChange'=>true),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'enclosure' => array
+        (
+            'exclude'                 => true,
+            'inputType'               => 'fileTree',
+            'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'filesOnly'=>true, 'isDownloads'=>true, 'extensions'=>Config::get('allowedDownload'), 'mandatory'=>true),
+            'sql'                     => "blob NULL"
+        ),
 		'printable' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_post']['printable'],
