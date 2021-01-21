@@ -55,10 +55,9 @@ $GLOBALS['TL_DCA']['tl_page']['list']['operations']['content'] = array
 
 System::loadLanguageFile('tl_content');
 
-
 $bundles = \System::getContainer()->getParameter('kernel.bundles');
 
-$GLOBALS['TL_DCA']['tl_page']['palettes']['post'] = '{title_legend},title,alias,type;{meta_legend},pageTitle,robots,description;{posts_legend},showTeaser;{empty_legend},emptyPost;{template_legend:hide},postTpl;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},;' : '') . '{layout_legend:hide},includeLayout;{cache_legend:hide},includeCache;{chmod_legend:hide},includeChmod;{search_legend},noSearch;{expert_legend:hide},cssClass,sitemap,hide;{publish_legend},published,start,stop';
+$GLOBALS['TL_DCA']['tl_page']['palettes']['post'] = '{title_legend},title,alias,type;{meta_legend},pageTitle,robots,description;{posts_legend},showTeaser;{empty_legend},emptyPost;{template_legend:hide},postTpl;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},;' : '') . '{layout_legend:hide},includeLayout;{cache_legend:hide},includeCache;{chmod_legend:hide},includeChmod;{expert_legend:hide},cssClass,sitemap,hide,noSearch;{publish_legend},published,start,stop';
 
 $GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'] = array_merge
 (
