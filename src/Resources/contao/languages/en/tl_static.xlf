@@ -106,10 +106,10 @@
       </trans-unit>
 
       <trans-unit id="tl_static.new.0">
-        <source>New container</source>
+        <source>New static container</source>
       </trans-unit>
       <trans-unit id="tl_static.new.1">
-        <source>Create a new container</source>
+        <source>Create a new static container</source>
       </trans-unit>
       <trans-unit id="tl_static.newGroup.0">
         <source>New group</source>

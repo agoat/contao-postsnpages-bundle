@@ -103,10 +103,10 @@
       </trans-unit>
 
       <trans-unit id="tl_container.new.0">
-        <source>New container</source>
+        <source>New page container</source>
       </trans-unit>
       <trans-unit id="tl_container.new.1">
-        <source>Create a new container</source>
+        <source>Create a new page container</source>
       </trans-unit>
       <trans-unit id="tl_container.show.0">
         <source>Container details</source>

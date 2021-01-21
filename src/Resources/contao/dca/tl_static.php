@@ -144,7 +144,7 @@ $GLOBALS['TL_DCA']['tl_static'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('type', 'protected'),
-		'container'                   => '{title_legend},title;{layout_legend},keywords;' . (array_key_exists('AgoatCustomContentElementsBundle', \System::getContainer()->getParameter('kernel.bundles')) ? '{elements_legend:hide},layout;' : '') .  '{protected_legend:hide},protected,guests',
+		'container'                   => '{title_legend},title;{layout_legend},keywords;' . (array_key_exists('AgoatCustomContentElementsBundle', \System::getContainer()->getParameter('kernel.bundles')) ? '{elements_legend:hide},layout;' : '') .  '{protected_legend:hide},protected;{expert_legend:hide},,guests',
 		'group'                       => '{title_legend},title;'
 	),
 
