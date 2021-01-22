@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -21,133 +21,130 @@ use Contao\Widget;
 class InputSelect extends Widget
 {
 
-	/**
-	 * Submit user input
-	 * @var boolean
-	 */
-	protected $blnSubmitInput = true;
+    /**
+     * Submit user input
+     *
+     * @var boolean
+     */
+    protected $blnSubmitInput = true;
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'be_widget';
-
-
-	/**
-	 * Add specific attributes
-	 *
-	 * @param string $strKey
-	 * @param mixed  $varValue
-	 */
-	public function __set($strKey, $varValue)
-	{
-		switch ($strKey)
-		{
-			case 'mandatory':
-				if ($varValue)
-				{
-					$this->arrAttributes['required'] = 'required';
-				}
-				else
-				{
-					unset($this->arrAttributes['required']);
-				}
-				parent::__set($strKey, $varValue);
-				break;
-
-			case 'size':
-				if ($this->multiple)
-				{
-					$this->arrAttributes['size'] = $varValue;
-				}
-				break;
-
-			case 'multiple':
-				if ($varValue)
-				{
-					$this->arrAttributes['multiple'] = 'multiple';
-				}
-				break;
-
-			case 'options':
-				$this->arrOptions = StringUtil::deserialize($varValue);
-				break;
-
-			default:
-				parent::__set($strKey, $varValue);
-				break;
-		}
-	}
+    /**
+     * Template
+     *
+     * @var string
+     */
+    protected $strTemplate = 'be_widget';
 
 
-	/**
-	 * Check for a valid option (see #4383)
-	 */
-	public function validate()
-	{
-		parent::validate();
-	}
+    /**
+     * Add specific attributes
+     *
+     * @param  string  $strKey
+     * @param  mixed  $varValue
+     */
+    public function __set($strKey, $varValue)
+    {
+        switch ($strKey) {
+            case 'mandatory':
+                if ($varValue) {
+                    $this->arrAttributes['required'] = 'required';
+                } else {
+                    unset($this->arrAttributes['required']);
+                }
+                parent::__set($strKey, $varValue);
+                break;
+
+            case 'size':
+                if ($this->multiple) {
+                    $this->arrAttributes['size'] = $varValue;
+                }
+                break;
+
+            case 'multiple':
+                if ($varValue) {
+                    $this->arrAttributes['multiple'] = 'multiple';
+                }
+                break;
+
+            case 'options':
+                $this->arrOptions = StringUtil::deserialize($varValue);
+                break;
+
+            default:
+                parent::__set($strKey, $varValue);
+                break;
+        }
+    }
 
 
-	/**
-	 * Generate the widget and return it as string
-	 *
-	 * @return string
-	 */
-	public function generate()
-	{
-		$arrOptions = array();
-		$strClass = 'tl_select';
+    /**
+     * Check for a valid option (see #4383)
+     */
+    public function validate()
+    {
+        parent::validate();
+    }
 
-		if ($this->multiple)
-		{
-			$this->strName .= '[]';
-			$strClass = 'tl_mselect';
-		}
 
-		// Add an empty option if there are none
-		if (empty($this->arrOptions) || ! is_array($this->arrOptions))
-		{
-			$this->arrOptions = array(array('value'=>'', 'label'=>'-'));
-		}
+    /**
+     * Generate the widget and return it as string
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        $arrOptions = [];
+        $strClass = 'tl_select';
 
-		foreach ($this->arrOptions as $strKey=>$arrOption)
-		{
-			if (isset($arrOption['value']))
-			{
-				$arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
-										 StringUtil::specialchars($arrOption['value']),
-										 $this->isSelected($arrOption),
-										 $arrOption['label']);
-			}
-			else
-			{
-				$arrOptgroups = array();
+        if ($this->multiple) {
+            $this->strName .= '[]';
+            $strClass = 'tl_mselect';
+        }
 
-				foreach ($arrOption as $arrOptgroup)
-				{
-					$arrOptgroups[] = sprintf('<option value="%s"%s>%s</option>',
-											   StringUtil::specialchars($arrOptgroup['value']),
-											   $this->isSelected($arrOptgroup),
-											   $arrOptgroup['label']);
-				}
+        // Add an empty option if there are none
+        if (empty($this->arrOptions) || !is_array($this->arrOptions)) {
+            $this->arrOptions = [['value' => '', 'label' => '-']];
+        }
 
-				$arrOptions[] = sprintf('<optgroup label="&nbsp;%s">%s</optgroup>', StringUtil::specialchars($strKey), implode('', $arrOptgroups));
-			}
-		}
+        foreach ($this->arrOptions as $strKey => $arrOption) {
+            if (isset($arrOption['value'])) {
+                $arrOptions[] = sprintf('<option value="%s"%s>%s</option>',
+                    StringUtil::specialchars($arrOption['value']),
+                    $this->isSelected($arrOption),
+                    $arrOption['label']
+                );
+            } else {
+                $arrOptgroups = [];
 
-		$strClass .= ' tl_chosen_add_option';
+                foreach ($arrOption as $arrOptgroup) {
+                    $arrOptgroups[] = sprintf('<option value="%s"%s>%s</option>',
+                        StringUtil::specialchars($arrOptgroup['value']),
+                        $this->isSelected($arrOptgroup),
+                        $arrOptgroup['label']
+                    );
+                }
 
-		return sprintf('%s<select data-noresult="%s" name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s',
-						($this->multiple ? '<input type="hidden" name="'. rtrim($this->strName, '[]') .'" value="">' : ''),
-						$this->noResult,
-						$this->strName,
-						$this->strId,
-						$strClass,
-						(($this->strClass != '') ? ' ' . $this->strClass : ''),
-						$this->getAttributes(),
-						implode('', $arrOptions),
-						$this->wizard);
-	}
+                $arrOptions[] =
+                    sprintf('<optgroup label="&nbsp;%s">%s</optgroup>',
+                        StringUtil::specialchars($strKey),
+                        implode('', $arrOptgroups)
+                    );
+            }
+        }
+
+        $strClass .= ' tl_chosen_add_option';
+
+        return sprintf('%s<select data-noresult="%s" name="%s" id="ctrl_%s" class="%s%s"%s onfocus="Backend.getScrollOffset()">%s</select>%s',
+            ($this->multiple ? '<input type="hidden" name="' . rtrim($this->strName, '[]') . '" value="">' : ''),
+            $this->noResult,
+            $this->strName,
+            $this->strId,
+            $strClass,
+            (($this->strClass != '') ? ' ' . $this->strClass : ''),
+            $this->getAttributes(),
+            implode('', $arrOptions),
+            $this->wizard
+        );
+    }
+
 }

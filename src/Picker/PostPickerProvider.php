@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -28,8 +28,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
-class PostPickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
+class PostPickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface,
+    FrameworkAwareInterface
 {
+
     use FrameworkAwareTrait;
 
     /**
@@ -37,12 +39,18 @@ class PostPickerProvider extends AbstractInsertTagPickerProvider implements DcaP
      */
     private $security;
 
-    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, ?TranslatorInterface $translator, Security $security)
-    {
+
+    public function __construct(
+        FactoryInterface $menuFactory,
+        RouterInterface $router,
+        ?TranslatorInterface $translator,
+        Security $security
+    ) {
         parent::__construct($menuFactory, $router, $translator);
 
         $this->security = $security;
     }
+
 
     /**
      * {@inheritdoc}
@@ -52,6 +60,7 @@ class PostPickerProvider extends AbstractInsertTagPickerProvider implements DcaP
         return 'postPicker';
     }
 
+
     /**
      * {@inheritdoc}
      */
@@ -60,17 +69,19 @@ class PostPickerProvider extends AbstractInsertTagPickerProvider implements DcaP
         return in_array($context, ['post', 'link'], true) && $this->security->isGranted('contao_user.modules', 'post');
     }
 
+
     /**
      * {@inheritdoc}
      */
     public function supportsValue(PickerConfig $config)
     {
-		if ('post' === $config->getContext()) {
+        if ('post' === $config->getContext()) {
             return is_numeric($config->getValue());
         }
 
         return false !== strpos($config->getValue(), '{{post_url::');
     }
+
 
     /**
      * {@inheritdoc}
@@ -80,20 +91,21 @@ class PostPickerProvider extends AbstractInsertTagPickerProvider implements DcaP
         return 'tl_post';
     }
 
+
     /**
      * {@inheritdoc}
      */
     public function getDcaAttributes(PickerConfig $config)
     {
         $value = $config->getValue();
-		$attributes = ['fieldType' => 'radio'];
+        $attributes = ['fieldType' => 'radio'];
 
         if ('post' === $config->getContext()) {
- 			if ($fieldType = $config->getExtra('fieldType')) {
+            if ($fieldType = $config->getExtra('fieldType')) {
                 $attributes['fieldType'] = $fieldType;
             }
 
-			if ($source = $config->getExtra('source')) {
+            if ($source = $config->getExtra('source')) {
                 $attributes['preserveRecord'] = $source;
             }
 
@@ -111,17 +123,19 @@ class PostPickerProvider extends AbstractInsertTagPickerProvider implements DcaP
         return $attributes;
     }
 
+
     /**
      * {@inheritdoc}
      */
     public function convertDcaValue(PickerConfig $config, $value)
     {
         if ('post' === $config->getContext()) {
-            return (int) $value;
+            return (int)$value;
         }
 
-        return '{{post_url::'.$value.'}}';
+        return '{{post_url::' . $value . '}}';
     }
+
 
     /**
      * {@inheritdoc}
@@ -131,8 +145,10 @@ class PostPickerProvider extends AbstractInsertTagPickerProvider implements DcaP
         return ['do' => 'posts'];
     }
 
+
     protected function getDefaultInsertTag(): string
     {
         return '{{post_url::%s}}';
     }
+
 }

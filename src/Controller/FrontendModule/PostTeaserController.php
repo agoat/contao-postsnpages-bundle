@@ -1,4 +1,13 @@
 <?php
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
+ *
+ * @copyright  Arne Stappen (alias aGoat) 2021
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
+ */
 
 namespace Agoat\PostsnPagesBundle\Controller\FrontendModule;
 
@@ -17,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PostTeaserController extends AbstractFrontendModuleController
 {
+
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         // TODO: Implement getResponse() method.

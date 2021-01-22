@@ -1,5 +1,13 @@
 <?php
-
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
+ *
+ * @copyright  Arne Stappen (alias aGoat) 2021
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
+ */
 
 namespace Agoat\PostsnPagesBundle\EventListener;
 
@@ -13,6 +21,7 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
  */
 class ReplaceInsertTagsListener
 {
+
     public function __invoke(
         string $insertTag,
         bool $useCache,
@@ -22,12 +31,10 @@ class ReplaceInsertTagsListener
         array $cache,
         int $_rit,
         int $_cnt
-    )
-    {
+    ) {
         $elements = explode('::', $insertTag);
 
-        switch (strtolower($elements[0]))
-        {
+        switch (strtolower($elements[0])) {
             // Post
             case 'post_link':
             case 'post_open':
@@ -40,39 +47,52 @@ class ReplaceInsertTagsListener
             case 'post_latlong':
             case 'post_category':
             case 'post_tags':
-                if (($objPost = \PostModel::findByIdOrAlias($elements[1])) === null)
-                {
+                if (($objPost = \PostModel::findByIdOrAlias($elements[1])) === null) {
                     break;
                 }
 
                 // Check the visibility
-                if (! ContaoController::isVisibleElement($objPost))
-                {
+                if (!ContaoController::isVisibleElement($objPost)) {
                     break;
                 }
 
                 // Replace the tag
-                switch (strtolower($elements[0]))
-                {
+                switch (strtolower($elements[0])) {
                     case 'post_link':
-                        $return = sprintf(
-                            '<a href="%s" title="%s">%s</a>',
-                            ($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, \in_array('direct', $flags, true), \in_array('absolute', $flags, true)),
+                        $return = sprintf('<a href="%s" title="%s">%s</a>',
+                            ($objPost->alternativeLink && substr($objPost->url,
+                                    0,
+                                    7
+                                                          ) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost,
+                                \in_array('direct', $flags, true),
+                                \in_array('absolute', $flags, true)
+                            ),
                             \StringUtil::specialchars($objPost->title),
                             $objPost->title
                         );
                         break;
 
                     case 'post_open':
-                        $return = sprintf(
-                            '<a href="%s" title="%s">',
-                            ($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, \in_array('direct', $flags, true), \in_array('absolute', $flags, true)),
+                        $return = sprintf('<a href="%s" title="%s">',
+                            ($objPost->alternativeLink && substr($objPost->url,
+                                    0,
+                                    7
+                                                          ) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost,
+                                \in_array('direct', $flags, true),
+                                \in_array('absolute', $flags, true)
+                            ),
                             \StringUtil::specialchars($objPost->title)
                         );
                         break;
 
                     case 'post_url':
-                        $return = ($objPost->alternativeLink && substr($objPost->url, 0, 7) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost, \in_array('direct', $flags, true), \in_array('absolute', $flags, true));
+                        $return = ($objPost->alternativeLink && substr($objPost->url,
+                                0,
+                                7
+                                                                ) === 'mailto:') ? $objPost->url : Posts::generatePostUrl($objPost,
+                            \in_array('direct', $flags, true),
+                            \in_array('absolute', $flags, true)
+                        );
                         break;
 
                     case 'post_title':
@@ -112,8 +132,7 @@ class ReplaceInsertTagsListener
 
             // Insert post
             case 'insert_post':
-                if (($objPost = \PostModel::findByIdOrAlias($elements[1])) === null)
-                {
+                if (($objPost = \PostModel::findByIdOrAlias($elements[1])) === null) {
                     break;
                 }
 
@@ -122,8 +141,7 @@ class ReplaceInsertTagsListener
 
             // Insert static
             case 'insert_static':
-                if (($objStatic = \StaticModel::findByIdOrAlias($elements[1])) === null)
-                {
+                if (($objStatic = \StaticModel::findByIdOrAlias($elements[1])) === null) {
                     break;
                 }
 
@@ -132,16 +150,15 @@ class ReplaceInsertTagsListener
 
             // Insert container
             case 'insert_container':
-                if (($objContainer = \ContainerModel::findByIdOrAlias($elements[1])) === null)
-                {
+                if (($objContainer = \ContainerModel::findByIdOrAlias($elements[1])) === null) {
                     break;
                 }
 
                 $return = Controller::generateContainer($objContainer, true);
                 break;
-
         }
 
         return $return;
     }
+
 }

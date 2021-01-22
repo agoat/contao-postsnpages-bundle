@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -27,29 +27,33 @@ use Contao\Widget;
 class PostTree extends Widget
 {
 
-	/**
-	 * Submit user input
-	 * @var boolean
-	 */
-	protected $blnSubmitInput = true;
+    /**
+     * Submit user input
+     *
+     * @var boolean
+     */
+    protected $blnSubmitInput = true;
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'be_widget';
+    /**
+     * Template
+     *
+     * @var string
+     */
+    protected $strTemplate = 'be_widget';
 
-	/**
-	 * Order ID
-	 * @var string
-	 */
-	protected $strOrderId;
+    /**
+     * Order ID
+     *
+     * @var string
+     */
+    protected $strOrderId;
 
-	/**
-	 * Order name
-	 * @var string
-	 */
-	protected $strOrderName;
+    /**
+     * Order name
+     *
+     * @var string
+     */
+    protected $strOrderName;
 
     /**
      * @var Database
@@ -58,213 +62,199 @@ class PostTree extends Widget
 
 
     /**
-	 * Load the database object
-	 *
-	 * @param array $arrAttributes
-	 */
-	public function __construct($arrAttributes=null)
-	{
-	    $this->database = Database::getInstance();
+     * Load the database object
+     *
+     * @param  array  $arrAttributes
+     */
+    public function __construct($arrAttributes = null)
+    {
+        $this->database = Database::getInstance();
 
-		parent::__construct($arrAttributes);
+        parent::__construct($arrAttributes);
 
-		// Prepare the order field
-		if ($this->orderField != '')
-		{
-			$this->strOrderId = $this->orderField . str_replace($this->strField, '', $this->strId);
-			$this->strOrderName = $this->orderField . str_replace($this->strField, '', $this->strName);
+        // Prepare the order field
+        if ($this->orderField != '') {
+            $this->strOrderId = $this->orderField . str_replace($this->strField, '', $this->strId);
+            $this->strOrderName = $this->orderField . str_replace($this->strField, '', $this->strName);
 
             // Don't try to load virtual pattern fields from database
             if ($this->database->fieldExists($this->orderField, $this->strTable)) {
                 // Retrieve the order value
-                $objRow = $this->database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
-                    ->limit(1)
-                    ->execute($this->activeRecord->id);
+                $objRow =
+                    $this->database->prepare("SELECT {$this->orderField} FROM {$this->strTable} WHERE id=?")
+                                   ->limit(1)
+                                   ->execute($this->activeRecord->id);
 
                 $tmp = StringUtil::deserialize($objRow->{$this->orderField});
-                $this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : array();
+                $this->{$this->orderField} = (!empty($tmp) && is_array($tmp)) ? array_filter($tmp) : [];
             }
-		}
-	}
+        }
+    }
 
 
-	/**
-	 * Return an array if the "multiple" attribute is set
-	 *
-	 * @param mixed $varInput
-	 *
-	 * @return mixed
-	 */
-	protected function validator($varInput)
-	{
-		$this->checkValue($varInput);
+    /**
+     * Return an array if the "multiple" attribute is set
+     *
+     * @param  mixed  $varInput
+     *
+     * @return mixed
+     */
+    protected function validator($varInput)
+    {
+        $this->checkValue($varInput);
 
-		if ($this->hasErrors())
-		{
-			return '';
-		}
+        if ($this->hasErrors()) {
+            return '';
+        }
 
-		// Store the order value
-		if ($this->orderField != '')
-		{
-			$arrNew = array();
+        // Store the order value
+        if ($this->orderField != '') {
+            $arrNew = [];
 
-			if ($order = Input::post($this->strOrderName))
-			{
-				$arrNew = explode(',', $order);
-			}
+            if ($order = Input::post($this->strOrderName)) {
+                $arrNew = explode(',', $order);
+            }
 
-			// Only proceed if the value has changed
-			if ($arrNew !== $this->{$this->orderField})
-			{
+            // Only proceed if the value has changed
+            if ($arrNew !== $this->{$this->orderField}) {
                 // Don't try to load virtual pattern fields from database
-                if ($this->database->fieldExists($this->orderField, $this->strTable))
-                {
+                if ($this->database->fieldExists($this->orderField, $this->strTable)) {
                     $this->database->prepare("UPDATE {$this->strTable} SET tstamp=?, {$this->orderField}=? WHERE id=?")
                                    ->execute(time(), serialize($arrNew), $this->activeRecord->id);
                 }
 
-			    $this->objDca->createNewVersion = true; // see #6285
-			}
-		}
+                $this->objDca->createNewVersion = true; // see #6285
+            }
+        }
 
-		// Return the value as usual
-		if ($varInput == '')
-		{
-			if ($this->mandatory)
-			{
-				$this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['mandatory'], $this->strLabel));
-			}
+        // Return the value as usual
+        if ($varInput == '') {
+            if ($this->mandatory) {
+                $this->addError(sprintf($GLOBALS['TL_LANG']['ERR']['mandatory'], $this->strLabel));
+            }
 
-			return '';
-		}
-		elseif (strpos($varInput, ',') === false)
-		{
-			return $this->multiple ? array((int) $varInput) : (int) $varInput;
-		}
-		else
-		{
-			$arrValue = array_map('intval', array_filter(explode(',', $varInput)));
+            return '';
+        } elseif (strpos($varInput, ',') === false) {
+            return $this->multiple ? [(int)$varInput] : (int)$varInput;
+        } else {
+            $arrValue = array_map('intval', array_filter(explode(',', $varInput)));
 
-			return $this->multiple ? $arrValue : $arrValue[0];
-		}
-	}
-
-
-	/**
-	 * Check the selected value
-	 *
-	 * @param mixed $varInput
-	 */
-	protected function checkValue($varInput)
-	{
-		if ($varInput == '' || ! is_array($this->rootNodes))
-		{
-			return;
-		}
-
-		// TODO: Add check vor valid post selection
-//		$arrPids = $this->database->prepare("SELECT pid FROM tl_post WHERE id IN (?)")
-//                    ->execute($varInput)->fetchAssoc();
-
-//        if (count(array_diff($arrPids, array_merge($this->rootNodes, $this->Database->getChildRecords($this->rootNodes, 'tl_page')))) > 0)
-//		{
-//			$this->addError($GLOBALS['TL_LANG']['ERR']['invalidArticles']);
-//		}
+            return $this->multiple ? $arrValue : $arrValue[0];
+        }
     }
 
 
-	/**
-	 * Generate the widget and return it as string
-	 *
-	 * @return string
-	 */
-	public function generate()
-	{
-		$arrSet = array();
-		$arrValues = array();
-		$blnHasOrder = ($this->orderField != '' && is_array($this->{$this->orderField}));
+    /**
+     * Check the selected value
+     *
+     * @param  mixed  $varInput
+     */
+    protected function checkValue($varInput)
+    {
+        if ($varInput == '' || !is_array($this->rootNodes)) {
+            return;
+        }
 
-		if (! empty($this->varValue)) // Can be an array
-		{
-			$objPosts = PostModel::findMultipleByIds((array)$this->varValue);
+        // TODO: Add check vor valid post selection
+        //		$arrPids = $this->database->prepare("SELECT pid FROM tl_post WHERE id IN (?)")
+        //                    ->execute($varInput)->fetchAssoc();
 
-			if ($objPosts !== null)
-			{
-				while ($objPosts->next())
-				{
-					$arrSet[] = $objPosts->id;
-					$arrValues[$objPosts->id] = Image::getHtml('bundles/agoatpostsnpages/posts' . ((!$objPosts->published || ($objPosts->start != '' && $objPosts->start > time()) || ($objPosts->stop != '' && $objPosts->stop < time())) ? '_' : '') . '.svg') . ' ' . $objPosts->title . ' (' . $objPosts->alias . Config::get('urlSuffix') . ')';
-				}
-			}
+        //        if (count(array_diff($arrPids, array_merge($this->rootNodes, $this->Database->getChildRecords($this->rootNodes, 'tl_page')))) > 0)
+        //		{
+        //			$this->addError($GLOBALS['TL_LANG']['ERR']['invalidArticles']);
+        //		}
+    }
 
-			// Apply a custom sort order
-			if ($blnHasOrder)
-			{
-				$arrNew = array();
 
-				foreach ((array) $this->{$this->orderField} as $i)
-				{
-					if (isset($arrValues[$i]))
-					{
-						$arrNew[$i] = $arrValues[$i];
-						unset($arrValues[$i]);
-					}
-				}
+    /**
+     * Generate the widget and return it as string
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        $arrSet = [];
+        $arrValues = [];
+        $blnHasOrder = ($this->orderField != '' && is_array($this->{$this->orderField}));
 
-				if (!empty($arrValues))
-				{
-					foreach ($arrValues as $k=>$v)
-					{
-						$arrNew[$k] = $v;
-					}
-				}
+        if (!empty($this->varValue)) // Can be an array
+        {
+            $objPosts = PostModel::findMultipleByIds((array)$this->varValue);
 
-				$arrValues = $arrNew;
-				unset($arrNew);
-			}
-		}
+            if ($objPosts !== null) {
+                while ($objPosts->next()) {
+                    $arrSet[] = $objPosts->id;
+                    $arrValues[$objPosts->id] =
+                        Image::getHtml('bundles/agoatpostsnpages/posts' . ((!$objPosts->published || ($objPosts->start != '' && $objPosts->start > time(
+                                    )) || ($objPosts->stop != '' && $objPosts->stop < time())) ? '_' : '') . '.svg'
+                        ) . ' ' . $objPosts->title . ' (' . $objPosts->alias . Config::get('urlSuffix') . ')';
+                }
+            }
 
-		$return = '<input type="hidden" name="'.$this->strName.'" id="ctrl_'.$this->strId.'" value="'.implode(',', $arrSet).'">' . ($blnHasOrder ? '
-  <input type="hidden" name="'.$this->strOrderName.'" id="ctrl_'.$this->strOrderId.'" value="'.$this->{$this->orderField}.'">' : '') . '
+            // Apply a custom sort order
+            if ($blnHasOrder) {
+                $arrNew = [];
+
+                foreach ((array)$this->{$this->orderField} as $i) {
+                    if (isset($arrValues[$i])) {
+                        $arrNew[$i] = $arrValues[$i];
+                        unset($arrValues[$i]);
+                    }
+                }
+
+                if (!empty($arrValues)) {
+                    foreach ($arrValues as $k => $v) {
+                        $arrNew[$k] = $v;
+                    }
+                }
+
+                $arrValues = $arrNew;
+                unset($arrNew);
+            }
+        }
+
+        $return =
+            '<input type="hidden" name="' . $this->strName . '" id="ctrl_' . $this->strId . '" value="' . implode(',',
+                $arrSet
+            ) . '">' . ($blnHasOrder ? '
+  <input type="hidden" name="' . $this->strOrderName . '" id="ctrl_' . $this->strOrderId . '" value="' . $this->{$this->orderField} . '">' : '') . '
   <div class="selector_container">' . (($blnHasOrder && count($arrValues) > 1) ? '
     <p class="sort_hint">' . $GLOBALS['TL_LANG']['MSC']['dragItemsHint'] . '</p>' : '') . '
-    <ul id="sort_'.$this->strId.'" class="'.($blnHasOrder ? 'sortable' : '').'">';
+    <ul id="sort_' . $this->strId . '" class="' . ($blnHasOrder ? 'sortable' : '') . '">';
 
-		foreach ($arrValues as $k=>$v)
-		{
-			$return .= '<li data-id="'.$k.'">'.$v.'</li>';
-		}
+        foreach ($arrValues as $k => $v) {
+            $return .= '<li data-id="' . $k . '">' . $v . '</li>';
+        }
 
-		$return .= '</ul>';
+        $return .= '</ul>';
 
-		if (! System::getContainer()->get('contao.picker.builder')->supportsContext('post'))
-		{
-			$return .= '
-	<p><button class="tl_submit" disabled>'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</button></p>';
-		}
-		else
-		{
-			$extras = array
-			(
-				'fieldType' => $this->fieldType,
-				'source' => $this->strTable.'.'.$this->currentRecord,
-			);
+        if (!System::getContainer()->get('contao.picker.builder')->supportsContext('post')) {
+            $return .= '
+	<p><button class="tl_submit" disabled>' . $GLOBALS['TL_LANG']['MSC']['changeSelection'] . '</button></p>';
+        } else {
+            $extras = [
+                'fieldType' => $this->fieldType,
+                'source'    => $this->strTable . '.' . $this->currentRecord,
+            ];
 
-			if (is_array($this->rootNodes))
-			{
-				$extras['rootNodes'] = array_values($this->rootNodes);
-			}
+            if (is_array($this->rootNodes)) {
+                $extras['rootNodes'] = array_values($this->rootNodes);
+            }
 
-			$return .= '
-	<p><a href="' . ampersand(System::getContainer()->get('contao.picker.builder')->getUrl('post', $extras)) . '" class="tl_submit" id="pt_' . $this->strName . '">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+            $return .= '
+	<p><a href="' . ampersand(System::getContainer()->get('contao.picker.builder')->getUrl('post', $extras)
+                ) . '" class="tl_submit" id="pt_' . $this->strName . '">' . $GLOBALS['TL_LANG']['MSC']['changeSelection'] . '</a></p>
 	<script>
 	  $("pt_' . $this->strName . '").addEvent("click", function(e) {
 		e.preventDefault();
 		Backend.openModalSelector({
 		  "id": "tl_listing",
-		  "title": "' . StringUtil::specialchars(str_replace("'", "\\'", $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0])) . '",
-		  "url": this.href + document.getElementById("ctrl_'.$this->strId.'").value,
+		  "title": "' . StringUtil::specialchars(str_replace("'",
+                    "\\'",
+                    $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField]['label'][0]
+                )
+                ) . '",
+		  "url": this.href + document.getElementById("ctrl_' . $this->strId . '").value,
 		  "callback": function(table, value) {
 			new Request.Contao({
 			  evalScripts: false,
@@ -277,11 +267,12 @@ class PostTree extends Widget
 		});
 	  });
 	</script>' . ($blnHasOrder ? '
-	<script>Backend.makeMultiSrcSortable("sort_'.$this->strId.'", "ctrl_'.$this->strOrderId.'", "ctrl_'.$this->strId.'")</script>' : '');
-		}
+	<script>Backend.makeMultiSrcSortable("sort_' . $this->strId . '", "ctrl_' . $this->strOrderId . '", "ctrl_' . $this->strId . '")</script>' : '');
+        }
 
-		$return = '<div>' . $return . '</div></div>';
+        $return = '<div>' . $return . '</div></div>';
 
-		return $return;
-	}
+        return $return;
+    }
+
 }

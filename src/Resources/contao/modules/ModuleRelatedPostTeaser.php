@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -23,84 +23,79 @@ use Patchwork\Utf8;
 class ModuleRelatedPostTeaser extends ModulePost
 {
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'mod_postteaser';
+    /**
+     * Template
+     *
+     * @var string
+     */
+    protected $strTemplate = 'mod_postteaser';
 
 
-	/**
-	 * Display a wildcard in the back end
-	 *
-	 * @return string
-	 */
-	public function generate()
-	{
-		if (TL_MODE == 'BE')
-		{
-			/** @var BackendTemplate $objTemplate */
-			$objTemplate = new BackendTemplate('be_wildcard');
+    /**
+     * Display a wildcard in the back end
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        if (TL_MODE == 'BE') {
+            /** @var BackendTemplate $objTemplate */
+            $objTemplate = new BackendTemplate('be_wildcard');
 
-			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
-			$objTemplate->title = $this->headline;
-			$objTemplate->id = $this->id;
-			$objTemplate->link = $this->name;
-			$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
+            $objTemplate->title = $this->headline;
+            $objTemplate->id = $this->id;
+            $objTemplate->link = $this->name;
+            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
 
-			return $objTemplate->parse();
-		}
+            return $objTemplate->parse();
+        }
 
-		// Set the item from the auto_item parameter
-		if (!isset($_GET['posts']) && Config::get('useAutoItem') && isset($_GET['auto_item']))
-		{
-			Input::setGet('posts', Input::get('auto_item'));
-		}
+        // Set the item from the auto_item parameter
+        if (!isset($_GET['posts']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
+            Input::setGet('posts', Input::get('auto_item'));
+        }
 
-		// Overwrite the post id
-		if (null !== $intId)
-		{
-			Input::setGet('posts', $intId);
-		}
+        // Overwrite the post id
+        if (null !== $intId) {
+            Input::setGet('posts', $intId);
+        }
 
-		return parent::generate();
-	}
+        return parent::generate();
+    }
 
 
-	/**
-	 * Generate the module
-	 */
-	protected function compile()
-	{
-		// Get the post alias(id)
-		$strPost = Input::get('posts');
+    /**
+     * Generate the module
+     */
+    protected function compile()
+    {
+        // Get the post alias(id)
+        $strPost = Input::get('posts');
 
-		if (!strlen($strPost))
-		{
-			return;
-		}
+        if (!strlen($strPost)) {
+            return;
+        }
 
-		$objPosts = $this->getRelatedPosts($strPost);
+        $objPosts = $this->getRelatedPosts($strPost);
 
-		// Set custom post template
-		$this->postTemplate = $this->teaserTpl;
+        // Set custom post template
+        $this->postTemplate = $this->teaserTpl;
 
-		$arrPosts = array();
+        $arrPosts = [];
 
-		if ($objPosts !== null)
-		{
-			while ($objPosts->next())
-			{
-				// Render the teasers
-				$arrPosts[] = $this->renderPost($objPosts->current(), true, false);
-			}
-		}
+        if ($objPosts !== null) {
+            while ($objPosts->next()) {
+                // Render the teasers
+                $arrPosts[] = $this->renderPost($objPosts->current(), true, false);
+            }
+        }
 
-		if ($this->sortRelated == 'random')
-		{
-			shuffle($arrPosts);
-		}
+        if ($this->sortRelated == 'random') {
+            shuffle($arrPosts);
+        }
 
-		$this->Template->posts = $arrPosts;
-	}
+        $this->Template->posts = $arrPosts;
+    }
+
 }

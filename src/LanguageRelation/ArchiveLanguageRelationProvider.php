@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -19,113 +19,113 @@ use Contao\Backend;
 use Contao\PageModel;
 
 
-
-class ArchiveLanguageRelationProvider extends AbstractLanguageRelationProvider implements LanguageRelationProviderInterface
+class ArchiveLanguageRelationProvider extends AbstractLanguageRelationProvider implements
+    LanguageRelationProviderInterface
 {
 
-	/**
+    /**
      * {@inheritdoc}
      */
-	public function getContext()
-	{
-		return 'archive';
-	}
+    public function getContext()
+    {
+        return 'archive';
+    }
 
-	/**
+
+    /**
      * {@inheritdoc}
      */
-	public function getDcaTable()
-	{
-		return 'tl_archive';
-	}
+    public function getDcaTable()
+    {
+        return 'tl_archive';
+    }
 
 
-	public function build($id, $published)
-	{
-		$this->currentEntity = ArchiveModel::findByPk($id);
+    public function build($id, $published)
+    {
+        $this->currentEntity = ArchiveModel::findByPk($id);
 
-		if (null === $this->currentEntity) {
-			return null;
-		}
+        if (null === $this->currentEntity) {
+            return null;
+        }
 
-		$this->parentEntity = PageModel::findByPk($this->currentEntity->pid);
+        $this->parentEntity = PageModel::findByPk($this->currentEntity->pid);
 
-		$this->setRootLanguages($published, $this->parentEntity);
+        $this->setRootLanguages($published, $this->parentEntity);
 
-		return new LanguageRelation(
-			$this,
-			$this->currentLanguage,
-			array_keys($this->rootPages),
-			$this->getRelations($published)
-		);
-	}
-
-
-	public function getFrontendUrl($related)
-	{
-		return null;
-	}
+        return new LanguageRelation($this,
+            $this->currentLanguage,
+            array_keys($this->rootPages),
+            $this->getRelations($published)
+        );
+    }
 
 
-	public function getAlternativeUrl($language, $onlyRoot)
-	{
-		return null;
-	}
+    public function getFrontendUrl($related)
+    {
+        return null;
+    }
 
 
-	public function getAlternativeTitle($language, $onlyRoot)
-	{
-		return null;
-	}
+    public function getAlternativeUrl($language, $onlyRoot)
+    {
+        return null;
+    }
 
 
-	public function getEditUrl($related)
-	{
-		return Backend::addToUrl('id='.$related->id);
-	}
+    public function getAlternativeTitle($language, $onlyRoot)
+    {
+        return null;
+    }
 
 
-	public function getViewUrl($related)
-	{
-		return Backend::addToUrl('id='.$related->id);
-	}
+    public function getEditUrl($related)
+    {
+        return Backend::addToUrl('id=' . $related->id);
+    }
 
 
-	public function supportsPicker()
-	{
-		return true;
-	}
+    public function getViewUrl($related)
+    {
+        return Backend::addToUrl('id=' . $related->id);
+    }
 
 
-	public function getPickerUrl($language)
-	{
-		$options = [
-			'rootNodes' => $this->rootPages[$language]->id
-		];
-
-		return \System::getContainer()->get('contao.picker.builder')->getUrl('archive', $options);
-	}
+    public function supportsPicker()
+    {
+        return true;
+    }
 
 
-	public function getCreateUrl($language)
-	{
-		return false; // Post archives shouldn't be copied to another language (?)
-	}
+    public function getPickerUrl($language)
+    {
+        $options = [
+            'rootNodes' => $this->rootPages[$language]->id,
+        ];
+
+        return \System::getContainer()->get('contao.picker.builder')->getUrl('archive', $options);
+    }
 
 
-	private function setParentRelations($published)
-	{
-		if (!isset($this->parentRelations)) {
-			$this->parentRelations = array();
+    public function getCreateUrl($language)
+    {
+        return false; // Post archives shouldn't be copied to another language (?)
+    }
 
-			$relation = $this->getRelations($published, $this->parentEntity);
 
-			if (null !== $relation) {
-				foreach ($relation as $model) {
-					$this->parentRelations[$model->language] = $model;
-				}
-			}
-		}
-	}
+    private function setParentRelations($published)
+    {
+        if (!isset($this->parentRelations)) {
+            $this->parentRelations = [];
+
+            $relation = $this->getRelations($published, $this->parentEntity);
+
+            if (null !== $relation) {
+                foreach ($relation as $model) {
+                    $this->parentRelations[$model->language] = $model;
+                }
+            }
+        }
+    }
 
 }

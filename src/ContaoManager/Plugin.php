@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -26,18 +26,20 @@ use Contao\ManagerPlugin\Dependency\DependentPluginInterface;
  */
 class Plugin implements BundlePluginInterface
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getBundles(ParserInterface $parser)
-	{
-		return [
-			BundleConfig::create(AgoatPostsnPagesBundle::class)
-				->setLoadAfter([
-				    ContaoCoreBundle::class,
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBundles(ParserInterface $parser)
+    {
+        return [
+            BundleConfig::create(AgoatPostsnPagesBundle::class)->setLoadAfter([
+                    ContaoCoreBundle::class,
                     AgoatCustomContentElementsBundle::class,
-                    AgoatLanguageRelationBundle::class
-                ])
-		];
-	}
+                    AgoatLanguageRelationBundle::class,
+                ]
+            ),
+        ];
+    }
+
 }

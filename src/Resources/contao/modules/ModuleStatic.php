@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -24,105 +24,99 @@ use Contao\PageModel;
 class ModuleStatic extends Module
 {
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'mod_static';
+    /**
+     * Template
+     *
+     * @var string
+     */
+    protected $strTemplate = 'mod_static';
 
-	/**
-	 * No markup
-	 * @var boolean
-	 */
-	protected $blnNoMarkup = false;
-
-
-	/**
-	 * Check whether the static container is published
-	 *
-	 * @param boolean $blnNoMarkup
-	 *
-	 * @return string
-	 */
-	public function generate($blnNoMarkup=false)
-	{
-		$this->type = 'static';
-		$this->blnNoMarkup = $blnNoMarkup;
-
-		$objStatic = StaticModel::findOneById((int) $this->staticContent);
-
-		if (null === $objStatic)
-		{
-			return '';
-		}
-
-		// Check the visibility
-		if (!static::isVisibleElement($objStatic))
-		{
-			return '';
-		}
-
-		return parent::generate();
-	}
+    /**
+     * No markup
+     *
+     * @var boolean
+     */
+    protected $blnNoMarkup = false;
 
 
-	/**
-	 * Generate the module
-	 */
-	protected function compile()
-	{
-		/** @var PageModel $objPage */
-		global $objPage;
+    /**
+     * Check whether the static container is published
+     *
+     * @param  boolean  $blnNoMarkup
+     *
+     * @return string
+     */
+    public function generate($blnNoMarkup = false)
+    {
+        $this->type = 'static';
+        $this->blnNoMarkup = $blnNoMarkup;
 
-		$id = 'static-' . $this->id;
+        $objStatic = StaticModel::findOneById((int)$this->staticContent);
 
-		// Generate the CSS ID if it is not set
-		if (empty($this->cssID[0]))
-		{
-			$this->cssID = array($id, $this->cssID[1]);
-		}
+        if (null === $objStatic) {
+            return '';
+        }
 
-		$this->Template->noMarkup = ($this->noMarkup || $this->blnNoMarkup);
+        // Check the visibility
+        if (!static::isVisibleElement($objStatic)) {
+            return '';
+        }
 
-		// Add the modification date
-		$this->Template->timestamp = $this->tstamp;
-		$this->Template->date = Date::parse($objPage->datimFormat, $this->tstamp);
+        return parent::generate();
+    }
 
-		$arrElements = array();
-		$objCte = ContentModel::findPublishedByPidAndTable($this->staticContent, 'tl_static');
 
-		if ($objCte !== null)
-		{
-			$intCount = 0;
-			$intLast = $objCte->count() - 1;
+    /**
+     * Generate the module
+     */
+    protected function compile()
+    {
+        /** @var PageModel $objPage */ global $objPage;
 
-			while ($objCte->next())
-			{
-				$arrCss = array();
+        $id = 'static-' . $this->id;
 
-				/** @var ContentModel $objRow */
-				$objRow = $objCte->current();
+        // Generate the CSS ID if it is not set
+        if (empty($this->cssID[0])) {
+            $this->cssID = [$id, $this->cssID[1]];
+        }
 
-				// Add the "first" and "last" classes (see #2583)
-				if ($intCount == 0 || $intCount == $intLast)
-				{
-					if ($intCount == 0)
-					{
-						$arrCss[] = 'first';
-					}
+        $this->Template->noMarkup = ($this->noMarkup || $this->blnNoMarkup);
 
-					if ($intCount == $intLast)
-					{
-						$arrCss[] = 'last';
-					}
-				}
+        // Add the modification date
+        $this->Template->timestamp = $this->tstamp;
+        $this->Template->date = Date::parse($objPage->datimFormat, $this->tstamp);
 
-				$objRow->classes = $arrCss;
-				$arrElements[] = $this->getContentElement($objRow);
-				++$intCount;
-			}
-		}
+        $arrElements = [];
+        $objCte = ContentModel::findPublishedByPidAndTable($this->staticContent, 'tl_static');
 
-		$this->Template->elements = $arrElements;
-	}
+        if ($objCte !== null) {
+            $intCount = 0;
+            $intLast = $objCte->count() - 1;
+
+            while ($objCte->next()) {
+                $arrCss = [];
+
+                /** @var ContentModel $objRow */
+                $objRow = $objCte->current();
+
+                // Add the "first" and "last" classes (see #2583)
+                if ($intCount == 0 || $intCount == $intLast) {
+                    if ($intCount == 0) {
+                        $arrCss[] = 'first';
+                    }
+
+                    if ($intCount == $intLast) {
+                        $arrCss[] = 'last';
+                    }
+                }
+
+                $objRow->classes = $arrCss;
+                $arrElements[] = $this->getContentElement($objRow);
+                ++$intCount;
+            }
+        }
+
+        $this->Template->elements = $arrElements;
+    }
+
 }

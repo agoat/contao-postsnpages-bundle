@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -22,6 +22,7 @@ use Symfony\Component\HttpKernel\Event\TerminateEvent;
 
 class SearchIndexListener
 {
+
     /**
      * @var ContaoFramework
      */
@@ -32,9 +33,10 @@ class SearchIndexListener
      */
     private $fragmentPath;
 
+
     /**
-     * @param ContaoFramework $framework
-     * @param string          $fragmentPath
+     * @param  ContaoFramework  $framework
+     * @param  string  $fragmentPath
      */
     public function __construct(ContaoFramework $framework, string $fragmentPath = '_fragment')
     {
@@ -42,12 +44,13 @@ class SearchIndexListener
         $this->fragmentPath = $fragmentPath;
     }
 
+
     /**
      * Checks if the request can be indexed and forwards it accordingly.
      */
     public function onKernelTerminate(TerminateEvent $event): void
     {
-		if (!$this->framework->isInitialized()) {
+        if (!$this->framework->isInitialized()) {
             return;
         }
 
@@ -59,60 +62,56 @@ class SearchIndexListener
         }
 
         // Do not index fragments
-        if (preg_match('~(?:^|/)'.preg_quote($this->fragmentPath, '~').'/~', $request->getPathInfo())) {
+        if (preg_match('~(?:^|/)' . preg_quote($this->fragmentPath, '~') . '/~', $request->getPathInfo())) {
             return;
         }
 
         $this->indexPageIfApplicable($event->getResponse());
     }
 
+
     /**
      * Index a post reader page if applicable
      *
-     * @param Response $objResponse
+     * @param  Response  $objResponse
      */
     public function indexPageIfApplicable(Response $objResponse)
     {
         global $objPage;
 
-        if ($objPage === null)
-        {
+        if ($objPage === null) {
             return;
         }
 
         // Index page if searching is allowed and there is no back end user
-        if (Config::get('enableSearch') && $objPage->type == 'post' && !BE_USER_LOGGED_IN && !$objPage->noSearch)
-        {
+        if (Config::get('enableSearch') && $objPage->type == 'post' && !BE_USER_LOGGED_IN && !$objPage->noSearch) {
             // Index protected pages if enabled
-            if (Config::get('indexProtected') || (!FE_USER_LOGGED_IN && !$objPage->protected))
-            {
+            if (Config::get('indexProtected') || (!FE_USER_LOGGED_IN && !$objPage->protected)) {
                 $blnIndex = true;
 
                 // Do not index the page if certain parameters are set
-                foreach (array_keys($_GET) as $key)
-                {
-                    if (\in_array($key, $GLOBALS['TL_NOINDEX_KEYS']) || strncmp($key, 'page_', 5) === 0)
-                    {
+                foreach (array_keys($_GET) as $key) {
+                    if (\in_array($key, $GLOBALS['TL_NOINDEX_KEYS']) || strncmp($key, 'page_', 5) === 0) {
                         $blnIndex = false;
                         break;
                     }
                 }
 
-                if ($blnIndex)
-                {
-                    $arrData = array(
+                if ($blnIndex) {
+                    $arrData = [
                         'url'       => Environment::get('base') . Environment::get('relativeRequest'),
                         'content'   => $objResponse->getContent(),
                         'title'     => $objPage->pageTitle ?: $objPage->title,
                         'protected' => ($objPage->protected ? '1' : ''),
                         'groups'    => $objPage->groups,
                         'pid'       => $objPage->id,
-                        'language'  => $objPage->language
-                    );
+                        'language'  => $objPage->language,
+                    ];
 
                     Search::indexPage($arrData);
                 }
             }
         }
     }
+
 }

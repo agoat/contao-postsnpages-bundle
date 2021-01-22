@@ -1,5 +1,13 @@
 <?php
-
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
+ *
+ * @copyright  Arne Stappen (alias aGoat) 2021
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
+ */
 
 namespace Agoat\PostsnPagesBundle\EventListener;
 
@@ -25,21 +33,23 @@ use Contao\PageModel;
  */
 class RenderPostsAndPagesListener
 {
+
     public function __construct()
     {
     }
 
+
     /**
      * Render Post or Page content elements for a specific column
      *
-     * @param int $pageId
-     * @param string $column
+     * @param  int  $pageId
+     * @param  string  $column
+     *
      * @return string|null
      */
     public function __invoke(int $pageId, string $column): ?string
     {
-        /** @var PageModel $objPage */
-        global $objPage;
+        /** @var PageModel $objPage */ global $objPage;
 
         if ('post' === $objPage->type) {
             return $this->renderPost($pageId, $column);
@@ -48,55 +58,49 @@ class RenderPostsAndPagesListener
         }
     }
 
+
     /**
      * Render post content
      *
-     * @param mixed  $pageId      The page id
-     * @param string $section The name of the section
+     * @param  mixed  $pageId  The page id
+     * @param  string  $section  The name of the section
      *
      * @return string The module HTML markup
      */
-    protected function renderPost($pageId, $section='main')
+    protected function renderPost($pageId, $section = 'main')
     {
-        /** @var PageModel $objPage */
-        global $objPage;
+        /** @var PageModel $objPage */ global $objPage;
 
         // Set the item from the auto_item parameter
-        if (!isset($_GET['posts']) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
-        {
+        if (!isset($_GET['posts']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
             Input::setGet('posts', Input::get('auto_item'));
         }
 
         // Get post id/alias
         $strPost = \Input::get('posts');
 
-        if (!strlen($strPost))
-        {
-            switch($objPage->emptyPost)
-            {
+        if (!strlen($strPost)) {
+            switch ($objPage->emptyPost) {
                 case 'nothing':
                     return;
 
                 case 'recent':
                     $objArchives = ArchiveModel::findByPid($objPage->id);
 
-                    if (null === $objArchives)
-                    {
+                    if (null === $objArchives) {
                         break;
                     }
 
                     $objRecent = PostModel::findRecentPublishedByArchives($objArchives->fetchEach('id'));
 
-                    if (null === $objRecent)
-                    {
+                    if (null === $objRecent) {
                         break;
                     }
 
                     throw new RedirectResponseException(Posts::generatePostUrl($objRecent, false, true));
 
                 case 'page':
-                    if ($objPage->jumpTo && ($objTarget = $objPage->getRelated('jumpTo')) instanceof PageModel)
-                    {
+                    if ($objPage->jumpTo && ($objTarget = $objPage->getRelated('jumpTo')) instanceof PageModel) {
                         /** @var PageModel $objTarget */
                         throw new RedirectResponseException($objTarget->getAbsoluteUrl());
                     }
@@ -111,14 +115,12 @@ class RenderPostsAndPagesListener
         // Get published post
         $objPost = PostModel::findPublishedByIdOrAlias($strPost);
 
-        if (null === $objPost)
-        {
+        if (null === $objPost) {
             throw new PageNotFoundException('Page not found: ' . \Environment::get('uri'));
         }
 
         // Check the visibility
-        if (! Controller::isVisibleElement($objPost))
-        {
+        if (!Controller::isVisibleElement($objPost)) {
             return '';
         }
 
@@ -127,9 +129,8 @@ class RenderPostsAndPagesListener
         $strBuffer = $objPostContent->generate();
 
         // Disable indexing if protected
-        if ($objPostContent->protected && !preg_match('/^\s*<!-- indexer::stop/', $strBuffer))
-        {
-            $strBuffer = "\n<!-- indexer::stop -->". $strBuffer ."<!-- indexer::continue -->\n";
+        if ($objPostContent->protected && !preg_match('/^\s*<!-- indexer::stop/', $strBuffer)) {
+            $strBuffer = "\n<!-- indexer::stop -->" . $strBuffer . "<!-- indexer::continue -->\n";
         }
 
         return $strBuffer;
@@ -139,17 +140,16 @@ class RenderPostsAndPagesListener
     /**
      * Render page content
      *
-     * @param mixed  $pageId The page id
-     * @param string $section The name of the section
+     * @param  mixed  $pageId  The page id
+     * @param  string  $section  The name of the section
      *
      * @return string The module HTML markup
      */
-    protected function renderPage($pageId, $section='main')
+    protected function renderPage($pageId, $section = 'main')
     {
         $objContainer = ContainerModel::findPublishedByPidAndSection($pageId, $section);
 
-        if (null === $objContainer)
-        {
+        if (null === $objContainer) {
             return '';
         }
 
@@ -157,23 +157,19 @@ class RenderPostsAndPagesListener
         $intCount = 0;
         $intLast = $objContainer->count() - 1;
 
-        while ($objContainer->next())
-        {
+        while ($objContainer->next()) {
             /** @var ArticleModel $objRow */
             $objRow = $objContainer->current();
 
             // Add the "first" and "last" classes
-            if ($intCount == 0 || $intCount == $intLast)
-            {
-                $arrCss = array();
+            if ($intCount == 0 || $intCount == $intLast) {
+                $arrCss = [];
 
-                if ($intCount == 0)
-                {
+                if ($intCount == 0) {
                     $arrCss[] = 'first';
                 }
 
-                if ($intCount == $intLast)
-                {
+                if ($intCount == $intLast) {
                     $arrCss[] = 'last';
                 }
 
@@ -186,4 +182,5 @@ class RenderPostsAndPagesListener
 
         return $return;
     }
+
 }

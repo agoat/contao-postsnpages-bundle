@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -22,113 +22,106 @@ use Contao\PageModel;
 class ModuleContainer extends Module
 {
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'mod_container';
+    /**
+     * Template
+     *
+     * @var string
+     */
+    protected $strTemplate = 'mod_container';
 
-	/**
-	 * No markup
-	 * @var boolean
-	 */
-	protected $blnNoMarkup = false;
-
-
-	/**
-	 * Check whether the article is published
-	 *
-	 * @param boolean $blnNoMarkup
-	 *
-	 * @return string
-	 */
-	public function generate($blnNoMarkup=false)
-	{
-		if (TL_MODE == 'FE' && !BE_USER_LOGGED_IN && (!$this->published || ($this->start != '' && $this->start > time()) || ($this->stop != '' && $this->stop < time())))
-		{
-			return '';
-		}
-
-		$this->type = 'container';
-		$this->blnNoMarkup = $blnNoMarkup;
-
-		return parent::generate();
-	}
+    /**
+     * No markup
+     *
+     * @var boolean
+     */
+    protected $blnNoMarkup = false;
 
 
-	/**
-	 * Generate the module
-	 */
-	protected function compile()
-	{
-		/** @var PageModel $objPage */
-		global $objPage;
+    /**
+     * Check whether the article is published
+     *
+     * @param  boolean  $blnNoMarkup
+     *
+     * @return string
+     */
+    public function generate($blnNoMarkup = false)
+    {
+        if (TL_MODE == 'FE' && !BE_USER_LOGGED_IN && (!$this->published || ($this->start != '' && $this->start > time(
+                    )) || ($this->stop != '' && $this->stop < time()))) {
+            return '';
+        }
 
-		$id = 'container-' . $this->id;
+        $this->type = 'container';
+        $this->blnNoMarkup = $blnNoMarkup;
 
-		// Generate the CSS ID if it is not set
-		if (empty($this->cssID[0]))
-		{
-			$this->cssID = array($id, $this->cssID[1]);
-		}
+        return parent::generate();
+    }
 
-		$this->Template->section = $this->inColumn;
-		$this->Template->noMarkup = ($this->noMarkup || $this->blnNoMarkup);
 
-		// Add the modification date
-		$this->Template->timestamp = $this->tstamp;
-		$this->Template->date = \Date::parse($objPage->datimFormat, $this->tstamp);
+    /**
+     * Generate the module
+     */
+    protected function compile()
+    {
+        /** @var PageModel $objPage */ global $objPage;
 
-		$arrElements = array();
-		$objCte = \ContentModel::findPublishedByPidAndTable($this->id, 'tl_container');
+        $id = 'container-' . $this->id;
 
-		if ($objCte !== null)
-		{
-			$intCount = 0;
-			$intLast = $objCte->count() - 1;
+        // Generate the CSS ID if it is not set
+        if (empty($this->cssID[0])) {
+            $this->cssID = [$id, $this->cssID[1]];
+        }
 
-			while ($objCte->next())
-			{
-				$arrCss = array();
+        $this->Template->section = $this->inColumn;
+        $this->Template->noMarkup = ($this->noMarkup || $this->blnNoMarkup);
 
-				/** @var ContentModel $objRow */
-				$objRow = $objCte->current();
+        // Add the modification date
+        $this->Template->timestamp = $this->tstamp;
+        $this->Template->date = \Date::parse($objPage->datimFormat, $this->tstamp);
 
-				// Add the "first" and "last" classes (see #2583)
-				if ($intCount == 0 || $intCount == $intLast)
-				{
-					if ($intCount == 0)
-					{
-						$arrCss[] = 'first';
-					}
+        $arrElements = [];
+        $objCte = \ContentModel::findPublishedByPidAndTable($this->id, 'tl_container');
 
-					if ($intCount == $intLast)
-					{
-						$arrCss[] = 'last';
-					}
-				}
+        if ($objCte !== null) {
+            $intCount = 0;
+            $intLast = $objCte->count() - 1;
 
-				$objRow->classes = $arrCss;
-				$arrElements[] = $this->getContentElement($objRow, $this->strColumn);
-				++$intCount;
-			}
-		}
+            while ($objCte->next()) {
+                $arrCss = [];
 
-		$this->Template->elements = $arrElements;
+                /** @var ContentModel $objRow */
+                $objRow = $objCte->current();
 
-		if ($this->keywords != '')
-		{
-			$GLOBALS['TL_KEYWORDS'] .= (($GLOBALS['TL_KEYWORDS'] != '') ? ', ' : '') . $this->keywords;
-		}
+                // Add the "first" and "last" classes (see #2583)
+                if ($intCount == 0 || $intCount == $intLast) {
+                    if ($intCount == 0) {
+                        $arrCss[] = 'first';
+                    }
 
-		// HOOK: add custom logic
-		if (isset($GLOBALS['TL_HOOKS']['compileArticle']) && is_array($GLOBALS['TL_HOOKS']['compileArticle']))
-		{
-			foreach ($GLOBALS['TL_HOOKS']['compileArticle'] as $callback)
-			{
-				$this->import($callback[0]);
-				$this->{$callback[0]}->{$callback[1]}($this->Template, $this->arrData, $this);
-			}
-		}
-	}
+                    if ($intCount == $intLast) {
+                        $arrCss[] = 'last';
+                    }
+                }
+
+                $objRow->classes = $arrCss;
+                $arrElements[] = $this->getContentElement($objRow, $this->strColumn);
+                ++$intCount;
+            }
+        }
+
+        $this->Template->elements = $arrElements;
+
+        if ($this->keywords != '') {
+            $GLOBALS['TL_KEYWORDS'] .= (($GLOBALS['TL_KEYWORDS'] != '') ? ', ' : '') . $this->keywords;
+        }
+
+        // HOOK: add custom logic
+        if (isset($GLOBALS['TL_HOOKS']['compileArticle']) && is_array($GLOBALS['TL_HOOKS']['compileArticle'])) {
+            foreach ($GLOBALS['TL_HOOKS']['compileArticle'] as $callback) {
+                $this->import($callback[0]);
+                $this->{$callback[0]}->{$callback[1]}($this->Template, $this->arrData, $this);
+            }
+        }
+    }
+
 }

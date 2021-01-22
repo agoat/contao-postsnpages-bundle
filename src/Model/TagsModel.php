@@ -1,5 +1,13 @@
 <?php
-
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
+ *
+ * @copyright  Arne Stappen (alias aGoat) 2021
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
+ */
 
 namespace Agoat\PostsnPagesBundle\Model;
 
@@ -9,8 +17,10 @@ use Contao\Model\Collection;
 
 class TagsModel extends Model
 {
+
     /**
      * Table name
+     *
      * @var string
      */
     protected static $strTable = 'tl_tags';
@@ -19,8 +29,8 @@ class TagsModel extends Model
     /**
      * Find tags by their label(s)
      *
-     * @param array $tags    An array with labels
-     * @param array $arrOptions An optional options array
+     * @param  array  $tags  An array with labels
+     * @param  array  $arrOptions  An optional options array
      *
      * @return TagsModel|null A model or null if there are no tags
      */
@@ -29,8 +39,8 @@ class TagsModel extends Model
         $table = static::$strTable;
 
         foreach ($tags as $strTag) {
-            $arrColumns = array("$table.label=?");
-            $arrValues = array($strTag);
+            $arrColumns = ["$table.label=?"];
+            $arrValues = [$strTag];
         }
 
         return static::findOneBy($arrColumns, $arrValues, $arrOptions);
@@ -40,8 +50,8 @@ class TagsModel extends Model
     /**
      * Find tags by their archive
      *
-     * @param integer $archiveId The archive id
-     * @param array   $arrOptions An optional options array
+     * @param  integer  $archiveId  The archive id
+     * @param  array  $arrOptions  An optional options array
      *
      * @return Collection|TagsModel|null A collection of models or null if there are no tags in the archive
      */
@@ -49,8 +59,8 @@ class TagsModel extends Model
     {
         $table = static::$strTable;
 
-        $arrColumns = array("$table.archive=?");
-        $arrValues = array($archiveId);
+        $arrColumns = ["$table.archive=?"];
+        $arrValues = [$archiveId];
 
         if (!isset($arrOptions['order'])) {
             $arrOptions['order'] = "$table.label";
@@ -63,9 +73,9 @@ class TagsModel extends Model
     /**
      * Find published tags by their label and archive(s)
      *
-     * @param string        $label      The tag label
-     * @param integer|array $archiveIds The archive id or an array of archive ids
-     * @param array         $arrOptions  An optional options array
+     * @param  string  $label  The tag label
+     * @param  integer|array  $archiveIds  The archive id or an array of archive ids
+     * @param  array  $arrOptions  An optional options array
      *
      * @return Collection|TagsModel|null A collection of models or null if there are no articles in the archive
      */
@@ -74,11 +84,10 @@ class TagsModel extends Model
         $table = static::$strTable;
 
         if (is_array($archiveIds)) {
-            $arrColumns = array("$table.archive in ('" . implode("','", $archiveIds) . "')");
-
+            $arrColumns = ["$table.archive in ('" . implode("','", $archiveIds) . "')"];
         } else {
-            $arrColumns = array("$table.archive=?");
-            $arrValues = array($archiveIds);
+            $arrColumns = ["$table.archive=?"];
+            $arrValues = [$archiveIds];
         }
 
         $arrColumns[] = "$table.published='1' AND $table.label=?";
@@ -91,8 +100,8 @@ class TagsModel extends Model
     /**
      * Find and count tags by their archive
      *
-     * @param array $archiveIds An array of archive ids
-     * @param array $arrOptions An optional options array
+     * @param  array  $archiveIds  An array of archive ids
+     * @param  array  $arrOptions  An optional options array
      *
      * @return Collection|TagsModel|null A collection of models or null if there are no tags in archive
      */
@@ -100,7 +109,10 @@ class TagsModel extends Model
     {
         $table = static::$strTable;
 
-        $strQuery = "SELECT $table.label, COUNT($table.label) as count FROM $table WHERE $table.archive IN(" . implode(",", $archiveIds) . ") AND $table.published='1' GROUP BY $table.label";
+        $strQuery =
+            "SELECT $table.label, COUNT($table.label) as count FROM $table WHERE $table.archive IN(" . implode(",",
+                $archiveIds
+            ) . ") AND $table.published='1' GROUP BY $table.label";
 
         // Having (see #6446)
         if ($arrOptions['having'] !== null) {
@@ -137,7 +149,7 @@ class TagsModel extends Model
 
         $objResult = static::postFind($objResult);
 
-        $arrModels = array();
+        $arrModels = [];
 
         $strClass = \Model::getClassFromTable(static::$strTable);
 
@@ -151,4 +163,5 @@ class TagsModel extends Model
 
         return new \Model\Collection($arrModels, static::$strTable);
     }
+
 }

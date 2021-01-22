@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -21,166 +21,166 @@ use Contao\Backend;
 use Contao\PageModel;
 
 
-
 class PostLanguageRelationProvider extends AbstractLanguageRelationProvider implements LanguageRelationProviderInterface
 {
 
-	/**
+    /**
      * {@inheritdoc}
      */
-	public function getContext()
-	{
-		return 'post';
-	}
+    public function getContext()
+    {
+        return 'post';
+    }
 
-	/**
+
+    /**
      * {@inheritdoc}
      */
-	public function getDcaTable()
-	{
-		return 'tl_post';
-	}
+    public function getDcaTable()
+    {
+        return 'tl_post';
+    }
 
 
-	/**
+    /**
      * {@inheritdoc}
      */
-	public function getQueryName()
-	{
-		return 'posts';
-	}
+    public function getQueryName()
+    {
+        return 'posts';
+    }
 
 
-	public function build($id, $published)
-	{
-		$this->currentEntity = PostModel::findByPk($id);
+    public function build($id, $published)
+    {
+        $this->currentEntity = PostModel::findByPk($id);
 
-		if (null === $this->currentEntity) {
-			return null;
-		}
+        if (null === $this->currentEntity) {
+            return null;
+        }
 
-		$this->parentEntity = ArchiveModel::findByPk($this->currentEntity->pid);
+        $this->parentEntity = ArchiveModel::findByPk($this->currentEntity->pid);
 
-		$this->setRootLanguages($published, PageModel::findByPk($this->parentEntity->pid));
+        $this->setRootLanguages($published, PageModel::findByPk($this->parentEntity->pid));
 
-		return new LanguageRelation(
-			$this,
-			$this->currentLanguage,
-			array_keys($this->rootPages),
-			$this->getRelations($published)
-		);
-	}
-
-
-	public function getFrontendUrl($related)
-	{
-		return Posts::generatePostUrl($related);
-	}
+        return new LanguageRelation($this,
+            $this->currentLanguage,
+            array_keys($this->rootPages),
+            $this->getRelations($published)
+        );
+    }
 
 
-	public function getAlternativeUrl($language, $onlyRoot)
-	{
-		$alternative = $this->getAlternative($language, $onlyRoot);
-
-		if (null === $alternative) {
-			return null;
-		}
-
-		return $alternative->getFrontendUrl();
-	}
+    public function getFrontendUrl($related)
+    {
+        return Posts::generatePostUrl($related);
+    }
 
 
-	public function getAlternativeTitle($language, $onlyRoot)
-	{
-		$alternative = $this->getAlternative($language, $onlyRoot);
+    public function getAlternativeUrl($language, $onlyRoot)
+    {
+        $alternative = $this->getAlternative($language, $onlyRoot);
 
-		if (null === $alternative) {
-			return null;
-		}
+        if (null === $alternative) {
+            return null;
+        }
 
-		return $alternative->title;
-	}
-
-
-	public function getEditUrl($related)
-	{
-		return Backend::addToUrl('id='.$related->id);
-	}
+        return $alternative->getFrontendUrl();
+    }
 
 
-	public function getViewUrl($related)
-	{
-		return Backend::addToUrl('id='.$related->id);
-	}
+    public function getAlternativeTitle($language, $onlyRoot)
+    {
+        $alternative = $this->getAlternative($language, $onlyRoot);
+
+        if (null === $alternative) {
+            return null;
+        }
+
+        return $alternative->title;
+    }
 
 
-	public function supportsPicker()
-	{
-		return true;
-	}
+    public function getEditUrl($related)
+    {
+        return Backend::addToUrl('id=' . $related->id);
+    }
 
 
-	public function getPickerUrl($language)
-	{
-		$options = [
-			'rootNodes' => $this->rootPages[$language]->id
-		];
-
-		return \System::getContainer()->get('contao.picker.builder')->getUrl('post', $options);
-	}
+    public function getViewUrl($related)
+    {
+        return Backend::addToUrl('id=' . $related->id);
+    }
 
 
-	public function getCreateUrl($language)
-	{
-		$this->setParentRelations(false);
-
-		if (!array_key_exists($language, $this->parentRelations)) {
-			return null;
-		}
-
-		return Backend::addToUrl('act=copy&mode=2&id='.$this->currentEntity->id.'&rid='.$this->currentEntity->relation.'&pid='.$this->parentRelations[$language]->id);
-	}
+    public function supportsPicker()
+    {
+        return true;
+    }
 
 
-	private function setParentRelations($published)
-	{
-		if (!isset($this->parentRelations)) {
-			$this->parentRelations = array();
+    public function getPickerUrl($language)
+    {
+        $options = [
+            'rootNodes' => $this->rootPages[$language]->id,
+        ];
 
-			$relation = $this->getRelations($published, $this->parentEntity);
-
-			if (null !== $relation) {
-				foreach ($relation as $model) {
-					$this->parentRelations[$model->language] = $model;
-				}
-			}
-		}
-	}
+        return \System::getContainer()->get('contao.picker.builder')->getUrl('post', $options);
+    }
 
 
-	private function getAlternative($language, $onlyRoot)
-	{
-		if (!$onlyRoot) {
-			$this->setParentRelations(false);
+    public function getCreateUrl($language)
+    {
+        $this->setParentRelations(false);
 
-			if (!isset($this->alternativeRelations)) {
-				$this->alternativeRelations = array();
+        if (!array_key_exists($language, $this->parentRelations)) {
+            return null;
+        }
 
-				$relation = $this->getRelations(true, PageModel::findByPk($this->parentEntity->pid));
+        return Backend::addToUrl('act=copy&mode=2&id=' . $this->currentEntity->id . '&rid=' . $this->currentEntity->relation . '&pid=' . $this->parentRelations[$language]->id
+        );
+    }
 
-				if (null !== $relation) {
-					foreach ($relation as $model) {
-						$this->alternativeRelations[$model->language] = $model;
-					}
-				}
-			}
 
-			if (isset($this->alternativeRelations[$language]) && 'root' != $this->alternativeRelations[$language]->type) {
-				return $this->alternativeRelations[$language];
-			}
-		}
+    private function setParentRelations($published)
+    {
+        if (!isset($this->parentRelations)) {
+            $this->parentRelations = [];
 
-		return PageModel::findFirstPublishedByPid($this->rootPages[$language]->id);
-	}
+            $relation = $this->getRelations($published, $this->parentEntity);
+
+            if (null !== $relation) {
+                foreach ($relation as $model) {
+                    $this->parentRelations[$model->language] = $model;
+                }
+            }
+        }
+    }
+
+
+    private function getAlternative($language, $onlyRoot)
+    {
+        if (!$onlyRoot) {
+            $this->setParentRelations(false);
+
+            if (!isset($this->alternativeRelations)) {
+                $this->alternativeRelations = [];
+
+                $relation = $this->getRelations(true, PageModel::findByPk($this->parentEntity->pid));
+
+                if (null !== $relation) {
+                    foreach ($relation as $model) {
+                        $this->alternativeRelations[$model->language] = $model;
+                    }
+                }
+            }
+
+            if (isset($this->alternativeRelations[$language]) && 'root' != $this->alternativeRelations[$language]->type) {
+                return $this->alternativeRelations[$language];
+            }
+        }
+
+        return PageModel::findFirstPublishedByPid($this->rootPages[$language]->id);
+    }
 
 }

@@ -1,5 +1,13 @@
 <?php
-
+/*
+ * Posts'n'pages extension for Contao Open Source CMS.
+ *
+ * @copyright  Arne Stappen (alias aGoat) 2021
+ * @package    contao-postsnpages
+ * @author     Arne Stappen <mehh@agoat.xyz>
+ * @link       https://agoat.xyz
+ * @license    LGPL-3.0
+ */
 
 namespace Agoat\PostsnPagesBundle\EventListener;
 
@@ -16,6 +24,7 @@ use Contao\PageModel;
  */
 class GetRootPageListener
 {
+
     public function __invoke(string $table, int $id): ?int
     {
         if ('tl_post' == $table) {
@@ -38,7 +47,6 @@ class GetRootPageListener
             }
 
             return $objPage->rootId;
-
         } elseif ('tl_container' == $table) {
             $objContainer = ContainerModel::findByPk($id);
 
@@ -53,7 +61,6 @@ class GetRootPageListener
             }
 
             return $objPage->rootId;
-
         } elseif ('tl_static' == $table) {
             $objStatic = StaticModel::findByPk($id);
 
@@ -64,4 +71,5 @@ class GetRootPageListener
             return $objStatic->rootId;
         }
     }
+
 }

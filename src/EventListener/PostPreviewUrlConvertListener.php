@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PostPreviewUrlConvertListener
 {
+
     /**
      * @var RequestStack
      */
@@ -30,9 +31,10 @@ class PostPreviewUrlConvertListener
      */
     private $framework;
 
+
     /**
-     * @param RequestStack    $requestStack
-     * @param ContaoFramework $framework
+     * @param  RequestStack  $requestStack
+     * @param  ContaoFramework  $framework
      */
     public function __construct(RequestStack $requestStack, ContaoFramework $framework)
     {
@@ -40,10 +42,11 @@ class PostPreviewUrlConvertListener
         $this->framework = $framework;
     }
 
+
     /**
      * Modifies the front end preview URL.
      *
-     * @param PreviewUrlConvertEvent $event
+     * @param  PreviewUrlConvertEvent  $event
      */
     public function onPreviewUrlConvert(PreviewUrlConvertEvent $event): void
     {
@@ -60,13 +63,14 @@ class PostPreviewUrlConvertListener
         /** @var Posts $postAdapter */
         $postAdapter = $this->framework->getAdapter(Posts::class);
 
-        $event->setUrl($request->getSchemeAndHttpHost().'/'.$postAdapter->generatePostUrl($postModel));
+        $event->setUrl($request->getSchemeAndHttpHost() . '/' . $postAdapter->generatePostUrl($postModel));
     }
+
 
     /**
      * Returns the event model.
      *
-     * @param Request $request
+     * @param  Request  $request
      *
      * @return PostModel|null
      */
@@ -81,4 +85,5 @@ class PostPreviewUrlConvertListener
 
         return $adapter->findByPk($request->query->get('post'));
     }
+
 }

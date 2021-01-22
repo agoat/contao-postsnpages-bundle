@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PagePreviewUrlCreateListener
 {
+
     /**
      * @var RequestStack
      */
@@ -29,9 +30,10 @@ class PagePreviewUrlCreateListener
      */
     private $framework;
 
+
     /**
-     * @param RequestStack    $requestStack
-     * @param ContaoFramework $framework
+     * @param  RequestStack  $requestStack
+     * @param  ContaoFramework  $framework
      */
     public function __construct(RequestStack $requestStack, ContaoFramework $framework)
     {
@@ -39,16 +41,17 @@ class PagePreviewUrlCreateListener
         $this->framework = $framework;
     }
 
+
     /**
      * Adds a query to the front end preview URL.
      *
-     * @param PreviewUrlCreateEvent $event
+     * @param  PreviewUrlCreateEvent  $event
      *
      * @throws \RuntimeException
      */
     public function onPreviewUrlCreate(PreviewUrlCreateEvent $event): void
     {
-		if (!$this->framework->isInitialized() || 'pages' !== $event->getKey()) {
+        if (!$this->framework->isInitialized() || 'pages' !== $event->getKey()) {
             return;
         }
 
@@ -62,14 +65,15 @@ class PagePreviewUrlCreateListener
             return;
         }
 
-        $event->setQuery('page='.$containerModel->pid);
+        $event->setQuery('page=' . $containerModel->pid);
     }
+
 
     /**
      * Returns the ID.
      *
-     * @param PreviewUrlCreateEvent $event
-     * @param Request               $request
+     * @param  PreviewUrlCreateEvent  $event
+     * @param  Request  $request
      *
      * @return int|string
      */
@@ -81,4 +85,5 @@ class PagePreviewUrlCreateListener
 
         return $event->getId();
     }
+
 }

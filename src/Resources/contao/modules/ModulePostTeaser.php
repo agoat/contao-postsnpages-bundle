@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -22,76 +22,72 @@ use Patchwork\Utf8;
 class ModulePostTeaser extends ModulePost
 {
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'mod_postteaser';
+    /**
+     * Template
+     *
+     * @var string
+     */
+    protected $strTemplate = 'mod_postteaser';
 
 
-	/**
-	 * Do not render the module if a post is called directly
-	 *
-	 * @return string
-	 */
-	public function generate()
-	{
-		if (TL_MODE == 'BE')
-		{
-			/** @var BackendTemplate $objTemplate */
-			$objTemplate = new BackendTemplate('be_wildcard');
+    /**
+     * Do not render the module if a post is called directly
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        if (TL_MODE == 'BE') {
+            /** @var BackendTemplate $objTemplate */
+            $objTemplate = new BackendTemplate('be_wildcard');
 
-			$objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
-			$objTemplate->title = $this->headline;
-			$objTemplate->id = $this->id;
-			$objTemplate->link = $this->name;
-			$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
+            $objTemplate->title = $this->headline;
+            $objTemplate->id = $this->id;
+            $objTemplate->link = $this->name;
+            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
 
-			return $objTemplate->parse();
-		}
+            return $objTemplate->parse();
+        }
 
-		// Don't show teasers when a post is called directly
-		if ((isset($_GET['posts']) || (Config::get('useAutoItem') && isset($_GET['auto_item']))))
-		{
-			return '';
-		}
+        // Don't show teasers when a post is called directly
+        if ((isset($_GET['posts']) || (Config::get('useAutoItem') && isset($_GET['auto_item'])))) {
+            return '';
+        }
 
-		return parent::generate();
-	}
+        return parent::generate();
+    }
 
 
-	/**
-	 * Generate the module
-	 */
-	protected function compile()
-	{
-		// Get published posts
-		$objPosts = $this->getPosts();
+    /**
+     * Generate the module
+     */
+    protected function compile()
+    {
+        // Get published posts
+        $objPosts = $this->getPosts();
 
-		if ($objPosts === null)
-		{
-			return;
-		}
+        if ($objPosts === null) {
+            return;
+        }
 
-		// Set custom post template
-		$this->postTemplate = $this->teaserTpl;
+        // Set custom post template
+        $this->postTemplate = $this->teaserTpl;
 
-		$arrPosts = array();
+        $arrPosts = [];
 
-		if ($objPosts !== null)
-		{
-			while ($objPosts->next())
-			{
-				// Render the teasers
-				$arrPosts[] = $this->renderPost($objPosts->current(), true, false);
-			}
-		}
+        if ($objPosts !== null) {
+            while ($objPosts->next()) {
+                // Render the teasers
+                $arrPosts[] = $this->renderPost($objPosts->current(), true, false);
+            }
+        }
 
-		if ($this->sortPosts === 'random')
-		{
+        if ($this->sortPosts === 'random') {
             shuffle($arrPosts);
-		}
+        }
 
-		$this->Template->posts = $arrPosts;
-	}
+        $this->Template->posts = $arrPosts;
+    }
+
 }

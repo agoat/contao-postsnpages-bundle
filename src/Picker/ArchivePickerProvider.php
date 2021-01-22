@@ -2,7 +2,7 @@
 /*
  * Posts'n'pages extension for Contao Open Source CMS.
  *
- * @copyright  Arne Stappen (alias aGoat) 2017
+ * @copyright  Arne Stappen (alias aGoat) 2021
  * @package    contao-postsnpages
  * @author     Arne Stappen <mehh@agoat.xyz>
  * @link       https://agoat.xyz
@@ -27,8 +27,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @author Arne Stappen <https://github.com/agoat>
  */
-class ArchivePickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface, FrameworkAwareInterface
+class ArchivePickerProvider extends AbstractInsertTagPickerProvider implements DcaPickerProviderInterface,
+    FrameworkAwareInterface
 {
+
     use FrameworkAwareTrait;
 
     /**
@@ -36,20 +38,27 @@ class ArchivePickerProvider extends AbstractInsertTagPickerProvider implements D
      */
     private $security;
 
-    public function __construct(FactoryInterface $menuFactory, RouterInterface $router, ?TranslatorInterface $translator, Security $security)
-    {
+
+    public function __construct(
+        FactoryInterface $menuFactory,
+        RouterInterface $router,
+        ?TranslatorInterface $translator,
+        Security $security
+    ) {
         parent::__construct($menuFactory, $router, $translator);
 
         $this->security = $security;
     }
 
-	/**
+
+    /**
      * {@inheritdoc}
      */
     public function getName()
     {
         return 'archivePicker';
     }
+
 
     /**
      * {@inheritdoc}
@@ -59,17 +68,19 @@ class ArchivePickerProvider extends AbstractInsertTagPickerProvider implements D
         return in_array($context, ['archive'], true) && $this->security->isGranted('contao_user.modules', 'archive');
     }
 
+
     /**
      * {@inheritdoc}
      */
     public function supportsValue(PickerConfig $config)
     {
-		if ('archive' === $config->getContext()) {
+        if ('archive' === $config->getContext()) {
             return is_numeric($config->getValue());
         }
 
         return false;
     }
+
 
     /**
      * {@inheritdoc}
@@ -79,48 +90,51 @@ class ArchivePickerProvider extends AbstractInsertTagPickerProvider implements D
         return 'tl_archive';
     }
 
+
     /**
      * {@inheritdoc}
      */
     public function getDcaAttributes(PickerConfig $config)
     {
         $value = $config->getValue();
-		$attributes = ['fieldType' => 'radio'];
+        $attributes = ['fieldType' => 'radio'];
 
-		if ('archive' === $config->getContext()) {
-			if ($fieldType = $config->getExtra('fieldType')) {
+        if ('archive' === $config->getContext()) {
+            if ($fieldType = $config->getExtra('fieldType')) {
                 $attributes['fieldType'] = $fieldType;
             }
 
-			if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
-				$attributes['rootNodes'] = $rootNodes;
-			}
+            if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
+                $attributes['rootNodes'] = $rootNodes;
+            }
 
-			if ($source = $config->getExtra('source')) {
-				$attributes['preserveRecord'] = $source;
-			}
+            if ($source = $config->getExtra('source')) {
+                $attributes['preserveRecord'] = $source;
+            }
 
-			if ($value) {
-				$intval = function ($val) {
-                    return (int) $val;
+            if ($value) {
+                $intval = function ($val) {
+                    return (int)$val;
                 };
 
-				$attributes['value'] = array_map('intval', explode(',', $value));
-			}
+                $attributes['value'] = array_map('intval', explode(',', $value));
+            }
 
-			return $attributes;
-		}
+            return $attributes;
+        }
 
-		return $attributes;
+        return $attributes;
     }
+
 
     /**
      * {@inheritdoc}
      */
     public function convertDcaValue(PickerConfig $config, $value)
     {
-        return (int) $value;
+        return (int)$value;
     }
+
 
     /**
      * {@inheritdoc}
@@ -130,13 +144,16 @@ class ArchivePickerProvider extends AbstractInsertTagPickerProvider implements D
         return ['do' => 'posts'];
     }
 
+
     protected function getDataContainer(): string
     {
         return 'Table';
     }
 
+
     protected function getDefaultInsertTag(): string
     {
         return '{{non_existing_insert_tag::%s}}';
     }
+
 }
