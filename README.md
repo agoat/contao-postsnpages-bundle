@@ -2,19 +2,19 @@
 
 [![Version](https://img.shields.io/packagist/v/agoat/contao-postsnpages.svg?style=flat-square)](http://packagist.org/packages/agoat/contao-postsnpages)
 [![License](https://img.shields.io/packagist/l/agoat/contao-postsnpages.svg?style=flat-square)](http://packagist.org/packages/agoat/contao-postsnpages)
-[![Downloads](https://img.shields.io/packagist/dt/agoat/contao-postsnpages.svg?style=flat-square)](http://packagist.org/packages/agoat/contao-postsnpages) 
+[![Downloads](https://img.shields.io/packagist/dt/agoat/contao-postsnpages.svg?style=flat-square)](http://packagist.org/packages/agoat/contao-postsnpages)
 
 ## About
-An alternative structure to manage content in contao - similar to Wordpress but with a more comprehensive approach. It's based on the idea that a website basically contains 3 types of content blocks:
+An alternative structure to manage content in contao - similar to Wordpress but with a more comprehensive approach. It's based on the idea that a website basically contains 3 types of content:
 
 #### Post content
 Content that refers to an article or topic (which is typical for blogs), which can be called under a separate url, but which are also listed in an overview within a page (usually as a teaser).
 
 #### Page content
-Content that refers to a single page and only available on this page (like team pages, contact pages).
+Content that refers to a single page and which is only available on this page (like team pages, contact pages).
 
 #### Static content
-Content that are integrated as modules in the page layout and which can be seen on several or all pages (like footers with copyright).
+Content that is integrated as a module in the page layout and which can be seen on several or all pages (like footers or copyright informations).
 
 
 ## Notice
