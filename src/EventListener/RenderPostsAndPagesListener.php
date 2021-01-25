@@ -49,7 +49,8 @@ class RenderPostsAndPagesListener
      */
     public function __invoke(int $pageId, string $column): ?string
     {
-        /** @var PageModel $objPage */ global $objPage;
+        /** @var PageModel $objPage */
+        global $objPage;
 
         if ('post' === $objPage->type) {
             return $this->renderPost($pageId, $column);
@@ -69,7 +70,8 @@ class RenderPostsAndPagesListener
      */
     protected function renderPost($pageId, $section = 'main')
     {
-        /** @var PageModel $objPage */ global $objPage;
+        /** @var PageModel $objPage */
+        global $objPage;
 
         // Set the item from the auto_item parameter
         if (!isset($_GET['posts']) && \Config::get('useAutoItem') && isset($_GET['auto_item'])) {
@@ -77,12 +79,12 @@ class RenderPostsAndPagesListener
         }
 
         // Get post id/alias
-        $strPost = \Input::get('posts');
+        $strPost = Input::get('posts');
 
         if (!strlen($strPost)) {
             switch ($objPage->emptyPost) {
                 case 'nothing':
-                    return;
+                    return '';
 
                 case 'recent':
                     $objArchives = ArchiveModel::findByPid($objPage->id);

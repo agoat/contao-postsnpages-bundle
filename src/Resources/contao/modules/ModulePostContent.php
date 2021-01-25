@@ -36,7 +36,8 @@ class ModulePostContent extends ModulePost
      */
     protected function compile()
     {
-        /** @var PageModel $objPage */ global $objPage;
+        /** @var PageModel $objPage */
+        global $objPage;
 
         // Check protection (TODO)
 

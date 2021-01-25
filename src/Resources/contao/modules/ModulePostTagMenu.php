@@ -66,7 +66,8 @@ class ModulePostTagMenu extends Module
      */
     protected function compile()
     {
-        /** @var PageModel $objPage */ global $objPage;
+        /** @var PageModel $objPage */
+        global $objPage;
 
         // Show tags from particular archive(s)
         if (empty($varPids = StringUtil::deserialize($this->archive))) {

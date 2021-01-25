@@ -1,5 +1,10 @@
-<?php $this->extend('block_searchable'); ?>
+<?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-  <?php if (is_array($this->posts)) echo implode('', $this->posts);  ?>
+   <?php if (empty($this->posts)): ?>
+    <p class="empty"><?= $this->empty ?></p>
+  <?php else: ?>
+    <?php if (is_array($this->posts)) echo implode('', $this->posts);  ?>
+    <?= $this->pagination ?>
+  <?php endif; ?>
 <?php $this->endblock(); ?>

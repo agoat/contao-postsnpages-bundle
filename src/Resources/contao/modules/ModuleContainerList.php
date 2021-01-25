@@ -74,7 +74,8 @@ class ModuleContainerList extends Module
      */
     protected function compile()
     {
-        /** @var PageModel $objPage */ global $objPage;
+        /** @var PageModel $objPage */
+        global $objPage;
 
         if (!strlen($this->section)) {
             $this->section = 'main';

@@ -20,8 +20,6 @@ use Contao\System;
 $bundles = System::getContainer()->getParameter('kernel.bundles');
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postcontent']  = '{title_legend},name,headline,type;{config_legend},featured,numberOfItems,skipFirst,perPage,showTeaser;{archive_legend},archive;{sort_legend},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['postreader']  = '{title_legend},name,headline,type;{config_legend},showTeaser;{template_legend:hide},postTpl,customTpl;{image_legend:hide},imgSize;{related_legend},addRelated;' . (isset($bundles['ContaoCommentsBundle']) ? '{comment_legend},addComments;' : '') . '{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postteaser']  = '{title_legend},name,headline,type;{config_legend},featured,numberOfItems,skipFirst,perPage;{archive_legend},archive;{sort_legend},sortPosts, sortOrder;{filter_legend:hide},filterByCategory;{redirect_legend},' . (isset($bundles['AgoatPermalinkBundle']) ? '' : 'jumpTo,') . 'alternativeLink;{image_legend:hide},imgSize;{template_legend:hide},teaserTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['postcomments']  = '{title_legend},name,headline,type;{comment_legend},com_order,perPage,com_moderate,com_bbcode,com_protected,com_requireLogin,com_disableCaptcha;{template_legend:hide},com_template,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
@@ -34,10 +32,9 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['containerlist']  = '{title_legend},
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'] = array_merge
 (
 	$GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'],
-	array('filterByCategory', 'addRelated')
+	array('filterByCategory')
 );
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['filterByCategory'] = 'category';
-$GLOBALS['TL_DCA']['tl_module']['subpalettes']['addRelated'] = 'relatedModule';
 
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['readerModule'] = array
@@ -46,20 +43,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['readerModule'] = array
 	'exclude'                 => true,
 	'inputType'               => 'select',
 	'options_callback'        => array('tl_module_posts', 'getReaderModules'),
-	'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
-	'eval'                    => array('mandatory'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50 wizard'),
-	'wizard' => array
-	(
-		array('tl_module_posts', 'editModule')
-	),
-	'sql'                     => "int(10) unsigned NOT NULL default '0'"
-);
-$GLOBALS['TL_DCA']['tl_module']['fields']['relatedModule'] = array
-(
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['relatedModule'],
-	'exclude'                 => true,
-	'inputType'               => 'select',
-	'options_callback'        => array('tl_module_posts', 'getRelatedModules'),
 	'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
 	'eval'                    => array('mandatory'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50 wizard'),
 	'wizard' => array
@@ -221,14 +204,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['sortOrder'] = array
 	),
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "varchar(16) NOT NULL default ''"
-);
-$GLOBALS['TL_DCA']['tl_module']['fields']['addRelated'] = array
-(
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['addRelated'],
-	'exclude'                 => true,
-	'inputType'               => 'checkbox',
-	'eval'                    => array('submitOnChange'=>true),
-	'sql'                     => "char(1) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_module']['fields']['addComments'] = array
 (

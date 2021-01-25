@@ -15,9 +15,12 @@ use Agoat\PostsnPagesBundle\Model\ArchiveModel;
 use Agoat\PostsnPagesBundle\Model\PostModel;
 use Agoat\PostsnPagesBundle\Model\TagsModel;
 use Contao\CommentsModel;
+use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Date;
+use Contao\Environment;
 use Contao\FilesModel;
 use Contao\FrontendTemplate;
+use Contao\Input;
 use Contao\Model\Collection;
 use Contao\Module;
 use Contao\ModuleModel;
@@ -39,7 +42,8 @@ abstract class ModulePost extends Module
      */
     protected function getPosts()
     {
-        /** @var PageModel $objPage */ global $objPage;
+        /** @var PageModel $objPage */
+        global $objPage;
 
         // Show the posts from particular archive(s)
         if (empty($varPids = StringUtil::deserialize($this->archive))) {
@@ -61,6 +65,13 @@ abstract class ModulePost extends Module
             $blnFeatured = null;
         }
 
+        // Handle category filter
+        if ($this->filterByCategory) {
+            $strCategory = $this->category;
+        }
+
+        $this->totalPosts = $hardLimit = PostModel::countPublishedByArchivesAndFeaturedAndCategory($varPids, $blnFeatured, $strCategory);
+
         $arrOptions = [];
 
         // Handle sorting
@@ -68,14 +79,10 @@ abstract class ModulePost extends Module
             $arrOptions['order'] = $this->sortPosts . ' ' . (($this->sortOrder == 'descending') ? 'DESC' : 'ASC');
         }
 
-        // Handle category filter
-        if ($this->filterByCategory) {
-            $strCategory = $this->category;
-        }
-
         // Maximum number of items
         if ($this->numberOfItems > 0) {
             $arrOptions['limit'] = intval($this->numberOfItems);
+            $hardLimit = min($arrOptions['limit'], $this->totalPosts);
         }
 
         // Skip items
@@ -83,8 +90,32 @@ abstract class ModulePost extends Module
             $arrOptions['offset'] = intval($this->skipFirst);
         }
 
+        // Items per page
+        if ($this->perPage > 0) {
+            // Get the current page
+            $id = 'page_n' . $this->id;
+            $page = Input::get($id) ?? 1;
+
+            // Throw error if the page number is out of range
+            if ($page < 1 || $page > max(ceil($hardLimit / $this->perPage), 1)) {
+                throw new PageNotFoundException('Page not found: ' . Environment::get('uri'));
+            }
+
+            $arrOptions['offset'] += (max($page, 1) - 1) * $this->perPage;
+            $arrOptions['limit'] = intval($this->perPage);
+
+            // Overall limit
+            if ($arrOptions['offset'] + $arrOptions['limit'] >= $hardLimit) {
+                $arrOptions['limit'] = $hardLimit - $arrOptions['offset'];
+            }
+        }
+
         // Return published articles
-        return PostModel::findPublishedByIdsAndFeaturedAndCategory($varPids, $blnFeatured, $strCategory, $arrOptions);
+        return PostModel::findPublishedByArchivesAndFeaturedAndCategory($varPids,
+            $blnFeatured,
+            $strCategory,
+            $arrOptions
+        );
     }
 
 
@@ -97,8 +128,8 @@ abstract class ModulePost extends Module
      */
     protected function getTaggedPosts($strTag)
     {
-        /** @var PageModel $objPage */ global $objPage;
-
+        /** @var PageModel $objPage */
+        global $objPage;
 
         // Get posts tags menu settings (archives)
         $moduleTagsMenu = ModuleModel::findById($this->tagmenuModule);
@@ -131,6 +162,8 @@ abstract class ModulePost extends Module
             $blnFeatured = null;
         }
 
+        $this->totalPosts = $hardLimit = PostModel::countPublishedByIdsAndFeatured($varIds, $blnFeatured);
+
         $arrOptions = [];
 
         // Handle sorting
@@ -141,11 +174,32 @@ abstract class ModulePost extends Module
         // Maximum number of items
         if ($this->numberOfItems > 0) {
             $arrOptions['limit'] = intval($this->numberOfItems);
+            $hardLimit = min($arrOptions['limit'], $this->totalPosts);
         }
 
         // Skip items
         if ($this->skipFirst > 0) {
             $arrOptions['offset'] = intval($this->skipFirst);
+        }
+
+        // Items per page
+        if ($this->perPage > 0) {
+            // Get the current page
+            $id = 'page_n' . $this->id;
+            $page = Input::get($id) ?? 1;
+
+            // Throw error if the page number is out of range
+            if ($page < 1 || $page > max(ceil($hardLimit / $this->perPage), 1)) {
+                throw new PageNotFoundException('Page not found: ' . Environment::get('uri'));
+            }
+
+            $arrOptions['offset'] += (max($page, 1) - 1) * $this->perPage;
+            $arrOptions['limit'] = intval($this->perPage);
+
+            // Overall limit
+            if ($arrOptions['offset'] + $arrOptions['limit'] >= $hardLimit) {
+                $arrOptions['limit'] = $hardLimit - $arrOptions['offset'];
+            }
         }
 
         // Return published articles
@@ -170,6 +224,7 @@ abstract class ModulePost extends Module
 
         $varIds = StringUtil::deserialize($objPost->related);
 
+        $this->totalPosts = $hardLimit = PostModel::countPublishedByIds($varIds);
         $arrOptions = [];
 
         // Handle sorting
@@ -180,11 +235,32 @@ abstract class ModulePost extends Module
         // Maximum number of items
         if ($this->numberOfItems > 0) {
             $arrOptions['limit'] = intval($this->numberOfItems);
+            $hardLimit = min($arrOptions['limit'], $this->totalPosts);
         }
 
         // Skip items
         if ($this->skipFirst > 0) {
             $arrOptions['offset'] = intval($this->skipFirst);
+        }
+
+        // Items per page
+        if ($this->perPage > 0) {
+            // Get the current page
+            $id = 'page_n' . $this->id;
+            $page = Input::get($id) ?? 1;
+
+            // Throw error if the page number is out of range
+            if ($page < 1 || $page > max(ceil($hardLimit / $this->perPage), 1)) {
+                throw new PageNotFoundException('Page not found: ' . Environment::get('uri'));
+            }
+
+            $arrOptions['offset'] += (max($page, 1) - 1) * $this->perPage;
+            $arrOptions['limit'] = intval($this->perPage);
+
+            // Overall limit
+            if ($arrOptions['offset'] + $arrOptions['limit'] >= $hardLimit) {
+                $arrOptions['limit'] = $hardLimit - $arrOptions['offset'];
+            }
         }
 
         // Return published articles
@@ -203,7 +279,8 @@ abstract class ModulePost extends Module
      */
     protected function renderPost($objPost, $blnTeaser = false, $blnContent = true)
     {
-        /** @var PageModel $objPage */ global $objPage;
+        /** @var PageModel $objPage */
+        global $objPage;
 
         [$strId, $strClass] = StringUtil::deserialize($objPost->cssID, true);
         [$lat, $long] = StringUtil::deserialize($objPost->latlong);
@@ -275,10 +352,9 @@ abstract class ModulePost extends Module
                 $intCCount = CommentsModel::countPublishedBySourceAndParent('tl_posts', $objPost->id);
 
                 $objPostTemplate->ccount = $intCCount;
-                $objPostTemplate->comments =
-                    ($intCCount > 0) ? sprintf($GLOBALS['TL_LANG']['MSC']['commentCount'],
-                        $intCCount
-                    ) : $GLOBALS['TL_LANG']['MSC']['noComments'];
+                $objPostTemplate->comments = ($intCCount > 0) ? sprintf($GLOBALS['TL_LANG']['MSC']['commentCount'],
+                    $intCCount
+                ) : $GLOBALS['TL_LANG']['MSC']['noComments'];
             }
         }
 

@@ -126,7 +126,6 @@ if (TL_MODE == 'BE') {
 /**
  * Models
  */
-
 $GLOBALS['TL_MODELS']['tl_archive'] = \Agoat\PostsnPagesBundle\Model\ArchiveModel::class;
 $GLOBALS['TL_MODELS']['tl_container'] = \Agoat\PostsnPagesBundle\Model\ContainerModel::class;
 $GLOBALS['TL_MODELS']['tl_post'] = \Agoat\PostsnPagesBundle\Model\PostModel::class;

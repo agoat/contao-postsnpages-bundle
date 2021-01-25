@@ -81,9 +81,32 @@ class PostModel extends Model
         return static::findBy($arrColumns, $arrValues, $arrOptions);
     }
 
+ /**
+     * Count published posts by their ids
+     *
+     * @param  integer|array  $ids  The post ids
+     * @param  array  $arrOptions  An optional options array
+     *
+     * @return int|null The number of posts or null if there are no posts
+     */
+    public static function countPublishedByIds($ids): ?int
+    {
+        $table = static::$strTable;
+
+        if (is_array($ids)) {
+            $arrColumns = ["$table.id in ('" . implode("','", $ids) . "')"];
+            $arrValues = [];
+        } else {
+            $arrColumns = ["$table.id=?"];
+            $arrValues = [$ids];
+        }
+
+        return static::countBy($arrColumns, $arrValues);
+    }
+
 
     /**
-     * Find published posts by their pids
+     * Find recent published post by the Archive id
      *
      * @param  integer|array  $archiveIds  The post pids (archive ids)
      * @param  array  $arrOptions  An optional options array
@@ -122,12 +145,12 @@ class PostModel extends Model
      * Find published posts by their ids and featured status
      *
      * @param  integer|array  $ids  The post id(s)
-     * @param  boolean  $featured  True for featured posts
+     * @param  boolean|null  $featured  True for featured posts
      * @param  array  $arrOptions  An optional options array
      *
      * @return Collection|PostModel|null A collection of models or null if there are no articles in the given column
      */
-    public static function findPublishedByIdsAndFeatured($ids, bool $featured, array $arrOptions = [])
+    public static function findPublishedByIdsAndFeatured($ids, ?bool $featured, array $arrOptions = [])
     {
         $table = static::$strTable;
 
@@ -152,23 +175,46 @@ class PostModel extends Model
         return static::findBy($arrColumns, $arrValues, $arrOptions);
     }
 
-
-    /**
-     * Find published posts by their ids, featured status and category
+   /**
+     * Count published posts by their ids and featured status
      *
      * @param  integer|array  $ids  The post id(s)
+     * @param  boolean|null  $featured  True for featured posts
+     *
+     * @return int|null The number of posts or null if there are no posts
+     */
+    public static function countPublishedByIdsAndFeatured($ids, ?bool $featured): ?int
+    {
+        $table = static::$strTable;
+
+        if (is_array($ids)) {
+            $arrColumns = ["$table.id in ('" . implode("','", $ids) . "')"];
+            $arrValues = [];
+        } else {
+            $arrColumns = ["$table.id=?"];
+            $arrValues = [$ids];
+        }
+
+        if (null !== $featured) {
+            $arrColumns[] = $featured === true ? "$table.featured='1'" : "$table.featured=''";
+        }
+
+        return static::countBy($arrColumns, $arrValues);
+    }
+
+
+    /**
+     * Find published posts by their Archive id(s), featured status and category
+     *
+     * @param  integer|array  $ids  The Archive id(s)
      * @param  boolean|null  $featured  True for featured posts
      * @param  string|null  $category  The category
      * @param  array  $arrOptions  An optional options array
      *
-     * @return Collection|PostModel|null A collection of models or null if there are no articles in the given column
+     * @return Collection|PostModel|null A collection of models or null if there are no posts
      */
-    public static function findPublishedByIdsAndFeaturedAndCategory(
-        $ids,
-        ?bool $featured,
-        ?string $category,
-        array $arrOptions = []
-    ) {
+    public static function findPublishedByArchivesAndFeaturedAndCategory($ids, ?bool $featured, ?string $category, array $arrOptions = [])
+    {
         $table = static::$strTable;
 
         if (is_array($ids)) {
@@ -195,6 +241,40 @@ class PostModel extends Model
         }
 
         return static::findBy($arrColumns, $arrValues, $arrOptions);
+    }
+
+
+    /**
+     * Count published posts by their Archive id(s), featured status and category
+     *
+     * @param  integer|array  $ids  The Archive id(s)
+     * @param  boolean|null  $featured  True for featured posts
+     * @param  string|null  $category  The category
+     *
+     * @return int|null The number of posts or null if there are no posts
+     */
+    public static function countPublishedByArchivesAndFeaturedAndCategory($ids, ?bool $featured, ?string $category): ?int
+    {
+        $table = static::$strTable;
+
+        if (is_array($ids)) {
+            $arrColumns = ["$table.pid in ('" . implode("','", $ids) . "')"];
+            $arrValues = [];
+        } else {
+            $arrColumns = ["$table.pid=?"];
+            $arrValues = [$ids];
+        }
+
+        if (null !== $featured) {
+            $arrColumns[] = $featured === true ? "$table.featured='1'" : "$table.featured=''";
+        }
+
+        if ($category != '') {
+            $arrColumns[] = "$table.category LIKE ?";
+            $arrValues[] = '%' . $category . '%';
+        }
+
+        return static::countBy($arrColumns, $arrValues);
     }
 
 }

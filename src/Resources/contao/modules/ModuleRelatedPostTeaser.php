@@ -14,6 +14,7 @@ namespace Agoat\PostsnPagesBundle\Contao;
 use Contao\BackendTemplate;
 use Contao\Config;
 use Contao\Input;
+use Contao\Pagination;
 use Patchwork\Utf8;
 
 
@@ -42,7 +43,7 @@ class ModuleRelatedPostTeaser extends ModulePost
             /** @var BackendTemplate $objTemplate */
             $objTemplate = new BackendTemplate('be_wildcard');
 
-            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['articleteaser'][0]) . ' ###';
+            $objTemplate->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['relatedpostteaser'][0]) . ' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -54,11 +55,6 @@ class ModuleRelatedPostTeaser extends ModulePost
         // Set the item from the auto_item parameter
         if (!isset($_GET['posts']) && Config::get('useAutoItem') && isset($_GET['auto_item'])) {
             Input::setGet('posts', Input::get('auto_item'));
-        }
-
-        // Overwrite the post id
-        if (null !== $intId) {
-            Input::setGet('posts', $intId);
         }
 
         return parent::generate();
@@ -89,6 +85,12 @@ class ModuleRelatedPostTeaser extends ModulePost
                 // Render the teasers
                 $arrPosts[] = $this->renderPost($objPosts->current(), true, false);
             }
+        }
+
+        if ($this->perPage > 0) {
+            // Add the pagination menu
+            $objPagination = new Pagination($this->numberOfItems ? min($this->numberOfItems - $this->skipFirst, $this->totalPosts) : $this->totalPosts, $this->perPage, Config::get('maxPaginationLinks'), $id = 'page_n' . $this->id);
+            $this->Template->pagination = $objPagination->generate("\n  ");
         }
 
         if ($this->sortRelated == 'random') {

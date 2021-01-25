@@ -71,7 +71,8 @@ class ModuleStatic extends Module
      */
     protected function compile()
     {
-        /** @var PageModel $objPage */ global $objPage;
+        /** @var PageModel $objPage */
+        global $objPage;
 
         $id = 'static-' . $this->id;
 

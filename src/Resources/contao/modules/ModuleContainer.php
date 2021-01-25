@@ -63,7 +63,8 @@ class ModuleContainer extends Module
      */
     protected function compile()
     {
-        /** @var PageModel $objPage */ global $objPage;
+        /** @var PageModel $objPage */
+        global $objPage;
 
         $id = 'container-' . $this->id;
 
