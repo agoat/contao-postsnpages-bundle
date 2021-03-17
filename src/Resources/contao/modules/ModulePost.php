@@ -347,7 +347,7 @@ abstract class ModulePost extends Module
                 }
             }
 
-            if (!$blnContent) {
+            if (!$blnContent && class_exists(CommentsModel::class)) {
                 // Add comments information
                 $intCCount = CommentsModel::countPublishedBySourceAndParent('tl_posts', $objPost->id);
 
